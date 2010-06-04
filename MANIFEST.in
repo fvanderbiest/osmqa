@@ -1,0 +1,3 @@
+include osmqa/config/deployment.ini_tmpl
+recursive-include osmqa/public *
+recursive-include osmqa/templates *
