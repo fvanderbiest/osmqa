@@ -32,11 +32,13 @@ window.onload = function() {
         region: "center"
     })).mapPanel;
 
+    /*
     var headerPanel = new Ext.Panel({
         region: 'north',
         height: 100,
         contentEl: 'header'
     });
+    */
     
     var layerTreePanel = (new App.LayerTree(mapPanel.layers, {
         title: OpenLayers.i18n("layertree")
@@ -54,7 +56,7 @@ window.onload = function() {
     new Ext.Viewport({
         layout: "border",
         items: [
-            headerPanel,
+            //headerPanel,
             mapPanel,
             { 
                 region: "east",
@@ -73,4 +75,6 @@ window.onload = function() {
             }
         ]
     });
+    
+    mapPanel.map.zoomToExtent(new OpenLayers.Bounds(-556461,6143587,-446850,6191896));
 };

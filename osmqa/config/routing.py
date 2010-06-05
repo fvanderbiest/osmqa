@@ -20,6 +20,8 @@ def make_map():
     map.connect('/error/{action}/{id}', controller='error')
 
     # CUSTOM ROUTES HERE
+    map.resource("tile", "tiles")
+
     map.connect('/', controller='entry', action='index')
     printer.addRoutes(map, '/print/', 'printer')
 

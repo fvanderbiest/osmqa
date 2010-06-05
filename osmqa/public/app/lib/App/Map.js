@@ -35,7 +35,16 @@ App.Map = function(options) {
      */
     var getLayers = function() {
         var osm = new OpenLayers.Layer.OSM();
-        return [osm];
+        
+        var tiles = new OpenLayers.Layer.Vector('tiles',{
+            protocol: new OpenLayers.Protocol.HTTP({
+                url: '/tiles',
+                format: new OpenLayers.Format.GeoJSON()
+            }),
+            strategies: [new OpenLayers.Strategy.BBOX()]
+        });
+        
+        return [osm, tiles];
     };
 
     // Public
@@ -60,21 +69,16 @@ App.Map = function(options) {
             20037508.34, 
             20037508.34
         ),
-        restrictedExtent: new OpenLayers.Bounds(
-            275784,
-            5444704,
-            972278,
-            5939405
-        ),
         units: "m",
         theme: null, // or OpenLayers will attempt to load it default theme
         controls: [
             new OpenLayers.Control.Navigation(),
-            new OpenLayers.Control.PanZoom(),
+            //new OpenLayers.Control.PanZoom(),
             new OpenLayers.Control.ArgParser(),
             new OpenLayers.Control.Attribution(),
-            new OpenLayers.Control.ScaleLine(),
+            new OpenLayers.Control.ScaleLine()/*,
             new OpenLayers.Control.OverviewMap({mapOptions: {theme: null}})
+        */
         ]
     };
     var map = new OpenLayers.Map(mapOptions);
@@ -88,4 +92,5 @@ App.Map = function(options) {
         prettyStateKeys: true
     }, options);
     this.mapPanel = new GeoExt.MapPanel(options);
+    
 };

@@ -97,8 +97,8 @@ App.Tools = function(map) {
 
         return [
             zoomToMaxExtent, zoomIn, zoomOut, '-',
-            historyPrevious, historyNext, permalink, '-',
-            measureLength, measureArea, locator
+            historyPrevious, historyNext, '-',
+            measureLength, measureArea, locator, '->', permalink
         ];
     };
 
