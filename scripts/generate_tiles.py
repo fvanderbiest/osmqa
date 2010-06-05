@@ -42,8 +42,10 @@ xmaxstep = ceil((xmax+max)/step)
 yminstep = floor((ymin+max)/step)
 ymaxstep = ceil((ymax+max)/step)
 
-# créer une chaine de caractère représentant la geometrie carrée en WKT
 def create_square(i,j):
+    """
+    creates a Polygon Shapely geometry for tile indexed by (i,j)
+    """
     global step, Polygon
     xmin = i*step-max
     ymin = j*step-max
