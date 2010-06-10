@@ -137,10 +137,23 @@ App.Tools = function(map) {
             }
         });
         
+        var refresh = {
+            text: 'refresh',
+            tooltip: OpenLayers.i18n("Tools.refreshtooltip"), // FIXME
+            //iconCls: 'mapRefresh', // FIXME
+            listeners: {
+                'click': function(v) {
+                    observable.fireEvent("refresh");
+                },
+                scope: this
+            }
+        };
+        
         return [
             zoomToMaxExtent, zoomIn, zoomOut, '-',
             historyPrevious, historyNext, '-',
-            measureLength, measureArea, locator, '->', permalink, tagCombo
+            measureLength, measureArea, locator, '-',
+            refresh, '->', permalink, tagCombo
         ];
     };
 

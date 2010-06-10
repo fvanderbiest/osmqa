@@ -42,7 +42,13 @@ App.Map = function(options) {
      * Property: popup
      * {GeoExt.Popup} our unique popup (if any)
      */
-    var popup=null;
+    var popup = null;
+    
+    /**
+     * Property: refreshStrategy
+     * {OpenLayers.Strategy.Refresh}
+     */
+    var refreshStrategy = null;
     
     /**
      * Method: getStyleMap
@@ -221,7 +227,7 @@ App.Map = function(options) {
     var getLayers = function() {
         var osm = new OpenLayers.Layer.OSM();
         
-        var refreshStrategy = new OpenLayers.Strategy.Refresh({
+        refreshStrategy = new OpenLayers.Strategy.Refresh({
             interval: 5*60*1000, // 5 minutes
             force: true
         });
@@ -239,6 +245,8 @@ App.Map = function(options) {
             alwaysInRange: false,
             maxResolution: 156543.0339/(Math.pow(2, 12)) // max zoom level to load vector tiles = 12
         });
+        
+        refreshStrategy.activate();
         
         var attrString = '<a href="http://www.brest.fr">Brest Métropole Océane</a>';
         var ortho_bmo = new OpenLayers.Layer.WMS("Ortho BMO 2004 @20cm", 'http://bmo.openstreetmap.fr/wms', {
@@ -270,7 +278,7 @@ App.Map = function(options) {
             transitionEffect: 'resize'
         });
         
-        refreshStrategy.activate();
+        
         
         tiles.events.on({
             "featureselected": function(e) {
@@ -319,6 +327,9 @@ App.Map = function(options) {
         "tagchanged": function(tag) {
             tiles.styleMap = getStyleMap(tag);
             tiles.redraw();
+        },
+        "refresh": function() {
+            refreshStrategy.refresh();
         },
         scope: this
     });
