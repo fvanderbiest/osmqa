@@ -11,7 +11,8 @@ wkt = 'POLYGON((-513656.83000488 6177851.1455421, -491642.96586182 6187070.96158
 z = 15
 
 # Table name for storing the tiles
-tablename = 'tiles'
+tablename = 'tile_geometries'
+areaname = 'Brest'
 
 #####################################
 # DO NOT MODIFY THE FOLLOWING LINES #
@@ -37,10 +38,10 @@ xmin=geom.bounds[0]
 ymin=geom.bounds[1]
 xmax=geom.bounds[2]
 ymax=geom.bounds[3]
-xminstep = floor((xmin+max)/step)
-xmaxstep = ceil((xmax+max)/step)
-yminstep = floor((ymin+max)/step)
-ymaxstep = ceil((ymax+max)/step)
+xminstep = int(floor((xmin+max)/step))
+xmaxstep = int(ceil((xmax+max)/step))
+yminstep = int(floor((ymin+max)/step))
+ymaxstep = int(ceil((ymax+max)/step))
 
 def create_square(i,j):
     """
@@ -54,8 +55,8 @@ def create_square(i,j):
     return Polygon([(xmin, ymin),(xmax, ymin),(xmax, ymax),(xmin, ymax)])
 
 filed = open('../sql/tiles.sql', 'w') 
-filed.write("DROP TABLE %s;CREATE TABLE %s ( id serial primary key);\r\n"%(tablename,tablename))
-filed.write("SELECT addGeometryColumn('public', '%s', 'geometry', 900913, 'POLYGON', 2);\r\n"%(tablename))
+
+filed.write("INSERT INTO maps (name) VALUES ('%s');"%(areaname))
 
 count = 1
 tot = (xminstep - xmaxstep) * (yminstep - ymaxstep)
@@ -64,11 +65,22 @@ for i in range(xminstep,xmaxstep):
     for j in range(yminstep,ymaxstep):
         #filed.write("%s;%s\r\n"%(count,create_square(i,j).wkb.encode('hex')))
         filed.write("INSERT INTO %s (geometry) SELECT GeometryFromText('%s',900913);\r\n"%(tablename,create_square(i,j).wkt))
+        filed.write("INSERT INTO tags (map_id, tile_geometry_id) VALUES (1, %s);\r\n"%(count));
         count = count+1
-        p = round(100 * count / tot)
+        p = int(round(100 * count / tot))
         if p > percent:
             percent = p
             print percent
             
-filed.write('grant select,update on %s to "www-data";\r\n'%(tablename));
 filed.close()
+
+#3857 vers 900913
+# ogr2ogr -s_srs "EPSG:3857" -t_srs "EPSG:900913" world_boundaries/world_bnd_m_900913.shp world_boundaries/world_bnd_m.shp
+# mieux: ogr2ogr -t_srs "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs" world_boundaries/world_bnd_m_900913.shp world_boundaries/world_bnd_m.shp
+
+# shp2pgsql -s 900913 -g geometry -I world_boundaries/world_bnd_m_900913.shp world_boundaries > world_boundaries.sql
+
+#bouba@oncidium:~/workspace/osmqa/trunk/sql/GSHHS_shp/h$ shp2pgsql -s 4326 -g geometry -I GSHHS_h_L1.shp world_boundaries_h > world_boundaries_h.sql
+#Shapefile type: Polygon
+#Postgis type: MULTIPOLYGON[2]
+#puis : retaillage sur polygon((-180 85, 180 85, 180 -85, -180 -85, -180 85))

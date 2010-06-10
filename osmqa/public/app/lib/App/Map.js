@@ -24,8 +24,193 @@ Ext.namespace('App');
  */
 App.Map = function(options) {
 
-    // Private
-
+    // Private    
+    
+    /**
+     * Property: sfControl
+     * {OpenLayers.Control.SelectFeature} the control used to select tiles
+     */
+    var sfControl = null;
+    
+    /**
+     * Property: sfControl
+     * {OpenLayers.Layer.Vector} the vector layer used to display tiles
+     */
+    var tiles = null;
+    
+    /**
+     * Property: popup
+     * {GeoExt.Popup} our unique popup (if any)
+     */
+    var popup=null;
+    
+    /**
+     * Method: getStyleMap
+     * Returns the StyleMap for the tiles vector layer 
+     *
+     * Parameters:
+     * tag - {String} (optional) the tag which defines the tiles' layer purpose
+     *       ("is map complete for XX" where XX = highway, buildings ...)
+     *
+     * Returns:
+     * {OpenLayers.StyleMap} the stylemap for the vector layer.
+     */
+    var getStyleMap = function(tag) {
+        tag = tag || App.config.defaultTag;
+        
+        var style = new OpenLayers.Style({
+            fillColor: "${getColor}", 
+            fillOpacity: "${getOpacity}",
+            strokeColor: "${getColor}",
+            strokeWidth: "${getStrokeWidth}", 
+            strokeOpacity: 0.2
+        }, {
+            context: {
+                getOpacity: function(feature) {
+                    if (feature.attributes[tag] === true) {
+                        return 0.3;
+                    }
+                    return 0.05;	
+                },
+                getStrokeWidth: function(feature) {
+                    if (feature.attributes[tag] === true) {
+                        return 0;
+                    }
+                    return 1;	
+                },
+                getColor: function(feature) {							
+                    if (feature.attributes[tag] === true) {
+                        return "#00ff00"; // green
+                    }
+                    return "#ff0000"; // red					
+                }
+            }
+        });
+        
+        return new OpenLayers.StyleMap({
+            "default": style,
+            "select": {
+                fillColor: "#8aeeef",
+                strokeColor: "#32a8a9"
+            }
+        });
+        
+    };
+    
+    /**
+     * Method: getControls
+     * Returns the list of added controls
+     *
+     * Returns:
+     * {Array({OpenLayers.Control})} An array of OpenLayers.Control objects.
+     */
+    var getControls = function() {
+        
+        sfControl = new OpenLayers.Control.SelectFeature(tiles, {
+        });
+        sfControl.handlers.feature.stopDown = false;
+        
+        return [new OpenLayers.Control.Navigation(),
+            new OpenLayers.Control.ArgParser(),
+            new OpenLayers.Control.Attribution(),
+            new OpenLayers.Control.ScaleLine(), sfControl];
+    };
+    
+    /**
+     * Method: round
+     * Rounds input var to x decimals
+     *
+     * Parameters:
+     * input - {float} 
+     * decimals - {integer}
+     *
+     * Returns:
+     * {float}
+     */
+    var round = function(input, decimals) { // TODO: util namespace
+        var p = Math.pow(10, decimals);
+        return Math.round(input*p)/p;
+    };
+    
+    /**
+     * Method: createMarkup
+     * Creates the html string with the RemoteControl stuff
+     *
+     * Parameters:
+     * feature - {OpenLayers.Feature.Vector} the feature on which to open a popup
+     *
+     * Returns:
+     * {String} our string
+     */
+    var createMarkup = function(feature) {
+        var base = 'http://127.0.0.1:8111/load_and_zoom?'; // TODO: config
+        var geom = feature.geometry.clone();
+        geom.transform(
+            new OpenLayers.Projection("EPSG:900913"), 
+            new OpenLayers.Projection("EPSG:4326"));
+        var bounds = geom.getBounds();
+        var link = base + OpenLayers.Util.getParameterString({
+            left: round(bounds.left,5),
+            bottom: round(bounds.bottom,5),
+            right: round(bounds.right,5),
+            top: round(bounds.top,5)
+        });
+        var post = '(avec le plugin '+
+        '<a href="http://wiki.openstreetmap.org/wiki/JOSM/Plugins/RemoteControl"'+
+        ' target="_blank">RemoteControl</a>)';
+        return '<a href="'+link+'" target="_blank">Editer cette zone dans JOSM</a><br />'+post;
+    };
+    
+    /**
+     * Method: createItems
+     * Creates the ExtJS items inside the popup 
+     *
+     * Parameters:
+     * feature - {OpenLayers.Feature.Vector} the feature on which to open a popup
+     *
+     * Returns:
+     * {Array({Object})} An array of xtype'd objects.
+     */
+    var createItems = function(feature) {
+        // TODO: create gridPanel with combos for fields
+        // + button "all checked"
+        return [{
+            xtype: 'box',
+            html: createMarkup(feature)
+        }]
+    };
+    
+    /**
+     * Method: displayPopup
+     * 
+     * Parameters:
+     * feature - {OpenLayers.Feature.Vector} the feature on which to open a popup
+     */
+    var displayPopup = function(feature) {
+        if (popup) {
+            popup.close();
+        }
+        popup = new GeoExt.Popup({
+            title: 'Informations',
+            feature: feature,
+            width:200,
+            // FIXME: layout ?
+            items: createItems(feature),
+            maximizable: false,
+            collapsible: false,
+            unpinnable: false
+        });
+        popup.on({
+            close: function() {
+                if(OpenLayers.Util.indexOf(tiles.selectedFeatures,
+                                           this.feature) > -1) {
+                    sfControl.unselect(this.feature);
+                }
+            }
+        });
+        popup.show();
+    };
+    
     /**
      * Method: getLayers
      * Returns the list of layers.
@@ -36,15 +221,65 @@ App.Map = function(options) {
     var getLayers = function() {
         var osm = new OpenLayers.Layer.OSM();
         
-        var tiles = new OpenLayers.Layer.Vector('tiles',{
+        var refreshStrategy = new OpenLayers.Strategy.Refresh({
+            interval: 5*60*1000, // 5 minutes
+            force: true
+        });
+        
+        tiles = new OpenLayers.Layer.Vector('tiles', {
             protocol: new OpenLayers.Protocol.HTTP({
                 url: '/tiles',
                 format: new OpenLayers.Format.GeoJSON()
             }),
-            strategies: [new OpenLayers.Strategy.BBOX()]
+            strategies: [
+                new OpenLayers.Strategy.BBOX(),
+                refreshStrategy
+            ],
+            styleMap: getStyleMap(),
+            alwaysInRange: false,
+            maxResolution: 156543.0339/(Math.pow(2, 12)) // max zoom level to load vector tiles = 12
         });
         
-        return [osm, tiles];
+        var attrString = '<a href="http://www.brest.fr">Brest Métropole Océane</a>';
+        var ortho_bmo = new OpenLayers.Layer.WMS("Ortho BMO 2004 @20cm", 'http://bmo.openstreetmap.fr/wms', {
+            layers: 'ortho',
+            format: 'image/jpeg'
+        }, {
+            isBaseLayer: false,
+            buffer: 0,
+            visibility: false,
+            opacity: 0.5,
+            alwaysInRange: false,
+            maxResolution: 156543.0339/(Math.pow(2, 15)), // z=15
+            attribution: attrString,
+            transitionEffect: 'resize'
+        });
+        
+        attrString = '<a href="http://www.geolittoral.equipement.gouv.fr/">GeoLittoral</a>';
+        var ortho_littorale = new OpenLayers.Layer.WMS("Ortho Littorale 2004 @50cm", 'http://bmo.openstreetmap.fr/wms', {
+            layers: 'ortholittorale',
+            format: 'image/jpeg'
+        }, {
+            isBaseLayer: false,
+            buffer: 0,
+            visibility: false,
+            opacity: 0.5,
+            alwaysInRange: false,
+            maxResolution: 156543.0339/(Math.pow(2, 15)), // z=15
+            attribution: attrString,
+            transitionEffect: 'resize'
+        });
+        
+        refreshStrategy.activate();
+        
+        tiles.events.on({
+            "featureselected": function(e) {
+                displayPopup(e.feature);
+            },
+            scope: this
+        });
+        
+        return [osm, ortho_bmo, ortho_littorale, tiles];
     };
 
     // Public
@@ -70,24 +305,28 @@ App.Map = function(options) {
             20037508.34
         ),
         units: "m",
-        theme: null, // or OpenLayers will attempt to load it default theme
-        controls: [
-            new OpenLayers.Control.Navigation(),
-            //new OpenLayers.Control.PanZoom(),
-            new OpenLayers.Control.ArgParser(),
-            new OpenLayers.Control.Attribution(),
-            new OpenLayers.Control.ScaleLine()/*,
-            new OpenLayers.Control.OverviewMap({mapOptions: {theme: null}})
-        */
-        ]
+        theme: null,
+        controls: []
     };
     var map = new OpenLayers.Map(mapOptions);
     map.addLayers(getLayers());
-
+    map.addControls(getControls());
+    
+    sfControl.activate();
+    
+    var tools = new App.Tools(map);
+    tools.events.on({
+        "tagchanged": function(tag) {
+            tiles.styleMap = getStyleMap(tag);
+            tiles.redraw();
+        },
+        scope: this
+    });
+    
     // create map panel
     options = Ext.apply({
         map: map,
-        tbar: (new App.Tools(map)).toolbar,
+        tbar: tools.toolbar,
         stateId: "map",
         prettyStateKeys: true
     }, options);

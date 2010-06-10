@@ -9,7 +9,8 @@ from osmqa.model.meta import metadata, engine
 tiles_table = Table(
     'tiles', metadata,
     Column('geometry', Geometry(900913)),
-    autoload=True, autoload_with=engine)
+    Column('id', types.Integer, primary_key=True),
+    autoload=True, useexisting=True, autoload_with=engine)
 
 class Tile(GeometryTableMixIn):
     # for GeometryTableMixIn to do its job the __table__ property

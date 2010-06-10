@@ -12,6 +12,11 @@
 
 window.onload = function() {
 
+    // FIXME: elsewhere
+    App.config = {
+        defaultTag: 'highway'
+    };
+    
     /*
      * Setting of OpenLayers global vars.
      */
@@ -44,6 +49,7 @@ window.onload = function() {
         title: OpenLayers.i18n("layertree")
     })).layerTreePanel;
 
+    /*
     var printPanel = (new App.Print(mapPanel, {
         title: OpenLayers.i18n("print"),
         labelAlign: 'top',
@@ -51,7 +57,8 @@ window.onload = function() {
             anchor:'100%'
         }
     })).printPanel;
-
+    */
+    
     // the viewport
     new Ext.Viewport({
         layout: "border",
@@ -71,7 +78,7 @@ window.onload = function() {
                     autoScroll: true,
                     bodyCssClass: 'app-accordion-body'
                 },
-                items: [layerTreePanel, printPanel]
+                items: [layerTreePanel] //, printPanel]
             }
         ]
     });

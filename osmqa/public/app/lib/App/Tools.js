@@ -30,7 +30,18 @@ Ext.namespace('App');
 App.Tools = function(map) {
 
     // Private
-
+    var observable = new Ext.util.Observable();
+    observable.addEvents(
+        /**
+         * Event: tagchanged
+         * Fires when the user selects a tag
+         *
+         * Listener arguments:
+         * tag - {string} the selected tag string
+         */
+        "tagchanged"
+    );
+    
     /**
      * Method: getItems
      * Return the toolbar items.
@@ -95,10 +106,41 @@ App.Tools = function(map) {
             iconCls: 'mapMeasurePosition'
         })).action;
 
+        var tagCombo = new Ext.form.ComboBox({
+            name: 'tag',
+            store: new Ext.data.SimpleStore({
+                fields: ['value', 'text'],
+                data : [
+                    ['highway', 'highway'],
+                    ['building', 'building'],
+                    ['landuse', 'landuse']
+                ]
+            }),
+            value: App.config.defaultTag,
+            valueField: 'value',
+            displayField:'text',
+            editable: false,
+            mode: 'local',
+            tooltip: {
+                title: 'Map selector',
+                text: 'Choose the tag you want to map'
+            },
+            triggerAction: 'all',
+            //emptyText: 'contexte',
+            //lazyRender: false,
+            width: 100,
+            listeners: {
+                'select': function(v) {
+                    observable.fireEvent("tagchanged", v.value);
+                },
+                scope: this
+            }
+        });
+        
         return [
             zoomToMaxExtent, zoomIn, zoomOut, '-',
             historyPrevious, historyNext, '-',
-            measureLength, measureArea, locator, '->', permalink
+            measureLength, measureArea, locator, '->', permalink, tagCombo
         ];
     };
 
@@ -110,7 +152,10 @@ App.Tools = function(map) {
          * APIProperty: toolbar
          * {Ext.Toolbar} The toolbar instance. Read-only.
          */
-        toolbar: null
+        toolbar: null,
+        
+        // our observable
+        events: null
     });
 
     // Main
@@ -118,4 +163,6 @@ App.Tools = function(map) {
     this.toolbar = new Ext.Toolbar({ 
         items: getItems(map) 
     });
+    
+    this.events = observable;
 };
