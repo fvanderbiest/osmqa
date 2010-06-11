@@ -5,6 +5,7 @@
  * @include OpenLayers/Rule.js
  * @include GeoExt/widgets/Action.js
  * @include OpenLayers/Handler/Point.js
+ * @include OpenLayers/Layer/SphericalMercator.js
  * @include OpenLayers/Projection.js
  */
 
@@ -40,17 +41,17 @@ App.Locator = function(map, actionOptions) {
      * {OpenLayers.Projection} The projection for displaying the position
      * If set, please note that you'll need to include proj4js lib
      */
-    var displayProjection = null; //new OpenLayers.Projection("EPSG:4326");
+    var displayProjection = new OpenLayers.Projection("EPSG:4326");
     
     /**
      * Property: template
      * {Ext.XTemplate} The template used to display the measure
      */
     var template = new Ext.XTemplate(
-        '<p>X:&nbsp;{[values.measure.x.toFixed(this.decimals)]} {units}</p>',
-        '<p>Y:&nbsp;{[values.measure.y.toFixed(this.decimals)]} {units}</p>', {
+        '<p>lon:&nbsp;{[values.measure.x.toFixed(this.decimals)]} {units}</p>',
+        '<p>lat:&nbsp;{[values.measure.y.toFixed(this.decimals)]} {units}</p>', {
             compiled: true,
-            decimals: 0 // number of decimals for the measurement
+            decimals: 5 // number of decimals for the measurement
         }
     );
 
@@ -219,6 +220,9 @@ App.Locator.Control = OpenLayers.Class(OpenLayers.Control, {
             var mapProjection = this.map.getProjectionObject();
             geometry.transform(mapProjection, displayProjection);
             units = this.displayProjection.getUnits();
+            if (!units) {
+                units = (displayProjection.projCode==="EPSG:4326") ? '°' : 'm';
+            }
         } else {
             units = this.map.getUnits();
         }
