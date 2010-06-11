@@ -31,7 +31,8 @@ TODO avant V1 :
  - loadingPanel
  - indicateur de chargement AJAX
  + mapfile
- - build JS
+ + build JS
+ - au survol des tiles vectoriels, affichage des attributs dans un Ext.grid.PropertyGrid docké
  - doc d'installation en anglais
  - sql sur toute la France
  - edition vectorielle
@@ -40,6 +41,7 @@ TODO avant V1 :
  
  Bugs : 
  - permalien ne fonctionne pas
+ + en mode buildé, la fleche de la popup n'apparait pas
 
  
  Pour les clés, s'inspirer de http://wiki.openstreetmap.org/wiki/Romans-sur-Isere qui contient une classification de complétude :
