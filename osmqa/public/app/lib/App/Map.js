@@ -50,6 +50,12 @@ App.Map = function(options) {
     var tiles = null;
     
     /**
+     * Property: raster_tiles
+     * {OpenLayers.Layer.WMS} the WMS layer used to display tiles
+     */
+    var raster_tiles = null;
+    
+    /**
      * Property: popup
      * {GeoExt.Popup} our unique popup (if any)
      */
@@ -261,16 +267,17 @@ App.Map = function(options) {
         
         refreshStrategy.activate();
         
-        var raster_tiles = new OpenLayers.Layer.WMS("Raster tiles", '../mapserv/?', {
+        raster_tiles = new OpenLayers.Layer.WMS("Raster tiles", '../mapserv/?', {
             layers: 'tiles',
             format: 'image/png',
-            TAG: 'highway' // TODO: combo
+            TAG: App.config.defaultTag
         }, {
             isBaseLayer: false,
             singleTile: true,
             ratio: 1.2,
             visibility: true, // FIXME
-            opacity: 0.5,
+            //displayInLayerSwitcher: true
+            opacity: 0.3,
             //alwaysInRange: false,
             //minResolution: transitionResolution, 
             transitionEffect: 'resize'
@@ -355,6 +362,8 @@ App.Map = function(options) {
         "tagchanged": function(tag) {
             tiles.styleMap = getStyleMap(tag);
             tiles.redraw();
+            raster_tiles.params['TAG'] = tag;
+            raster_tiles.redraw();
         },
         "refresh": function() {
             refreshStrategy.refresh();
