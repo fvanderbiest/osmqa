@@ -114,7 +114,7 @@ App.Map = function(options) {
             "default": style,
             "select": {
                 fillColor: "#000000",
-                strokeColor: "#0000ff",
+                strokeColor: "#0000ff", // blue
                 strokeWidth: 3
             }
         });
