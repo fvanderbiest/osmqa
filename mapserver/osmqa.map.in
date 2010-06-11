@@ -1,3 +1,67 @@
 MAP
     NAME "${vars:package}"
+    
+    STATUS ON
+    #EXTENT 83000 92000 107000 109000 # FIXME
+    UNITS meters
+
+    MAXSIZE 4000
+    CONFIG "PROJ_LIB" "${buildout:directory}/../mapserver/"
+
+    WEB
+        METADATA
+            "wms_title"     "WMS server for OSMQA"
+            "wms_onlineresource" "http://osmqa.org/osmqa/mapserv/?" # FIXME
+            "wms_srs"       "EPSG:4326 EPSG:900913 EPSG:3948 EPSG:3857 EPSG:3758 EPSG:2154" 
+            "wms_encoding"  "UTF-8"
+        END
+    END
+    
+    PROJECTION
+        "init=epsg:900913"
+    END
+
+    OUTPUTFORMAT
+        NAME "png"
+        DRIVER "AGG/PNG" # FIXME: GD/PNG ?
+        MIMETYPE "image/png"
+        IMAGEMODE RGBA
+        TRANSPARENT ON
+        EXTENSION "png"
+        FORMATOPTION "INTERLACE=OFF"
+    END
+    
+    LAYER
+        NAME tiles
+        DUMP TRUE
+        TEMPLATE tpl.txt
+        TRANSPARENCY 50
+        STATUS ON
+        TYPE POLYGON
+        CONNECTION "user=${vars:dbuser} password=${vars:dbpassword} dbname=${vars:db} host=${vars:dbhost} port=${vars:dbport}"
+        CONNECTIONTYPE postgis
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "geometry FROM (SELECT id, geometry, %TAG%::integer AS tag FROM tiles) as foo using unique id using srid=900913"
+        CLASSITEM "tag"
+        CLASS
+            NAME "true"
+            EXPRESSION "1"
+            STYLE
+                OUTLINECOLOR 255 255 255
+                COLOR 0 255 0
+            END
+        END
+        CLASS
+            NAME "false"
+            EXPRESSION "0"
+            STYLE
+                OUTLINECOLOR 255 0 0
+                COLOR 255 0 0
+            END
+        END
+        METADATA
+            "wms_title" "osmqa tiles"
+            "gml_include_items" "all"
+        END
+    END
 END

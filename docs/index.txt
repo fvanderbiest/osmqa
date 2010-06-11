@@ -27,9 +27,10 @@ V3 :
 TODO avant V1 :
  + ajout bouton "refresh now"
  + ajout des couches WMS (en dur) connues et libres d'accès dans le cadre de OSM (geolittoral, bmo, jura, sitn, sitg, lausanne ...)
- - WSGI à configurer en urgence !!! (car mapfile et autres en dépend)
+ + WSGI à configurer en urgence !!! (car mapfile et autres en dépend)
+ - loadingPanel
  - indicateur de chargement AJAX
- - mapfile
+ + mapfile
  - build JS
  - doc d'installation en anglais
  - sql sur toute la France
@@ -55,3 +56,6 @@ TODO avant V1 :
  - Toutes les attractions touristiques sont présentes - Clé : t
  - Toutes les ressources naturelles sont cartographiées (points d'eau, lacs, bois, forêts) - Clé : n
  - Tous les numéros de rues sont présents - Clé : h
+ 
+ Dépendances :
+sudo apt-get install libapache2-mod-fcgid

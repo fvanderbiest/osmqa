@@ -243,6 +243,8 @@ App.Map = function(options) {
             force: true
         });
         
+        var transitionResolution = 156543.0339/(Math.pow(2, 12));
+        
         tiles = new OpenLayers.Layer.Vector('tiles', {
             protocol: new OpenLayers.Protocol.HTTP({
                 url: 'tiles',
@@ -254,10 +256,25 @@ App.Map = function(options) {
             ],
             styleMap: getStyleMap(),
             alwaysInRange: false,
-            maxResolution: 156543.0339/(Math.pow(2, 12)) // max zoom level to load vector tiles = 12
+            maxResolution: transitionResolution
         });
         
         refreshStrategy.activate();
+        
+        var raster_tiles = new OpenLayers.Layer.WMS("Raster tiles", '../mapserv/?', {
+            layers: 'tiles',
+            format: 'image/png',
+            TAG: 'highway' // TODO: combo
+        }, {
+            isBaseLayer: false,
+            singleTile: true,
+            ratio: 1.2,
+            visibility: true, // FIXME
+            opacity: 0.5,
+            //alwaysInRange: false,
+            //minResolution: transitionResolution, 
+            transitionEffect: 'resize'
+        });
         
         var attrString = '<a href="http://www.brest.fr">Brest Métropole Océane</a>';
         var ortho_bmo = new OpenLayers.Layer.WMS("Ortho BMO 2004 @20cm", 'http://bmo.openstreetmap.fr/wms', {
@@ -298,7 +315,7 @@ App.Map = function(options) {
             scope: this
         });
         
-        return [osm, ortho_bmo, ortho_littorale, tiles];
+        return [osm, ortho_bmo, ortho_littorale, raster_tiles, tiles];
     };
 
     // Public
