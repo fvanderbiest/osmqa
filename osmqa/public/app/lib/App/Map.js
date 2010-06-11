@@ -83,7 +83,7 @@ App.Map = function(options) {
         
         var style = new OpenLayers.Style({
             fillColor: "${getColor}", 
-            fillOpacity: "${getOpacity}",
+            fillOpacity: 0, //"${getOpacity}",
             strokeColor: "${getColor}",
             strokeWidth: "${getStrokeWidth}", 
             strokeOpacity: 0.2
@@ -113,8 +113,9 @@ App.Map = function(options) {
         return new OpenLayers.StyleMap({
             "default": style,
             "select": {
-                fillColor: "#8aeeef",
-                strokeColor: "#32a8a9"
+                fillColor: "#000000",
+                strokeColor: "#0000ff",
+                strokeWidth: 3
             }
         });
         
