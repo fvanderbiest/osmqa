@@ -12,11 +12,6 @@
 
 window.onload = function() {
 
-    // FIXME: elsewhere
-    App.config = {
-        defaultTag: 'highway'
-    };
-    
     /*
      * Setting of OpenLayers global vars.
      */

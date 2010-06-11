@@ -1,0 +1,22 @@
+<VirtualHost *:80>
+  ServerName osmqa.org
+  #DocumentRoot /var/www/osmqa/trunk/osmqa/public
+
+  LogLevel warn
+
+  ErrorLog /var/www/osmqa/trunk/logs/error.log
+  CustomLog /var/www/osmqa/trunk/logs/access.log combined
+
+  Include /var/www/osmqa/trunk/apache/*.conf
+
+  # CGI scripts
+  #ScriptAlias /cgi-bin/ /var/www/osmqa/cgi-bin/
+  #<Directory /var/www/osmqa/cgi-bin>
+  #  Options +ExecCGI
+  #  AddHandler cgi-script .cgi
+  #</Directory>
+
+  #ServerSignature Off
+
+</VirtualHost>
+

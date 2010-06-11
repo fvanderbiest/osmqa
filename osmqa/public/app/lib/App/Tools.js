@@ -15,6 +15,7 @@
  * @include OpenLayers/Handler.js
  * @include App/Locator.js
  * @include App/Permalink.js
+ * @include App/config.js
  */
 
 Ext.namespace('App');

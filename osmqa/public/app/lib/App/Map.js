@@ -1,15 +1,26 @@
 /*
  * @include OpenLayers/Projection.js
  * @include OpenLayers/Map.js
+ * @include OpenLayers/Util.js
  * @include OpenLayers/Layer/XYZ.js
+ * @include OpenLayers/Layer/Vector.js
+ * @include OpenLayers/Layer/WMS.js
+ * @include OpenLayers/Protocol/HTTP.js
+ * @requires OpenLayers/Strategy.js
+ * @include OpenLayers/Strategy/Refresh.js
+ * @include OpenLayers/Strategy/BBOX.js
+ * @include OpenLayers/Format/GeoJSON.js
  * @include OpenLayers/Control/Navigation.js
  * @include OpenLayers/Control/PanZoom.js
  * @include OpenLayers/Control/ArgParser.js
  * @include OpenLayers/Control/Attribution.js
  * @include OpenLayers/Control/ScaleLine.js
  * @include OpenLayers/Control/OverviewMap.js
+ * @include OpenLayers/Control/SelectFeature.js
  * @include GeoExt/widgets/MapPanel.js
+ * @include GeoExt/widgets/Popup.js
  * @include App/Tools.js
+ * @include App/config.js
  */
 
 Ext.namespace('App');
@@ -234,7 +245,7 @@ App.Map = function(options) {
         
         tiles = new OpenLayers.Layer.Vector('tiles', {
             protocol: new OpenLayers.Protocol.HTTP({
-                url: '/tiles',
+                url: 'tiles',
                 format: new OpenLayers.Format.GeoJSON()
             }),
             strategies: [
