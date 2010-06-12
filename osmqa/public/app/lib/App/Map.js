@@ -6,11 +6,11 @@
  * @include OpenLayers/Layer/Vector.js
  * @include OpenLayers/Layer/WMS.js
  * @include OpenLayers/Protocol/HTTP.js
- * @requires OpenLayers/Strategy.js
  * @include OpenLayers/Strategy/Refresh.js
  * @include OpenLayers/Strategy/BBOX.js
  * @include OpenLayers/Format/GeoJSON.js
  * @include OpenLayers/Control/Navigation.js
+ * @include OpenLayers/Control/LoadingPanel.js
  * @include OpenLayers/Control/PanZoom.js
  * @include OpenLayers/Control/ArgParser.js
  * @include OpenLayers/Control/Attribution.js
@@ -134,9 +134,11 @@ App.Map = function(options) {
         });
         sfControl.handlers.feature.stopDown = false;
         
-        return [new OpenLayers.Control.Navigation(),
+        return [
+            new OpenLayers.Control.Navigation(),
             new OpenLayers.Control.ArgParser(),
             new OpenLayers.Control.Attribution(),
+            new OpenLayers.Control.LoadingPanel(),
             new OpenLayers.Control.ScaleLine(), sfControl];
     };
     

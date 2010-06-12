@@ -43,3 +43,14 @@ html, body {
     position: absolute; 
     display: block;
 }
+.olControlLoadingPanel {
+	background-image:url('../../lib/externals/loadingPanel/theme/default/img/loading.gif');
+	position: relative;
+	top:.5em;
+	left:.5em;
+	width: 195px;
+	height: 11px;
+	background-position:center;
+	background-repeat:no-repeat;
+	display: none;
+}

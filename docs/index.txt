@@ -28,7 +28,7 @@ TODO avant V1 :
  + ajout bouton "refresh now"
  + ajout des couches WMS (en dur) connues et libres d'accès dans le cadre de OSM (geolittoral, bmo, jura, sitn, sitg, lausanne ...)
  + WSGI à configurer en urgence !!! (car mapfile et autres en dépend)
- - loadingPanel
+ + loadingPanel
  - indicateur de chargement AJAX
  + mapfile
  + build JS
@@ -39,6 +39,7 @@ TODO avant V1 :
  - edition vectorielle
  + commutation entre modes de rendu quand on est en raster (petite échelle)
  - deploiement sur bmo.openstreetmap.fr
+  - ajout base layers : osmarender, cyclemap ...
  
  Bugs : 
  - permalien ne fonctionne pas
