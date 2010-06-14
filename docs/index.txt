@@ -32,7 +32,7 @@ TODO avant V1 :
  - indicateur de chargement AJAX
  + mapfile
  + build JS
- - au survol des tiles vectoriels, affichage des attributs dans un Ext.grid.PropertyGrid docké
+ - au survol des tiles vectoriels, affichage des attributs dans un Ext.grid.PropertyGrid docké, et liseré jaune sur le bord de la tuile vectorielle
  - au clic sur la tile, figer la selection à cette tuile, afficher dans le dock le lien vers edition JOSM, offrir la possibilité de (dé)réserver la tuile ? 
  - doc d'installation en anglais
  - sql sur toute la France

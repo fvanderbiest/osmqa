@@ -6,7 +6,7 @@ MAP
     UNITS meters
 
     MAXSIZE 4000
-    CONFIG "PROJ_LIB" "${buildout:directory}/../mapserver/"
+    CONFIG "PROJ_LIB" "${buildout:directory}/mapserver/"
 
     WEB
         METADATA
