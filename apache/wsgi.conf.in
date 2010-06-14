@@ -9,4 +9,4 @@
 # http://code.google.com/p/modwsgi/wiki/FrequentlyAskedQuestions#Access_Control_Mechanisms
 #WSGIPassAuthorization On
 
-WSGIScriptAlias /${vars:instanceid}/wsgi ${buildout:directory}/buildout/parts/modwsgi/wsgi
+WSGIScriptAlias /${vars:instanceid} ${buildout:directory}/buildout/parts/modwsgi/wsgi
