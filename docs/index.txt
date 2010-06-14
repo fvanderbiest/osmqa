@@ -29,18 +29,18 @@ TODO avant V1 :
  + ajout des couches WMS (en dur) connues et libres d'accès dans le cadre de OSM (geolittoral, bmo, jura, sitn, sitg, lausanne ...)
  + WSGI à configurer en urgence !!! (car mapfile et autres en dépend)
  + loadingPanel
- - indicateur de chargement AJAX
  - migration vers qsm = QualityStreetMap
  + mapfile
  + build JS
  - au survol des tiles vectoriels, affichage des attributs dans un Ext.grid.PropertyGrid docké, et liseré jaune sur le bord de la tuile vectorielle
- - au clic sur la tile, figer la selection à cette tuile, afficher dans le dock le lien vers edition JOSM, offrir la possibilité de (dé)réserver la tuile ? 
+ - au clic sur la tuile, figer la selection à cette tuile, afficher dans le dock le lien vers edition JOSM, offrir la possibilité de (dé)réserver la tuile ? 
  - doc d'installation en anglais
  - sql sur toute la France
  - edition vectorielle (Note: utiliser un featureStore pour que la modification d'un attribut d'une feature entraine une modification de son etat)
  + commutation entre modes de rendu quand on est en raster (petite échelle)
- - deploiement sur bmo.openstreetmap.fr
+ - deploiement sur osm1.crans.org ou autre ?
  + ajout base layers : osmarender, cyclemap ...
+ - splitter en 2 l'arbre des couches : baselayers / overlays
  
  
  Bugs : 

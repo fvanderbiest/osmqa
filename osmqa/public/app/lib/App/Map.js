@@ -44,6 +44,12 @@ App.Map = function(options) {
     var sfControl = null;
     
     /**
+     * Property: hfControl
+     * {OpenLayers.Control.SelectFeature} the control used to highlight tiles
+     */
+    var hfControl = null;
+    
+    /**
      * Property: sfControl
      * {OpenLayers.Layer.Vector} the vector layer used to display tiles
      */
@@ -130,16 +136,28 @@ App.Map = function(options) {
      */
     var getControls = function() {
         
-        sfControl = new OpenLayers.Control.SelectFeature(tiles, {
-        });
+        sfControl = new OpenLayers.Control.SelectFeature(tiles);
         sfControl.handlers.feature.stopDown = false;
+        
+        // highlight feature control
+        hfControl = new OpenLayers.Control.SelectFeature(tiles, {
+            hover: true,
+            highlightOnly: true,
+            eventListeners: {
+                "featurehighlighted": function(config) {
+                    //console.log(config.feature);
+                }
+            }
+        });
+        hfControl.handlers.feature.stopDown = false;
+        hfControl.handlers.feature.stopClick = false;
         
         return [
             new OpenLayers.Control.Navigation(),
             new OpenLayers.Control.ArgParser(),
             new OpenLayers.Control.Attribution(),
             new OpenLayers.Control.LoadingPanel(),
-            new OpenLayers.Control.ScaleLine(), sfControl];
+            new OpenLayers.Control.ScaleLine(), sfControl, hfControl];
     };
     
     /**
@@ -362,6 +380,7 @@ App.Map = function(options) {
     map.addControls(getControls());
     
     sfControl.activate();
+    hfControl.activate();
     
     var tools = new App.Tools(map);
     tools.events.on({
