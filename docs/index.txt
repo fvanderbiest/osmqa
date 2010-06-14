@@ -30,16 +30,18 @@ TODO avant V1 :
  + WSGI à configurer en urgence !!! (car mapfile et autres en dépend)
  + loadingPanel
  - indicateur de chargement AJAX
+ - migration vers qsm = QualityStreetMap
  + mapfile
  + build JS
  - au survol des tiles vectoriels, affichage des attributs dans un Ext.grid.PropertyGrid docké, et liseré jaune sur le bord de la tuile vectorielle
  - au clic sur la tile, figer la selection à cette tuile, afficher dans le dock le lien vers edition JOSM, offrir la possibilité de (dé)réserver la tuile ? 
  - doc d'installation en anglais
  - sql sur toute la France
- - edition vectorielle
+ - edition vectorielle (Note: utiliser un featureStore pour que la modification d'un attribut d'une feature entraine une modification de son etat)
  + commutation entre modes de rendu quand on est en raster (petite échelle)
  - deploiement sur bmo.openstreetmap.fr
-  - ajout base layers : osmarender, cyclemap ...
+ + ajout base layers : osmarender, cyclemap ...
+ 
  
  Bugs : 
  - permalien ne fonctionne pas
@@ -63,3 +65,22 @@ TODO avant V1 :
  
  Dépendances :
 sudo apt-get install libapache2-mod-fcgid
+
+SQL:
+
+télécharger les shapefiles depuis
+http://www.ngdc.noaa.gov/mgg/shorelines/gshhs.html
+
+unzip => dossier GSHHS_shp avec dossiers c = ? f = full h = high i = intermediate l = low
+
+On utilise GSHHS_f_L1.shp du dossier f
+
+shp2pgsql -s 4326 -g geometry -I GSHHS_f_L1.shp world_boundaries > world_boundaries.sql
+
+import en base ...
+psql -d osmqa -f world_boundaries.sql
+
+filtrage sur polygon -85/85 deg :
+polygon((-180 85, 180 85, 180 -85, -180 -85, -180 85))
+
+conversion epsg:900913 en base

@@ -2,7 +2,6 @@
  * @include OpenLayers/Projection.js
  * @include OpenLayers/Map.js
  * @include OpenLayers/Util.js
- * @include OpenLayers/Layer/XYZ.js
  * @include OpenLayers/Layer/Vector.js
  * @include OpenLayers/Layer/WMS.js
  * @include OpenLayers/Protocol/HTTP.js
@@ -21,6 +20,7 @@
  * @include GeoExt/widgets/Popup.js
  * @include App/Tools.js
  * @include App/config.js
+ * @include App/OpenStreetMap.js
  */
 
 Ext.namespace('App');
@@ -245,7 +245,10 @@ App.Map = function(options) {
      * {Array({OpenLayers.Layer})} An array of OpenLayers.Layer objects.
      */
     var getLayers = function() {
-        var osm = new OpenLayers.Layer.OSM();
+        var mapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
+        var osmarender = new OpenLayers.Layer.OSM.Osmarender("Osmarender");
+        var cyclemap = new OpenLayers.Layer.OSM.CycleMap("Cycle Map");
+        var maplint = new OpenLayers.Layer.OSM.Maplint("Maplint");
         
         refreshStrategy = new OpenLayers.Strategy.Refresh({
             interval: 5*60*1000, // 5 minutes
@@ -325,7 +328,7 @@ App.Map = function(options) {
             scope: this
         });
         
-        return [osm, ortho_bmo, ortho_littorale, raster_tiles, tiles];
+        return [mapnik, osmarender, cyclemap, ortho_bmo, ortho_littorale, raster_tiles, maplint, tiles];
     };
 
     // Public
