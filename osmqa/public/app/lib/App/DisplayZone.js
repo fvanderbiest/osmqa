@@ -39,7 +39,6 @@ App.DisplayZone = function(options) {
     
     // create panel
     options = Ext.apply({
-        height: 250,
         id:'displayZone',
         layout:'card',
         activeItem: 'def',
@@ -87,7 +86,7 @@ App.DisplayZone = function(options) {
                     return '<span style="color: red;">NOK</span>';
                 }
             };
-            
+            // TODO: listeners sur la modification des valeurs pour répercuter sur feature
             propGrid = new Ext.grid.PropertyGrid({
                 id: 'propGrid',
                 customRenderers: {
@@ -99,7 +98,20 @@ App.DisplayZone = function(options) {
                     "highway": feature.data["highway"],
                     "building": feature.data["building"],
                     "landuse": feature.data["landuse"]
-                }
+                },
+                bbar: [{
+                    text: "All NOK",
+                    iconCls: 'allnok',
+                    handler: function() {
+                        // todo
+                    }
+                },'->',{
+                    text: "All OK",
+                    iconCls: 'allok',
+                    handler: function() {
+                        // todo
+                    }
+                }]
             });
             this.panel.add(propGrid);
             

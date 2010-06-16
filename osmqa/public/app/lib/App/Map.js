@@ -365,7 +365,15 @@ App.Map = function(options) {
         
         tiles.events.on({
             "featureselected": function(e) {
+                observable.fireEvent("featurehighlighted", e.feature); 
+                // FIXME: we might need to rename this event "featuretodisplay"
+                hfControl.deactivate();
                 displayPopup(e.feature);
+            },
+            "featureunselected": function(e) {
+                observable.fireEvent("featureunhighlighted", e.feature); 
+                // FIXME: we might need to rename this event "featuretoundisplay"
+                hfControl.activate();
             },
             scope: this
         });

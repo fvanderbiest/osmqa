@@ -43,7 +43,7 @@ window.onload = function() {
     
     var layerTreePanel = (new App.LayerTree(Map.mapPanel.layers, {
         title: OpenLayers.i18n("layertree"),
-        region: 'north'
+        region: 'center'
     })).layerTreePanel;
 
     /*
@@ -58,7 +58,9 @@ window.onload = function() {
     
     var displayZone = (new App.DisplayZone({
         title: OpenLayers.i18n("tags"),
-        region: 'center'
+        height: 250,
+        split: true,
+        region: 'south'
     }));
     
     // We're acting as a mediator between modules:
@@ -88,8 +90,7 @@ window.onload = function() {
                 collapseMode: "mini",
                 border: false,
                 defaults: {
-                    autoScroll: true,
-                    bodyCssClass: 'app-accordion-body'
+                    autoScroll: true
                 },
                 items: [layerTreePanel, displayZone.panel] //, printPanel]
             }

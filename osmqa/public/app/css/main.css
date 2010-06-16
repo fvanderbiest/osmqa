@@ -54,3 +54,9 @@ html, body {
 	background-repeat:no-repeat;
 	display: none;
 }
+.x-btn .allok {
+    background: url('../images/accept.gif') top left no-repeat;
+}
+.x-btn .allnok {
+    background: url('../images/error.gif') top left no-repeat;
+}
