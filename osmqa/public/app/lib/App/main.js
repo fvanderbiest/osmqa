@@ -2,6 +2,7 @@
  * @include App/Map.js
  * @include App/LayerTree.js
  * @include App/Print.js
+ * @include App/DisplayZone.js
  */
 
 /*
@@ -28,9 +29,9 @@ window.onload = function() {
      * Initialize the application.
      */
     
-    var mapPanel = (new App.Map({
+    var Map = (new App.Map({
         region: "center"
-    })).mapPanel;
+    }));
 
     /*
     var headerPanel = new Ext.Panel({
@@ -40,8 +41,9 @@ window.onload = function() {
     });
     */
     
-    var layerTreePanel = (new App.LayerTree(mapPanel.layers, {
-        title: OpenLayers.i18n("layertree")
+    var layerTreePanel = (new App.LayerTree(Map.mapPanel.layers, {
+        title: OpenLayers.i18n("layertree"),
+        region: 'north'
     })).layerTreePanel;
 
     /*
@@ -54,15 +56,28 @@ window.onload = function() {
     })).printPanel;
     */
     
+    var displayZone = (new App.DisplayZone({
+        title: OpenLayers.i18n("tags"),
+        region: 'center'
+    }));
+    
+    // We're acting as a mediator between modules:
+    Map.events.on({
+        "featurehighlighted": function(feature) {
+            displayZone.display(feature);
+        }
+    });
+    
+    
     // the viewport
     new Ext.Viewport({
         layout: "border",
         items: [
             //headerPanel,
-            mapPanel,
+            Map.mapPanel,
             { 
                 region: "east",
-                layout: "accordion",
+                layout: "border",
                 width: 300,
                 minWidth: 300,
                 maxWidth: 400,
@@ -73,10 +88,10 @@ window.onload = function() {
                     autoScroll: true,
                     bodyCssClass: 'app-accordion-body'
                 },
-                items: [layerTreePanel] //, printPanel]
+                items: [layerTreePanel, displayZone.panel] //, printPanel]
             }
         ]
     });
     
-    mapPanel.map.zoomToExtent(new OpenLayers.Bounds(-556461,6143587,-446850,6191896));
+    Map.mapPanel.map.zoomToExtent(new OpenLayers.Bounds(-556461,6143587,-446850,6191896));
 };

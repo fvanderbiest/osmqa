@@ -35,7 +35,18 @@ Ext.namespace('App');
  */
 App.Map = function(options) {
 
-    // Private    
+    // Private
+    var observable = new Ext.util.Observable();
+    observable.addEvents(
+        /**
+         * Event: featurehighlighted
+         * Fires when the mouse hovers a tile
+         *
+         * Listener arguments:
+         * feature - {OpenLayers.Feature.Vector}
+         */
+        "featurehighlighted"
+    );
     
     /**
      * Property: sfControl
@@ -88,7 +99,8 @@ App.Map = function(options) {
         tag = tag || App.config.defaultTag;
         
         var style = new OpenLayers.Style({
-            fillColor: "${getColor}", 
+            cursor: "pointer",
+            fillColor: "${getColor}",
             fillOpacity: 0, //"${getOpacity}",
             strokeColor: "${getColor}",
             strokeWidth: "${getStrokeWidth}", 
@@ -145,7 +157,7 @@ App.Map = function(options) {
             highlightOnly: true,
             eventListeners: {
                 "featurehighlighted": function(config) {
-                    //console.log(config.feature);
+                    observable.fireEvent("featurehighlighted", config.feature);
                 }
             }
         });
@@ -357,10 +369,15 @@ App.Map = function(options) {
          * APIProperty: mapPanel
          * The {GeoExt.MapPanel} instance. Read-only.
          */
-        mapPanel: null
+        mapPanel: null,
+        
+        // our observable
+        events: null
     });
 
     // Main
+    
+    this.events = observable;
 
     // create map
     var mapOptions = {
