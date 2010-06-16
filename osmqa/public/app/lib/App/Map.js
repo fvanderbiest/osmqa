@@ -45,7 +45,16 @@ App.Map = function(options) {
          * Listener arguments:
          * feature - {OpenLayers.Feature.Vector}
          */
-        "featurehighlighted"
+        "featurehighlighted",
+    
+        /**
+         * Event: featureunhighlighted
+         * Fires when the mouse quits a tile
+         *
+         * Listener arguments:
+         * feature - {OpenLayers.Feature.Vector}
+         */
+        "featureunhighlighted"
     );
     
     /**
@@ -158,6 +167,9 @@ App.Map = function(options) {
             eventListeners: {
                 "featurehighlighted": function(config) {
                     observable.fireEvent("featurehighlighted", config.feature);
+                },
+                "featureunhighlighted": function(config) {
+                    observable.fireEvent("featureunhighlighted", config.feature);
                 }
             }
         });

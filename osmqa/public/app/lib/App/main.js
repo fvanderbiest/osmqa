@@ -65,6 +65,9 @@ window.onload = function() {
     Map.events.on({
         "featurehighlighted": function(feature) {
             displayZone.display(feature);
+        },
+        "featureunhighlighted": function(feature) {
+            displayZone.clear(feature);
         }
     });
     

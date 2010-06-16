@@ -21,6 +21,8 @@ App.DisplayZone = function(options) {
     var highlightedFeature = null;
     
     var propGrid = null;
+    
+    var timer = null;
 
     // Public
 
@@ -51,8 +53,25 @@ App.DisplayZone = function(options) {
     }, options);
     this.panel = new Ext.Panel(options);
     
+    // clear current tile tags display
+    this.clear = function(feature) {
+        highlightedFeature = null;
+        propGrid.setSource({
+            "highway": null,
+            "building": null,
+            "landuse": null
+        });
+        timer = window.setTimeout(function(p){
+            p.layout.setActiveItem('def');
+        }, 50, this.panel);
+    };
+    
     // Display method : display tags for tile feature
     this.display = function(feature) {
+        
+        if (timer) {
+            window.clearTimeout(timer);
+        }
         
         if (feature === highlightedFeature) {
             return;
@@ -83,7 +102,7 @@ App.DisplayZone = function(options) {
                 }
             });
             this.panel.add(propGrid);
-            this.panel.layout.setActiveItem('propGrid');
+            
         } else {
             propGrid.setSource({
                 "highway": feature.data["highway"],
@@ -91,6 +110,7 @@ App.DisplayZone = function(options) {
                 "landuse": feature.data["landuse"]
             });
         }
+        this.panel.layout.setActiveItem('propGrid');
     };
     
     // edit function : once a tile has been clicked, display edit controls in displayZone
