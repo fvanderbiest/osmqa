@@ -22,7 +22,7 @@ V2 :
  
 V3 : 
  - les utilisateurs de l'appli peuvent ajouter des tags à la volée sur une carte ?
- 
+ - login utilisateurs via oauth ?
 
 TODO avant V1 :
  + ajout bouton "refresh now"
@@ -32,7 +32,7 @@ TODO avant V1 :
  - migration vers qsm = QualityStreetMap
  + mapfile
  + build JS
- - au survol des tiles vectoriels, affichage des attributs dans un Ext.grid.PropertyGrid docké, et liseré jaune sur le bord de la tuile vectorielle
+ + au survol des tiles vectoriels, affichage des attributs dans un Ext.grid.PropertyGrid docké, et liseré jaune sur le bord de la tuile vectorielle
  - au clic sur la tuile, figer la selection à cette tuile, afficher dans le dock le lien vers edition JOSM, offrir la possibilité de (dé)réserver la tuile ? 
  - doc d'installation en anglais
  - sql sur toute la France
@@ -64,7 +64,18 @@ TODO avant V1 :
  - Tous les numéros de rues sont présents - Clé : h
  
  Dépendances :
-sudo apt-get install libapache2-mod-fcgid
+sudo apt-get install libapache2-mod-fcgid libapache2-mod-python libapache2-mod-wsgi
+
+sudo a2enmod expires headers
+
+Installation :
+
+svn co
+python bootstrap.py --version 1.4.3 --distribute
+copier buildout_sample.cfg en buildout_myconfig.cfg
+buildout/bin/buildout -c buildout_myconfig.cfg
+source buildout/bin/activate
+paster serve --reload myproject_dev.ini ou config apache ...
 
 SQL:
 
@@ -76,6 +87,21 @@ unzip => dossier GSHHS_shp avec dossiers c = ? f = full h = high i = intermediat
 On utilise GSHHS_f_L1.shp du dossier f
 
 shp2pgsql -s 4326 -g geometry -I GSHHS_f_L1.shp world_boundaries > world_boundaries.sql
+
+creation de la base :
+
+sudo su postgres
+createdb -E UTF-8 osmqa
+createlang plpgsql osmqa
+
+psql -d osmqa -f /usr/share/postgresql-8.3-postgis/lwpostgis.sql
+psql -d osmqa -f /usr/share/postgresql-8.3-postgis/spatial_ref_sys.sql
+
+OR:
+
+psql -d osmqa -f /usr/share/postgresql/8.4/contrib/postgis-1.5/postgis.sql
+psql -d osmqa -f /usr/share/postgresql/8.4/contrib/postgis-1.5/spatial_ref_sys.sql
+
 
 import en base ...
 psql -d osmqa -f world_boundaries.sql
