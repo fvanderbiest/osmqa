@@ -35,7 +35,8 @@ TODO avant V1 :
  + au survol des tiles vectoriels, affichage des attributs dans un Ext.grid.PropertyGrid docké, et liseré jaune sur le bord de la tuile vectorielle
  - i18n
  - passer en vrai "JS module pattern" 
- - au clic sur la tuile, figer la selection à cette tuile, afficher dans le dock le lien vers edition JOSM, offrir la possibilité de (dé)réserver la tuile ? 
+ + au clic sur la tuile, figer la selection à cette tuile, afficher dans le dock le lien vers edition JOSM
+ - offrir la possibilité de (dé)réserver la tuile ? 
  - doc d'installation en anglais
  - sql sur toute la France
  - edition vectorielle (Note: utiliser un featureStore pour que la modification d'un attribut d'une feature entraine une modification de son etat)
@@ -43,7 +44,7 @@ TODO avant V1 :
  - deploiement sur osm1.crans.org ou autre ?
  + ajout base layers : osmarender, cyclemap ...
  - splitter en 2 l'arbre des couches : baselayers / overlays
- 
+ - nettoyer la bare d'outils de ce qui ne sert pas.
  
  Bugs : 
  - permalien ne fonctionne pas

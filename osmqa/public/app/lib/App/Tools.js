@@ -1,19 +1,19 @@
 /*
- * @include OpenLayers/Control/ZoomToMaxExtent.js
- * @include OpenLayers/Control/ZoomBox.js
- * @include OpenLayers/Control/ZoomOut.js
- * @include OpenLayers/Control/NavigationHistory.js
+ * @includ OpenLayers/Control/ZoomToMaxExtent.js
+ * @includ OpenLayers/Control/ZoomBox.js
+ * @includ OpenLayers/Control/ZoomOut.js
+ * @includ OpenLayers/Control/NavigationHistory.js
  * @include GeoExt/widgets/Action.js
- * @include GeoExt.ux/MeasureLength.js
- * @include GeoExt.ux/MeasureArea.js
- * @include OpenLayers/Handler/Path.js
- * @include OpenLayers/Handler/Polygon.js
- * @include OpenLayers/Control/Measure.js
+ * @includ GeoExt.ux/MeasureLength.js
+ * @includ GeoExt.ux/MeasureArea.js
+ * @includ OpenLayers/Handler/Path.js
+ * @includ OpenLayers/Handler/Polygon.js
+ * @includ OpenLayers/Control/Measure.js
  * @include OpenLayers/StyleMap.js
  * @include OpenLayers/Style.js
  * @include OpenLayers/Rule.js
  * @include OpenLayers/Handler.js
- * @include App/Locator.js
+ * @includ App/Locator.js
  * @include App/Permalink.js
  * @include App/config.js
  */
@@ -54,6 +54,7 @@ App.Tools = function(map) {
      * {Array} An array of toolbar items.
      */
     var getItems = function(map) {
+        /*
         var zoomToMaxExtent = new GeoExt.Action({
             control: new OpenLayers.Control.ZoomToMaxExtent(),
             map: map,
@@ -85,9 +86,11 @@ App.Tools = function(map) {
             disabled: true,
             iconCls: 'mapHistoryNext'
         });
-
-        var permalink = (new App.Permalink()).action;
-
+        */
+        var permalink = (new App.Permalink({
+            text: "permalink"
+        })).action;
+        /*
         var measureLength = new GeoExt.ux.MeasureLength({
             map: map,
             toggleGroup: map.id + '_tools',
@@ -106,7 +109,7 @@ App.Tools = function(map) {
             tooltip: OpenLayers.i18n("Tools.measurepositionactiontooltip"),
             iconCls: 'mapMeasurePosition'
         })).action;
-
+        */
         var tagCombo = new Ext.form.ComboBox({
             name: 'tag',
             store: new Ext.data.SimpleStore({
@@ -139,7 +142,7 @@ App.Tools = function(map) {
         });
         
         var refresh = {
-            text: 'refresh',
+            text: 'reload tiles',
             tooltip: OpenLayers.i18n("Tools.refreshtooltip"), // FIXME
             //iconCls: 'mapRefresh', // FIXME
             listeners: {
@@ -151,10 +154,10 @@ App.Tools = function(map) {
         };
         
         return [
-            zoomToMaxExtent, zoomIn, zoomOut, '-',
+            /*zoomToMaxExtent, zoomIn, zoomOut, '-',
             historyPrevious, historyNext, '-',
-            measureLength, measureArea, locator, '-',
-            refresh, '->', permalink, tagCombo
+            measureLength, measureArea, locator, '-',*/
+            tagCombo, refresh, '->', permalink 
         ];
     };
 
