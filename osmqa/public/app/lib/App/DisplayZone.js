@@ -66,19 +66,22 @@ App.DisplayZone = function(options) {
     };
     
     // Display method : display tags for tile feature
-    this.display = function(feature) {
+    this.display = function(feature, edit) {
         
         if (timer) {
             window.clearTimeout(timer);
         }
         
         if (feature === highlightedFeature) {
+            if (edit) {
+                propGrid && propGrid.allnokButton.enable();
+                propGrid && propGrid.allokButton.enable();
+            }
             return;
         }
         highlightedFeature = feature;
         
         if (!propGrid) {
-            
             var renderer = function(v){
                 if(v){
                     return '<span style="color: green;">OK</span>';
@@ -102,12 +105,16 @@ App.DisplayZone = function(options) {
                 bbar: [{
                     text: "All NOK",
                     iconCls: 'allnok',
+                    disabled: !edit,
+                    ref: '../allnokButton',
                     handler: function() {
                         // todo
                     }
                 },'->',{
                     text: "All OK",
                     iconCls: 'allok',
+                    disabled: !edit,
+                    ref: '../allokButton',
                     handler: function() {
                         // todo
                     }
@@ -121,68 +128,13 @@ App.DisplayZone = function(options) {
                 "building": feature.data["building"],
                 "landuse": feature.data["landuse"]
             });
+            if (!edit) {
+                propGrid.allnokButton.disable();
+                propGrid.allokButton.disable();
+            }
         }
+        
         this.panel.layout.setActiveItem('propGrid');
     };
-    
-    // edit function : once a tile has been clicked, display edit controls in displayZone
-    this.edit = function(feature) {
-        /*
-        if (feature === highlightedFeature) {
-            return;
-        }
-        highlightedFeature = feature;
-        
-        var combo = {
-            xtype: "combo",
-            store: new Ext.data.ArrayStore({
-                fields: ['value', 'display'],
-                data: [['false', 'NOK'], ['true', 'OK']]
-            }),
-            displayField: 'display',
-            valueField: 'value',
-            mode: 'local',
-            editable: false,
-            forceSelection: true,
-            triggerAction: 'all',
-            selectOnFocus: true
-        };
-        
-        var store = new GeoExt.data.AttributeStore({
-            feature: feature,
-            fields: ["highway","building","landuse"],
-            data: [{
-                name: "highway",
-                label: "Highway",
-                type: combo,
-                value: feature.data["highway"]
-            }, {
-                name: "building",
-                label: "Building",
-                type: combo,
-                value: feature.data["building"]
-            },{
-                name: "landuse",
-                label: "Landuse",
-                type: combo,
-                value: feature.data["landuse"]
-            }]
-        });
-        
-        var propGrid = new Ext.grid.PropertyGrid({
-            store: store,
-            id: 'propGrid'//,
-            //title: 'Properties'
-        });
-        
-        //var displayZone = Ext.getCmp('displayZone'); // FIXME : use events
-        //console.log(displayZone);
-        if (this.panel.getComponent('propGrid')) {
-            this.panel.layout.setActiveItem('def');
-            this.panel.remove('propGrid', true);
-        }
-        this.panel.add(propGrid);
-        this.panel.layout.setActiveItem('propGrid');
-        */
-    };
+
 };

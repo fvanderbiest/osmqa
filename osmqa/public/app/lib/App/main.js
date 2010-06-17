@@ -65,11 +65,11 @@ window.onload = function() {
     
     // We're acting as a mediator between modules:
     Map.events.on({
-        "featurehighlighted": function(feature) {
-            displayZone.display(feature);
+        "tiledisplay": function(config) {
+            displayZone.display(config.feature, config.edit);
         },
-        "featureunhighlighted": function(feature) {
-            displayZone.clear(feature);
+        "tileundisplay": function(config) {
+            displayZone.clear(config.feature);
         }
     });
     

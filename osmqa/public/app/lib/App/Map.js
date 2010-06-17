@@ -39,22 +39,22 @@ App.Map = function(options) {
     var observable = new Ext.util.Observable();
     observable.addEvents(
         /**
-         * Event: featurehighlighted
-         * Fires when the mouse hovers a tile
+         * Event: tiledisplay
+         * Fires when we need to display info about a vector tile
          *
-         * Listener arguments:
+         * Listener arguments: Object with hash:
          * feature - {OpenLayers.Feature.Vector}
          */
-        "featurehighlighted",
+        "tiledisplay",
     
         /**
-         * Event: featureunhighlighted
+         * Event: tileundisplay
          * Fires when the mouse quits a tile
          *
-         * Listener arguments:
+         * Listener arguments: Object with hash:
          * feature - {OpenLayers.Feature.Vector}
          */
-        "featureunhighlighted"
+        "tileundisplay"
     );
     
     /**
@@ -166,10 +166,15 @@ App.Map = function(options) {
             highlightOnly: true,
             eventListeners: {
                 "featurehighlighted": function(config) {
-                    observable.fireEvent("featurehighlighted", config.feature);
+                    observable.fireEvent("tiledisplay", {
+                        feature: config.feature,
+                        edit: false
+                    });
                 },
                 "featureunhighlighted": function(config) {
-                    observable.fireEvent("featureunhighlighted", config.feature);
+                    observable.fireEvent("tileundisplay", {
+                        feature: config.feature
+                    });
                 }
             }
         });
@@ -365,14 +370,17 @@ App.Map = function(options) {
         
         tiles.events.on({
             "featureselected": function(e) {
-                observable.fireEvent("featurehighlighted", e.feature); 
-                // FIXME: we might need to rename this event "featuretodisplay"
+                observable.fireEvent("tiledisplay", {
+                    feature: e.feature,
+                    edit: true
+                }); 
                 hfControl.deactivate();
                 displayPopup(e.feature);
             },
             "featureunselected": function(e) {
-                observable.fireEvent("featureunhighlighted", e.feature); 
-                // FIXME: we might need to rename this event "featuretoundisplay"
+                observable.fireEvent("tileundisplay", {
+                    feature: e.feature
+                }); 
                 hfControl.activate();
             },
             scope: this
