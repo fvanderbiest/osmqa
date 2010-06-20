@@ -81,7 +81,7 @@ ON t.tile_geometry_id = g.id
 WHERE map_id=1 AND g.intersectsland = true ;
 -- FIXME: selectionner les tuiles après creation, ou au moment de la creation, et non at runtime
 
-GRANT select, update ON tiles TO "www-data";
+GRANT select, update, delete, insert ON tiles TO "www-data";
 -- TODO: rules/trigger pour la modification des tags
 
 CREATE OR REPLACE RULE update_tiles AS ON UPDATE TO tiles DO INSTEAD (

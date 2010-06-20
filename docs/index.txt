@@ -45,6 +45,7 @@ TODO avant V1 :
  + ajout base layers : osmarender, cyclemap ...
  - splitter en 2 l'arbre des couches : baselayers / overlays
  + nettoyer la bare d'outils de ce qui ne sert pas.
+ - retravailler la barre d'outils -> box
  
  Bugs : 
  - permalien ne fonctionne pas

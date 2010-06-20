@@ -105,7 +105,8 @@ App.DisplayZone = function(options) {
         },
         items: [{
             id: 'def',
-            html: "<p>Here come the tags</p>"
+            bodyStyle: 'padding:.5em;',
+            html: "<p>Tags will be displayed in here...</p>"
         }]
     }, options);
     this.panel = new Ext.Panel(options);
@@ -120,10 +121,10 @@ App.DisplayZone = function(options) {
         };
         //editedFeature = null;
         propGrid.setSource(newSource);
+        /*
         if (editGrid) {
-            //editGrid.purgeListeners(); // does not work
             editGrid.setSource(newSource);
-        }
+        }*/
         // FIXME: bbar buttons stay
     };
     
@@ -143,7 +144,7 @@ App.DisplayZone = function(options) {
                 bbar: [{
                     text: "All NOK",
                     iconCls: 'allnok',
-                    //ref: '../allnokButton',
+                    ref: '../allnokButton',
                     handler: function() {                        
                         var newSource = {
                             "highway": false,
@@ -156,7 +157,7 @@ App.DisplayZone = function(options) {
                 },'->',{
                     text: "All OK",
                     iconCls: 'allok',
-                    //ref: '../allokButton',
+                    ref: '../allokButton',
                     handler: function() {
                         var newSource = {
                             "highway": true,

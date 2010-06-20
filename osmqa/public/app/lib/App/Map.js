@@ -4,6 +4,7 @@
  * @include OpenLayers/Util.js
  * @include OpenLayers/Layer/Vector.js
  * @include OpenLayers/Layer/WMS.js
+ * @include OpenLayers/Layer/SphericalMercator.js
  * @include OpenLayers/Protocol/HTTP.js
  * @include OpenLayers/Strategy/Refresh.js
  * @include OpenLayers/Strategy/BBOX.js
@@ -173,8 +174,7 @@ App.Map = function(options) {
             eventListeners: {
                 "featurehighlighted": function(config) {
                     observable.fireEvent("tiledisplay", {
-                        feature: config.feature,
-                        edit: false
+                        feature: config.feature
                     });
                 },
                 "featureunhighlighted": function(config) {
@@ -234,10 +234,10 @@ App.Map = function(options) {
             right: round(bounds.right,5),
             top: round(bounds.top,5)
         });
-        var post = '(avec le plugin '+
+        var post = '(with the '+
         '<a href="http://wiki.openstreetmap.org/wiki/JOSM/Plugins/RemoteControl"'+
-        ' target="_blank">RemoteControl</a>)';
-        return '<a href="'+link+'" target="_blank">Editer cette zone dans JOSM</a><br />'+post;
+        ' target="_blank">RemoteControl</a> plugin)';
+        return '<a href="'+link+'" target="_blank">Edit this area in JOSM</a><br />'+post;
     };
     
     /**
@@ -314,7 +314,7 @@ App.Map = function(options) {
             format: new OpenLayers.Format.GeoJSON()
         });
     
-        tiles = new OpenLayers.Layer.Vector('tiles', {
+        tiles = new OpenLayers.Layer.Vector('Vector tiles', {
             protocol: protocol,
             strategies: [
                 new OpenLayers.Strategy.BBOX(),
@@ -437,7 +437,7 @@ App.Map = function(options) {
     };
 
     // create map
-    var mapOptions = {
+    var map = new OpenLayers.Map({
         projection: new OpenLayers.Projection("EPSG:900913"),
         //restrictedExtent: new OpenLayers.Bounds(-556461,6143587,-446850,6191896),
         maxExtent: new OpenLayers.Bounds(
@@ -449,8 +449,7 @@ App.Map = function(options) {
         units: "m",
         theme: null,
         controls: []
-    };
-    var map = new OpenLayers.Map(mapOptions);
+    });
     map.addLayers(getLayers());
     map.addControls(getControls());
     
