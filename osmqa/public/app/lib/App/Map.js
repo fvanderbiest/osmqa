@@ -76,6 +76,12 @@ App.Map = function(options) {
     var tiles = null;
     
     /**
+     * Property: protocol
+     * {OpenLayers.Protocol.HTTP} the HTTP protocol
+     */
+    var protocol = null;
+    
+    /**
      * Property: raster_tiles
      * {OpenLayers.Layer.WMS} the WMS layer used to display tiles
      */
@@ -245,8 +251,6 @@ App.Map = function(options) {
      * {Array({Object})} An array of xtype'd objects.
      */
     var createItems = function(feature) {
-        // TODO: create gridPanel with combos for fields
-        // + button "all checked"
         return [{
             xtype: 'box',
             html: createMarkup(feature)
@@ -268,6 +272,7 @@ App.Map = function(options) {
             feature: feature,
             width:200,
             // FIXME: layout ?
+            // TODO: popup's centerlonlat above feature
             items: createItems(feature),
             maximizable: false,
             collapsible: false,
@@ -304,11 +309,13 @@ App.Map = function(options) {
         
         var transitionResolution = 156543.0339/(Math.pow(2, 12));
         
+        protocol = new OpenLayers.Protocol.HTTP({
+            url: 'tiles',
+            format: new OpenLayers.Format.GeoJSON()
+        });
+    
         tiles = new OpenLayers.Layer.Vector('tiles', {
-            protocol: new OpenLayers.Protocol.HTTP({
-                url: 'tiles',
-                format: new OpenLayers.Format.GeoJSON()
-            }),
+            protocol: protocol,
             strategies: [
                 new OpenLayers.Strategy.BBOX(),
                 refreshStrategy
@@ -328,7 +335,7 @@ App.Map = function(options) {
             isBaseLayer: false,
             singleTile: true,
             ratio: 1.2,
-            visibility: true, // FIXME
+            visibility: true,
             //displayInLayerSwitcher: true
             opacity: 0.3,
             //alwaysInRange: false,
@@ -370,9 +377,8 @@ App.Map = function(options) {
         
         tiles.events.on({
             "featureselected": function(e) {
-                observable.fireEvent("tiledisplay", {
-                    feature: e.feature,
-                    edit: true
+                observable.fireEvent("tileedit", {
+                    feature: e.feature
                 }); 
                 hfControl.deactivate();
                 displayPopup(e.feature);
@@ -406,6 +412,29 @@ App.Map = function(options) {
     // Main
     
     this.events = observable;
+    
+    // call protocol.commit for the given feature
+    this.persist = function(feature) {
+        protocol.commit([feature], {
+            callback: function(resp) {
+                if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
+                    raster_tiles.mergeNewParams({
+                        dd: new Date().format('U')
+                    });
+                } else {
+                    // FIXME, we have a pb ... restore previous feature value ...
+                    Ext.Msg.show({
+                        title: "Error",
+                        msg: "Edit not saved !",
+                        width: 400,
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.MessageBox.ERROR
+                    });
+                }
+            },
+            scope: this
+        });
+    };
 
     // create map
     var mapOptions = {
@@ -437,6 +466,7 @@ App.Map = function(options) {
         },
         "refresh": function() {
             refreshStrategy.refresh();
+            raster_tiles.redraw();
         },
         scope: this
     });

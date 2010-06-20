@@ -39,12 +39,12 @@ TODO avant V1 :
  - offrir la possibilité de (dé)réserver la tuile ? 
  - doc d'installation en anglais
  - sql sur toute la France
- - edition vectorielle (Note: utiliser un featureStore pour que la modification d'un attribut d'une feature entraine une modification de son etat)
+ + edition vectorielle
  + commutation entre modes de rendu quand on est en raster (petite échelle)
  - deploiement sur osm1.crans.org ou autre ?
  + ajout base layers : osmarender, cyclemap ...
  - splitter en 2 l'arbre des couches : baselayers / overlays
- - nettoyer la bare d'outils de ce qui ne sert pas.
+ + nettoyer la bare d'outils de ce qui ne sert pas.
  
  Bugs : 
  - permalien ne fonctionne pas

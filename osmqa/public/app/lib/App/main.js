@@ -42,7 +42,7 @@ window.onload = function() {
     */
     
     var layerTreePanel = (new App.LayerTree(Map.mapPanel.layers, {
-        title: OpenLayers.i18n("layertree"),
+        //title: OpenLayers.i18n("layertree"),
         region: 'center'
     })).layerTreePanel;
 
@@ -57,7 +57,7 @@ window.onload = function() {
     */
     
     var displayZone = (new App.DisplayZone({
-        title: OpenLayers.i18n("tags"),
+        //title: OpenLayers.i18n("tags"),
         height: 250,
         split: true,
         region: 'south'
@@ -66,13 +66,21 @@ window.onload = function() {
     // We're acting as a mediator between modules:
     Map.events.on({
         "tiledisplay": function(config) {
-            displayZone.display(config.feature, config.edit);
+            displayZone.display(config.feature);
+        },
+        "tileedit": function(config) {
+            displayZone.edit(config.feature);
         },
         "tileundisplay": function(config) {
             displayZone.clear(config.feature);
         }
     });
     
+    displayZone.events.on({
+        "commit": function(config) {
+            Map.persist(config.feature);
+        }
+    });
     
     // the viewport
     new Ext.Viewport({
