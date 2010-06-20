@@ -105,5 +105,6 @@ window.onload = function() {
         ]
     });
     
+    // FIXME: this causes the permalink to not work:
     Map.mapPanel.map.zoomToExtent(new OpenLayers.Bounds(-556461,6143587,-446850,6191896));
 };

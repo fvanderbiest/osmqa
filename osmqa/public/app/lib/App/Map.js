@@ -439,6 +439,7 @@ App.Map = function(options) {
     // create map
     var mapOptions = {
         projection: new OpenLayers.Projection("EPSG:900913"),
+        //restrictedExtent: new OpenLayers.Bounds(-556461,6143587,-446850,6191896),
         maxExtent: new OpenLayers.Bounds(
             -20037508.34, 
             -20037508.34,

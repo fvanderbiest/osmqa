@@ -63,17 +63,18 @@ App.DisplayZone = function(options) {
         return gridRenderer;
     };
     
-    var createGrid = function(feature) {
-        return new Ext.grid.PropertyGrid({
+    var createGrid = function(feature, options) {
+        return Ext.apply({
             id: 'propGrid',
-            //trackMouseOver: true,
+            xtype: 'propertygrid',
+            trackMouseOver: true,
             customRenderers: {
                 "highway": getRenderer(),
                 "building": getRenderer(),
                 "landuse": getRenderer()
             },
             source: feature.attributes
-        });
+        }, options);
     };
 
     // Public
@@ -112,26 +113,25 @@ App.DisplayZone = function(options) {
     // clear current tile tags display
     this.clear = function(feature) {
         highlightedFeature = null;
-        //editedFeature = null;
-        propGrid.setSource({
+        var newSource = {
             "highway": null,
             "building": null,
             "landuse": null
-        });
+        };
+        //editedFeature = null;
+        propGrid.setSource(newSource);
+        if (editGrid) {
+            //editGrid.purgeListeners(); // does not work
+            editGrid.setSource(newSource);
+        }
+        // FIXME: bbar buttons stay
     };
     
     this.edit = function(feature) {
         editedFeature = feature;
         if (!editGrid) {
-            editGrid = new Ext.grid.PropertyGrid({
+            editGrid = this.panel.add(createGrid(feature, {
                 id: 'editGrid',
-                trackMouseOver: true,
-                customRenderers: {
-                    "highway": getRenderer(),
-                    "building": getRenderer(),
-                    "landuse": getRenderer()
-                },
-                source: feature.attributes,
                 listeners: {
                     "beforepropertychange": function(source, recordId, value, oldValue) {
                         var attrs = {};
@@ -143,7 +143,7 @@ App.DisplayZone = function(options) {
                 bbar: [{
                     text: "All NOK",
                     iconCls: 'allnok',
-                    ref: '../allnokButton',
+                    //ref: '../allnokButton',
                     handler: function() {                        
                         var newSource = {
                             "highway": false,
@@ -156,7 +156,7 @@ App.DisplayZone = function(options) {
                 },'->',{
                     text: "All OK",
                     iconCls: 'allok',
-                    ref: '../allokButton',
+                    //ref: '../allokButton',
                     handler: function() {
                         var newSource = {
                             "highway": true,
@@ -167,8 +167,7 @@ App.DisplayZone = function(options) {
                         updateCurrentFeature(newSource);
                     }
                 }]
-            });
-            this.panel.add(editGrid);
+            }));
         } else {
             editGrid.setSource(feature.attributes);
         }
@@ -185,8 +184,9 @@ App.DisplayZone = function(options) {
         highlightedFeature = feature;
         
         if (!propGrid) {
-            propGrid = createGrid(feature);
-            this.panel.add(propGrid);
+            propGrid = this.panel.add(createGrid(feature, {
+                trackMouseOver: false
+            }));
         } else {
             propGrid.setSource(feature.attributes);
         }
