@@ -1,10 +1,8 @@
 /*
  * @include OpenLayers/Projection.js
  * @include OpenLayers/Map.js
- * @include OpenLayers/Util.js
  * @include OpenLayers/Layer/Vector.js
  * @include OpenLayers/Layer/WMS.js
- * @include OpenLayers/Layer/SphericalMercator.js
  * @include OpenLayers/Protocol/HTTP.js
  * @include OpenLayers/Strategy/Refresh.js
  * @include OpenLayers/Strategy/BBOX.js
@@ -18,7 +16,6 @@
  * @include OpenLayers/Control/OverviewMap.js
  * @include OpenLayers/Control/SelectFeature.js
  * @include GeoExt/widgets/MapPanel.js
- * @include GeoExt/widgets/Popup.js
  * @include App/Tools.js
  * @include App/config.js
  * @include App/OpenStreetMap.js
@@ -130,12 +127,18 @@ App.Map = function(options) {
                     return 0.05;	
                 },
                 getStrokeWidth: function(feature) {
+                    if (feature.attributes['reserved'] === true) {
+                        return 3;
+                    }
                     if (feature.attributes[tag] === true) {
                         return 0;
                     }
                     return 1;	
                 },
-                getColor: function(feature) {							
+                getColor: function(feature) {
+                    if (feature.attributes['reserved'] === true) {
+                        return "#ffff00"; // yellow
+                    }
                     if (feature.attributes[tag] === true) {
                         return "#00ff00"; // green
                     }
@@ -143,7 +146,26 @@ App.Map = function(options) {
                 }
             }
         });
-        
+        /*
+        var selectedStyle = new OpenLayers.Style({
+            cursor: "pointer",
+            fillColor: "#000000",
+            //strokeColor: "#0000ff", // blue
+            strokeWidth: 3,
+            strokeColor: "${getColor}",
+            //strokeWidth: "${getStrokeWidth}", 
+            //strokeOpacity: 0.2
+        }, {
+            context: {
+                getColor: function(feature) {
+                    if (feature.attributes['reserved'] === true) {
+                        return "#ffff00"; // yellow
+                    }
+                    return "#0000ff"; // blue					
+                }
+            }
+        });
+        */
         return new OpenLayers.StyleMap({
             "default": style,
             "select": {
@@ -164,7 +186,9 @@ App.Map = function(options) {
      */
     var getControls = function() {
         
-        sfControl = new OpenLayers.Control.SelectFeature(tiles);
+        sfControl = new OpenLayers.Control.SelectFeature(tiles, {
+            toggle: true
+        });
         sfControl.handlers.feature.stopDown = false;
         
         // highlight feature control
@@ -205,10 +229,33 @@ App.Map = function(options) {
      *
      * Returns:
      * {float}
-     */
+     *
     var round = function(input, decimals) { // TODO: util namespace
         var p = Math.pow(10, decimals);
         return Math.round(input*p)/p;
+    };*/
+    
+    var persist = function(feature) {
+        feature.state = OpenLayers.State.UPDATE; // might need to require some JS dependency ? for build
+        protocol.commit([feature], {
+            callback: function(resp) {
+                if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
+                    raster_tiles.mergeNewParams({
+                        dd: new Date().format('U')
+                    });
+                } else {
+                    // FIXME, we have a pb ... restore previous feature value ...
+                    Ext.Msg.show({
+                        title: "Error",
+                        msg: "Edit not saved !",
+                        width: 400,
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.MessageBox.ERROR
+                    });
+                }
+            },
+            scope: this
+        });
     };
     
     /**
@@ -220,7 +267,7 @@ App.Map = function(options) {
      *
      * Returns:
      * {String} our string
-     */
+     *
     var createMarkup = function(feature) {
         var base = 'http://127.0.0.1:8111/load_and_zoom?'; // TODO: config
         var geom = feature.geometry.clone();
@@ -234,11 +281,13 @@ App.Map = function(options) {
             right: round(bounds.right,5),
             top: round(bounds.top,5)
         });
-        var post = '(with the '+
+
+        var remote = '<a href="'+link+'" target="_blank">Edit this area in JOSM</a><br />'+
+        '(with the '+
         '<a href="http://wiki.openstreetmap.org/wiki/JOSM/Plugins/RemoteControl"'+
         ' target="_blank">RemoteControl</a> plugin)';
-        return '<a href="'+link+'" target="_blank">Edit this area in JOSM</a><br />'+post;
-    };
+        return remote;
+    };*/
     
     /**
      * Method: createItems
@@ -249,31 +298,53 @@ App.Map = function(options) {
      *
      * Returns:
      * {Array({Object})} An array of xtype'd objects.
-     */
+     *
     var createItems = function(feature) {
         return [{
-            xtype: 'box',
-            html: createMarkup(feature)
+            border: false,
+            //xtype: 'box',
+            //html: createMarkup(feature),
+            bbar: [{
+                text: 'reserve',
+                handler: function() {
+                    feature.attributes['reserved'] = true;
+                    this.persist(feature);
+                },
+                scope: this
+            }]
         }]
-    };
+    };*/
     
     /**
      * Method: displayPopup
      * 
      * Parameters:
      * feature - {OpenLayers.Feature.Vector} the feature on which to open a popup
-     */
+     *
     var displayPopup = function(feature) {
         if (popup) {
             popup.close();
         }
         popup = new GeoExt.Popup({
-            title: 'Informations',
+            //title: 'Informations',
             feature: feature,
             width:200,
+            closeAction: 'close',
             // FIXME: layout ?
             // TODO: popup's centerlonlat above feature
-            items: createItems(feature),
+            items: //createItems(feature),
+            [{
+                border: false,
+                //xtype: 'box',
+                //html: createMarkup(feature),
+                bbar: [{
+                    text: 'reserve',
+                    handler: function() {
+                        feature.attributes['reserved'] = true;
+                        persist(feature);
+                    }
+                }]
+            }],
             maximizable: false,
             collapsible: false,
             unpinnable: false
@@ -287,7 +358,7 @@ App.Map = function(options) {
             }
         });
         popup.show();
-    };
+    };*/
     
     /**
      * Method: getLayers
@@ -381,7 +452,7 @@ App.Map = function(options) {
                     feature: e.feature
                 }); 
                 hfControl.deactivate();
-                displayPopup(e.feature);
+                //displayPopup(e.feature);
             },
             "featureunselected": function(e) {
                 observable.fireEvent("tileundisplay", {
@@ -415,25 +486,7 @@ App.Map = function(options) {
     
     // call protocol.commit for the given feature
     this.persist = function(feature) {
-        protocol.commit([feature], {
-            callback: function(resp) {
-                if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
-                    raster_tiles.mergeNewParams({
-                        dd: new Date().format('U')
-                    });
-                } else {
-                    // FIXME, we have a pb ... restore previous feature value ...
-                    Ext.Msg.show({
-                        title: "Error",
-                        msg: "Edit not saved !",
-                        width: 400,
-                        buttons: Ext.Msg.OK,
-                        icon: Ext.MessageBox.ERROR
-                    });
-                }
-            },
-            scope: this
-        });
+        persist(feature);
     };
 
     // create map

@@ -24,6 +24,7 @@ CREATE INDEX tile_geometries_intersectsland_idx ON tile_geometries (intersectsla
 CREATE TABLE tags(
     map_id integer not null,
     tile_geometry_id integer not null,
+    reserved boolean default false,
     highway boolean default false, # question: should not tags be defined in the map object ?
     building boolean default false,
     landuse boolean default false,
@@ -74,10 +75,10 @@ t.geometry && w.geometry_cropped and st_intersects(t.geometry, w.geometry_croppe
 
 -- DROP VIEW tiles;
 CREATE VIEW tiles AS 
-SELECT t.tile_geometry_id as id, t.highway, t.building, t.landuse, g.geometry 
+SELECT t.tile_geometry_id as id, t.reserved, t.highway, t.building, t.landuse, g.geometry 
 FROM tags t 
 LEFT JOIN tile_geometries g 
-ON t.tile_geometry_id = g.id 
+ON t.tile_geometry_id = g.id
 WHERE map_id=1 AND g.intersectsland = true ;
 -- FIXME: selectionner les tuiles après creation, ou au moment de la creation, et non at runtime
 
@@ -85,7 +86,7 @@ GRANT select, update, delete, insert ON tiles TO "www-data";
 -- TODO: rules/trigger pour la modification des tags
 
 CREATE OR REPLACE RULE update_tiles AS ON UPDATE TO tiles DO INSTEAD (
-  UPDATE tags SET highway = NEW.highway, building = NEW.building, landuse = NEW.landuse WHERE tile_geometry_id = NEW.id
+  UPDATE tags SET reserved = NEW.reserved, highway = NEW.highway, building = NEW.building, landuse = NEW.landuse WHERE tile_geometry_id = NEW.id
 );
 CREATE OR REPLACE RULE delete_tiles AS ON DELETE TO tiles DO INSTEAD ();
 CREATE OR REPLACE RULE insert_tiles AS ON INSERT TO tiles DO INSTEAD ();

@@ -1,5 +1,9 @@
 /*
  * @include GeoExt/data/AttributeStore.js
+ * @include OpenLayers/Projection.js
+ * @include OpenLayers/Layer/SphericalMercator.js
+ * @include OpenLayers/Util.js
+ * @include App/Util.js
  */
 
 Ext.namespace('App');
@@ -41,10 +45,15 @@ App.DisplayZone = function(options) {
      */
     var editedFeature = null;
 
+    var removeReservedTags = function (attrs) {
+        var a = Ext.apply({}, attrs);
+        delete a.reserved;
+        return a;
+    };
     
     var updateCurrentFeature = function(attrs) {
         Ext.apply(editedFeature.attributes, attrs);
-        editedFeature.state = OpenLayers.State.UPDATE;
+        //editedFeature.state = OpenLayers.State.UPDATE;
         observable.fireEvent("commit", {
             feature: editedFeature
         });
@@ -67,13 +76,14 @@ App.DisplayZone = function(options) {
         return Ext.apply({
             id: 'propGrid',
             xtype: 'propertygrid',
+            title: 'Tile #'+feature.fid,
             trackMouseOver: true,
             customRenderers: {
                 "highway": getRenderer(),
                 "building": getRenderer(),
                 "landuse": getRenderer()
             },
-            source: feature.attributes
+            source: removeReservedTags(feature.attributes)
         }, options);
     };
 
@@ -106,7 +116,7 @@ App.DisplayZone = function(options) {
         items: [{
             id: 'def',
             bodyStyle: 'padding:.5em;',
-            html: "<p>Tags will be displayed in here...</p>"
+            html: "<p>Tile information will be displayed<br />in here...</p>"
         }]
     }, options);
     this.panel = new Ext.Panel(options);
@@ -121,6 +131,9 @@ App.DisplayZone = function(options) {
         };
         //editedFeature = null;
         propGrid.setSource(newSource);
+        propGrid.setTitle('Tile');
+        
+        this.panel.layout.setActiveItem('def');
         /*
         if (editGrid) {
             editGrid.setSource(newSource);
@@ -141,6 +154,79 @@ App.DisplayZone = function(options) {
                         //return false; // to cancel edit (TODO in case of pbs persisting)
                     }
                 },
+                tbar: [{
+                    text: "Reserve",
+                    tooltip: "Mark this area as reserved (yellow lining when unselected). Then, start editing with next buttons",
+                    ref: '../reserveButton',
+                    //disabled: editedFeature.attributes['reserved'],
+                    handler: function() {
+                        // FIXME: we might need to check here if the feature is reserved before triggering the commit
+                        updateCurrentFeature({
+                            reserved: true
+                        });
+                        editGrid.unreserveButton.enable();
+                        editGrid.reserveButton.disable();
+                    },
+                    scope: this
+                },{
+                    text: "JOSM",
+                    tooltip: "Load this data in JOSM, with the remotecontrol plugin",
+                    ref: '../josmButton',
+                    handler: function() {
+                        
+                        var base = 'http://127.0.0.1:8111/load_and_zoom?'; // TODO: config
+                        var geom = editedFeature.geometry.clone();
+                        geom.transform(
+                            new OpenLayers.Projection("EPSG:900913"), 
+                            new OpenLayers.Projection("EPSG:4326"));
+                        var bounds = geom.getBounds();
+                        var link = base + OpenLayers.Util.getParameterString({
+                            left: App.Util.round(bounds.left,5),
+                            bottom: App.Util.round(bounds.bottom,5),
+                            right: App.Util.round(bounds.right,5),
+                            top: App.Util.round(bounds.top,5)
+                        });
+                        
+                        window.open(link);                        
+                        
+                    },
+                    scope: this
+                },{
+                    text: "Potlatch",
+                    tooltip: "Load this data in Potlatch (new window)",
+                    ref: '../potlatchButton',
+                    handler: function() {
+                        var base = 'http://www.openstreetmap.org/edit?'; // TODO: config
+                        var geom = editedFeature.geometry.clone();
+                        geom = geom.getBounds().getCenterLonLat();
+                        geom.transform(
+                            new OpenLayers.Projection("EPSG:900913"), 
+                            new OpenLayers.Projection("EPSG:4326"));
+                        var link = base + OpenLayers.Util.getParameterString({
+                            lon: App.Util.round(geom.lon,5),
+                            lat: App.Util.round(geom.lat,5),
+                            zoom: 16
+                        });
+                        window.open(link);                        
+                    },
+                    scope: this
+                },{
+                    text: "Unreserve",
+                    tooltip: "Mark this area as NOT reserved (when you're done with it)",
+                    ref: '../unreserveButton',
+                    //disabled: !editedFeature.attributes['reserved'],
+                    handler: function() {
+                        updateCurrentFeature({
+                            reserved: false
+                        });
+                        //feature.attributes['reserved'] = true;
+                        //persist(feature);
+                        
+                        editGrid.reserveButton.enable();
+                        editGrid.unreserveButton.disable();
+                    },
+                    scope: this
+                }],
                 bbar: [{
                     text: "All NOK",
                     iconCls: 'allnok',
@@ -169,9 +255,22 @@ App.DisplayZone = function(options) {
                     }
                 }]
             }));
+            this.panel.doLayout();
         } else {
-            editGrid.setSource(feature.attributes);
+            editGrid.setSource(removeReservedTags(feature.attributes));
+            editGrid.setTitle('Tile #'+feature.fid);
+            
+            
         }
+        
+        if (feature.attributes['reserved']) {
+            editGrid.unreserveButton.enable();
+            editGrid.reserveButton.disable();
+        } else {
+            editGrid.unreserveButton.disable();
+            editGrid.reserveButton.enable();
+        }
+        
         this.panel.layout.setActiveItem('editGrid');
     };
     
@@ -188,8 +287,10 @@ App.DisplayZone = function(options) {
             propGrid = this.panel.add(createGrid(feature, {
                 trackMouseOver: false
             }));
+            this.panel.doLayout();
         } else {
-            propGrid.setSource(feature.attributes);
+            propGrid.setSource(removeReservedTags(feature.attributes));
+            propGrid.setTitle('Tile #'+feature.fid);
         }
         
         this.panel.layout.setActiveItem('propGrid');
