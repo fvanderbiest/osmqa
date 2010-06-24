@@ -60,3 +60,16 @@ html, body {
 .x-btn .allnok {
     background: url('../images/error.gif') top left no-repeat;
 }
+
+#loading {
+	position:absolute;
+	top:0px;
+	left:50%;
+	background-color:#cccccc;
+	color:#000000;
+	z-index:10000;
+	display:none;
+	-moz-border-radius: 0 0 5px 5px;
+	-webkit-border-radius: 0 0 5px 5px;
+	padding: 0 .3em .1em .3em;	
+}
