@@ -47,7 +47,7 @@ html, body {
 	background-image:url('../../lib/externals/loadingPanel/theme/default/img/loading.gif');
 	position: relative;
 	top:.5em;
-	left:.5em;
+	right:.5em;
 	width: 195px;
 	height: 11px;
 	background-position:center;

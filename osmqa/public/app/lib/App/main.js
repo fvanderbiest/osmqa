@@ -16,9 +16,11 @@ window.onload = function() {
     /*
      * Setting of OpenLayers global vars.
      */
-    OpenLayers.Lang.setCode(OpenLayers.Util.getParameters().lang || "fr");
+    
+    var params = OpenLayers.Util.getParameters();
+    OpenLayers.Lang.setCode(params.lang || "fr");
     OpenLayers.Number.thousandsSeparator = ' ';
-    OpenLayers.IMAGE_RELOAD_ATTEMPTS = 5;
+    OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 
     /*
      * Setting of Ext global vars.
@@ -29,66 +31,41 @@ window.onload = function() {
      * Initialize the application.
      */
     
-    var Map = (new App.Map({
-        region: "center"
-    }));
-
-    /*
-    var headerPanel = new Ext.Panel({
-        region: 'north',
-        height: 100,
-        contentEl: 'header'
-    });
-    */
-    
-    var layerTreePanel = (new App.LayerTree(Map.mapPanel.layers, {
-        //title: OpenLayers.i18n("layertree"),
-        region: 'center'
-    })).layerTreePanel;
-
-    /*
-    var printPanel = (new App.Print(mapPanel, {
-        title: OpenLayers.i18n("print"),
-        labelAlign: 'top',
-        defaults: {
-            anchor:'100%'
-        }
-    })).printPanel;
-    */
-    
-    var displayZone = (new App.DisplayZone({
-        //title: OpenLayers.i18n("tags"),
-        height: 250,
-        split: true,
-        region: 'south'
-    }));
-    
     // We're acting as a mediator between modules:
-    Map.events.on({
+    App.Map.events.on({
         "tiledisplay": function(config) {
-            displayZone.display(config.feature);
+            App.DisplayZone.display(config.feature);
         },
         "tileedit": function(config) {
-            displayZone.edit(config.feature);
+            App.DisplayZone.edit(config.feature);
         },
         "tileundisplay": function(config) {
-            displayZone.clear(config.feature);
+            App.DisplayZone.clear();
         }
     });
     
-    displayZone.events.on({
+    App.DisplayZone.events.on({
         "commit": function(config) {
-            Map.persist(config.feature);
+            App.Map.persist(config.feature);
+        },
+        "unselect": function(config) {
+            App.Map.unselectFeature(config.feature);
+        },
+        "zoomto": function(config) {
+            App.Map.zoomTo(config);
         }
     });
     
-    // the viewport
+    // get a reference to the GeoExt MapPanel
+    var mapPanel = App.Map.getMapPanel({
+        region: "center"
+    });
+    
+    // the Ext viewport
     new Ext.Viewport({
         layout: "border",
         items: [
-            //headerPanel,
-            Map.mapPanel,
-            { 
+            mapPanel, { 
                 region: "east",
                 layout: "border",
                 width: 300,
@@ -100,11 +77,20 @@ window.onload = function() {
                 defaults: {
                     autoScroll: true
                 },
-                items: [layerTreePanel, displayZone.panel] //, printPanel]
+                items: [
+                    App.LayerTree.getPanel(mapPanel.layers, {
+                        region: 'center'
+                    }), App.DisplayZone.getPanel({
+                        height: 250,
+                        split: true,
+                        region: 'south'
+                    })
+                ]
             }
         ]
     });
     
-    // FIXME: this causes the permalink to not work:
-    Map.mapPanel.map.zoomToExtent(new OpenLayers.Bounds(-556461,6143587,-446850,6191896));
+    if (!(params.map_x && params.map_y && params.map_zoom)) {
+        mapPanel.map.zoomToExtent(new OpenLayers.Bounds(-556461,6143587,-446850,6191896));
+    }
 };

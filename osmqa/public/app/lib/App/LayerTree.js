@@ -5,40 +5,47 @@
 Ext.namespace('App');
 
 /**
- * Constructor: App.LayerTree
+ * Module: App.LayerTree
  * Creates a layer tree, i.e. an {Ext.tree.TreePanel} configured with
- * a {GeoExt.tree.LayerContainer}. Use the "layerTree" property to get
- * a reference to this layer tree.
+ * a {GeoExt.tree.LayerContainer}. 
  *
- * Parameters:
- * layerStore - {GeoExt.data.LayerStore} The layer store this layer
- *     tree is connected to.
- * options - {Object} Options to pass to the {Ext.tree.TreePanel}.
  */
-App.LayerTree = function(layerStore, options) {
+App.LayerTree = (function() {
+    /*
+     * Private
+     */
+    
+    /**
+     * Property: layerTreePanel
+     * {Ext.tree.TreePanel} The layer tree panel.
+     */
+    var layerTreePanel = null;
 
-    // Private
+    /*
+     * Public
+     */
+    return {
 
-    // Public
-
-    Ext.apply(this, {
-
-        /**
-         * APIMethod: layerTreePanel
-         * {Ext.tree.TreePanel} The layer tree panel. Read-only.
+        /* APIMethod: getPanel
+         *
+         * Parameters:
+         * layerStore - {GeoExt.data.LayerStore} The layer store this layer
+         *     tree is connected to.
+         * options - {Object} Extra options to pass to the {Ext.tree.TreePanel}
          */
-        layerTreePanel: null
-    });
-
-    // Main
-
-    options =  Ext.apply({
-        root: new GeoExt.tree.LayerContainer({
-            layerStore: layerStore,
-            leaf: false,
-            expanded: true
-        }),
-        enableDD: true
-    }, options);
-    this.layerTreePanel = new Ext.tree.TreePanel(options);
-};
+        getPanel: function(layerStore, options) {
+            if (!layerTreePanel) {
+                layerTreePanel = new Ext.tree.TreePanel(Ext.apply({
+                    root: new GeoExt.tree.LayerContainer({
+                        layerStore: layerStore,
+                        leaf: false,
+                        expanded: true
+                    }),
+                    enableDD: true
+                }, options));
+            }
+            return layerTreePanel;
+        }
+        
+    };
+})();

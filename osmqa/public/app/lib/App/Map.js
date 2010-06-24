@@ -24,16 +24,15 @@
 Ext.namespace('App');
 
 /**
- * Constructor: App.Map
- * Creates a {GeoExt.MapPanel} internally. Use the "mapPanel" property
- * to get a reference to the map panel.
+ * Module: App.Map
+ * Creates a {GeoExt.MapPanel} 
  *
- * Parameters:
- * options - {Object} Options passed to the {GeoExt.MapPanel}.
  */
-App.Map = function(options) {
-
-    // Private
+App.Map = (function() {
+    /*
+     * Private
+     */
+    
     var observable = new Ext.util.Observable();
     observable.addEvents(
         /**
@@ -56,6 +55,12 @@ App.Map = function(options) {
     );
     
     /**
+     * APIProperty: mapPanel
+     * The {GeoExt.MapPanel} instance.
+     */
+    var mapPanel = null;
+    
+    /**
      * Property: sfControl
      * {OpenLayers.Control.SelectFeature} the control used to select tiles
      */
@@ -68,16 +73,10 @@ App.Map = function(options) {
     var hfControl = null;
     
     /**
-     * Property: sfControl
+     * Property: tiles
      * {OpenLayers.Layer.Vector} the vector layer used to display tiles
      */
     var tiles = null;
-    
-    /**
-     * Property: protocol
-     * {OpenLayers.Protocol.HTTP} the HTTP protocol
-     */
-    var protocol = null;
     
     /**
      * Property: raster_tiles
@@ -86,16 +85,13 @@ App.Map = function(options) {
     var raster_tiles = null;
     
     /**
-     * Property: popup
-     * {GeoExt.Popup} our unique popup (if any)
-     */
-    var popup = null;
-    
-    /**
      * Property: refreshStrategy
      * {OpenLayers.Strategy.Refresh}
      */
     var refreshStrategy = null;
+    
+    
+    var selected = null;
     
     /**
      * Method: getStyleMap
@@ -114,7 +110,7 @@ App.Map = function(options) {
         var style = new OpenLayers.Style({
             cursor: "pointer",
             fillColor: "${getColor}",
-            fillOpacity: 0, //"${getOpacity}",
+            fillOpacity: 0,
             strokeColor: "${getColor}",
             strokeWidth: "${getStrokeWidth}", 
             strokeOpacity: 0.2
@@ -146,26 +142,7 @@ App.Map = function(options) {
                 }
             }
         });
-        /*
-        var selectedStyle = new OpenLayers.Style({
-            cursor: "pointer",
-            fillColor: "#000000",
-            //strokeColor: "#0000ff", // blue
-            strokeWidth: 3,
-            strokeColor: "${getColor}",
-            //strokeWidth: "${getStrokeWidth}", 
-            //strokeOpacity: 0.2
-        }, {
-            context: {
-                getColor: function(feature) {
-                    if (feature.attributes['reserved'] === true) {
-                        return "#ffff00"; // yellow
-                    }
-                    return "#0000ff"; // blue					
-                }
-            }
-        });
-        */
+
         return new OpenLayers.StyleMap({
             "default": style,
             "select": {
@@ -174,18 +151,17 @@ App.Map = function(options) {
                 strokeWidth: 3
             }
         });
-        
     };
     
     /**
      * Method: getControls
-     * Returns the list of added controls
+     * Returns an array of map controls
      *
      * Returns:
      * {Array({OpenLayers.Control})} An array of OpenLayers.Control objects.
      */
     var getControls = function() {
-        
+        // select feature control
         sfControl = new OpenLayers.Control.SelectFeature(tiles, {
             toggle: true
         });
@@ -215,36 +191,30 @@ App.Map = function(options) {
             new OpenLayers.Control.Navigation(),
             new OpenLayers.Control.ArgParser(),
             new OpenLayers.Control.Attribution(),
-            new OpenLayers.Control.LoadingPanel(),
-            new OpenLayers.Control.ScaleLine(), sfControl, hfControl];
+            new OpenLayers.Control.LoadingPanel({div: $('loading')}),
+            new OpenLayers.Control.ScaleLine(), 
+            sfControl, hfControl
+        ];
     };
     
     /**
-     * Method: round
-     * Rounds input var to x decimals
+     * Method: persist
+     * Calls protocol.commit() on given feature
      *
      * Parameters:
-     * input - {float} 
-     * decimals - {integer}
-     *
-     * Returns:
-     * {float}
-     *
-    var round = function(input, decimals) { // TODO: util namespace
-        var p = Math.pow(10, decimals);
-        return Math.round(input*p)/p;
-    };*/
-    
+     * feature - {OpenLayers.Feature.Vector} a feature
+     */
     var persist = function(feature) {
-        feature.state = OpenLayers.State.UPDATE; // might need to require some JS dependency ? for build
-        protocol.commit([feature], {
-            callback: function(resp) {
+        feature.state = OpenLayers.State.UPDATE; 
+        // FIXME: might need to require some JS dependency ? (for build process)
+        tiles.protocol.commit([feature], {
+            callback: function(resp) { 
                 if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
                     raster_tiles.mergeNewParams({
                         dd: new Date().format('U')
                     });
                 } else {
-                    // FIXME, we have a pb ... restore previous feature value ...
+                    // TODO: we have a pb ... restore previous feature value ...
                     Ext.Msg.show({
                         title: "Error",
                         msg: "Edit not saved !",
@@ -259,108 +229,6 @@ App.Map = function(options) {
     };
     
     /**
-     * Method: createMarkup
-     * Creates the html string with the RemoteControl stuff
-     *
-     * Parameters:
-     * feature - {OpenLayers.Feature.Vector} the feature on which to open a popup
-     *
-     * Returns:
-     * {String} our string
-     *
-    var createMarkup = function(feature) {
-        var base = 'http://127.0.0.1:8111/load_and_zoom?'; // TODO: config
-        var geom = feature.geometry.clone();
-        geom.transform(
-            new OpenLayers.Projection("EPSG:900913"), 
-            new OpenLayers.Projection("EPSG:4326"));
-        var bounds = geom.getBounds();
-        var link = base + OpenLayers.Util.getParameterString({
-            left: round(bounds.left,5),
-            bottom: round(bounds.bottom,5),
-            right: round(bounds.right,5),
-            top: round(bounds.top,5)
-        });
-
-        var remote = '<a href="'+link+'" target="_blank">Edit this area in JOSM</a><br />'+
-        '(with the '+
-        '<a href="http://wiki.openstreetmap.org/wiki/JOSM/Plugins/RemoteControl"'+
-        ' target="_blank">RemoteControl</a> plugin)';
-        return remote;
-    };*/
-    
-    /**
-     * Method: createItems
-     * Creates the ExtJS items inside the popup 
-     *
-     * Parameters:
-     * feature - {OpenLayers.Feature.Vector} the feature on which to open a popup
-     *
-     * Returns:
-     * {Array({Object})} An array of xtype'd objects.
-     *
-    var createItems = function(feature) {
-        return [{
-            border: false,
-            //xtype: 'box',
-            //html: createMarkup(feature),
-            bbar: [{
-                text: 'reserve',
-                handler: function() {
-                    feature.attributes['reserved'] = true;
-                    this.persist(feature);
-                },
-                scope: this
-            }]
-        }]
-    };*/
-    
-    /**
-     * Method: displayPopup
-     * 
-     * Parameters:
-     * feature - {OpenLayers.Feature.Vector} the feature on which to open a popup
-     *
-    var displayPopup = function(feature) {
-        if (popup) {
-            popup.close();
-        }
-        popup = new GeoExt.Popup({
-            //title: 'Informations',
-            feature: feature,
-            width:200,
-            closeAction: 'close',
-            // FIXME: layout ?
-            // TODO: popup's centerlonlat above feature
-            items: //createItems(feature),
-            [{
-                border: false,
-                //xtype: 'box',
-                //html: createMarkup(feature),
-                bbar: [{
-                    text: 'reserve',
-                    handler: function() {
-                        feature.attributes['reserved'] = true;
-                        persist(feature);
-                    }
-                }]
-            }],
-            maximizable: false,
-            collapsible: false,
-            unpinnable: false
-        });
-        popup.on({
-            close: function() {
-                if(OpenLayers.Util.indexOf(tiles.selectedFeatures,
-                                           this.feature) > -1) {
-                    sfControl.unselect(this.feature);
-                }
-            }
-        });
-        popup.show();
-    };*/
-    
-    /**
      * Method: getLayers
      * Returns the list of layers.
      *
@@ -368,6 +236,7 @@ App.Map = function(options) {
      * {Array({OpenLayers.Layer})} An array of OpenLayers.Layer objects.
      */
     var getLayers = function() {
+        
         var mapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
         var osmarender = new OpenLayers.Layer.OSM.Osmarender("Osmarender");
         var cyclemap = new OpenLayers.Layer.OSM.CycleMap("Cycle Map");
@@ -378,19 +247,48 @@ App.Map = function(options) {
             force: true
         });
         
+        // TODO: config for z=12 transition raster/vector
         var transitionResolution = 156543.0339/(Math.pow(2, 12));
-        
-        protocol = new OpenLayers.Protocol.HTTP({
-            url: 'tiles',
-            format: new OpenLayers.Format.GeoJSON()
-        });
-    
+            
         tiles = new OpenLayers.Layer.Vector('Vector tiles', {
-            protocol: protocol,
+            protocol: //new mapfish.Protocol.TriggerEventDecorator({ // FIXME: maybe not useful (because in DisplayZOne, we already keep a record of the selected feature !!!)
+                //protocol: 
+                new OpenLayers.Protocol.HTTP({
+                    url: 'tiles',
+                    format: new OpenLayers.Format.GeoJSON()
+                }),/*
+                eventListeners: {
+                    "crudtriggered": function() {
+                        selected = [];
+                        for (var i=0, l=tiles.selectedFeatures.length;i<l;i++) {
+                            selected.push(tiles.selectedFeatures[i]);
+                        }
+                    }
+                }*/
+            //}),
             strategies: [
                 new OpenLayers.Strategy.BBOX(),
                 refreshStrategy
             ],
+            eventListeners: {
+                "featuresadded": function() {
+                    // FIXME with events ... this breaks our rule of most independance between modules
+                    var feature, featureId = App.DisplayZone.getSelectedId(); 
+                    if (featureId === null) {
+                        return;
+                    }
+                    // TODO: not efficient (use a featureStore ?)
+                    for(var i=0, len=tiles.features.length; i<len; ++i) {
+                        if(tiles.features[i].fid == featureId) {
+                            feature = tiles.features[i];
+                            break;
+                        }
+                    }
+                    if (feature) {
+                        sfControl.select(feature);
+                    }
+                }
+            },
             styleMap: getStyleMap(),
             alwaysInRange: false,
             maxResolution: transitionResolution
@@ -444,15 +342,12 @@ App.Map = function(options) {
             transitionEffect: 'resize'
         });
         
-        
-        
         tiles.events.on({
             "featureselected": function(e) {
                 observable.fireEvent("tileedit", {
                     feature: e.feature
                 }); 
                 hfControl.deactivate();
-                //displayPopup(e.feature);
             },
             "featureunselected": function(e) {
                 observable.fireEvent("tileundisplay", {
@@ -466,71 +361,98 @@ App.Map = function(options) {
         return [mapnik, osmarender, cyclemap, ortho_bmo, ortho_littorale, raster_tiles, maplint, tiles];
     };
 
-    // Public
-
-    Ext.apply(this, {
-
-        /**
-         * APIProperty: mapPanel
-         * The {GeoExt.MapPanel} instance. Read-only.
-         */
-        mapPanel: null,
+    
+    var createMap = function() {
+        // create map
+        map = new OpenLayers.Map({
+            projection: new OpenLayers.Projection("EPSG:900913"),
+            //restrictedExtent: new OpenLayers.Bounds(-556461,6143587,-446850,6191896),
+            maxExtent: new OpenLayers.Bounds(
+                -20037508.34, 
+                -20037508.34,
+                20037508.34, 
+                20037508.34
+            ),
+            units: "m",
+            theme: null,
+            controls: []
+        });
+        map.addLayers(getLayers());
+        
+        //map.zoomToExtent(new OpenLayers.Bounds(-556461,6143587,-446850,6191896));
+        
+        map.addControls(getControls());
+        
+        
+        
+        // FIXME:
+        sfControl.activate();
+        hfControl.activate();
+        
+        return map;
+    };
+    
+    var createTools = function() {
+        var win = App.Tools.getPanel();
+        
+        App.Tools.events.on({
+            "tagchanged": function(tag) {
+                tiles.styleMap = getStyleMap(tag);
+                tiles.redraw();
+                raster_tiles.params['TAG'] = tag;
+                raster_tiles.redraw();
+            },
+            "refresh": function() {
+                refreshStrategy.refresh();
+                //tiles.refresh();
+                raster_tiles.redraw();
+            },
+            scope: this
+        });
+        
+        win.show();
+    };
+    
+    /*
+     * Public
+     */
+    return {
         
         // our observable
-        events: null
-    });
+        events: observable,
 
-    // Main
+        // call protocol.commit for the given feature
+        persist: function(feature) {
+            persist(feature);
+        },
     
-    this.events = observable;
+        /**
+         * Parameters:
+         * options - {Object} Options passed to the {GeoExt.MapPanel}.
+         */
+        getMapPanel: function(options) {
+            if (!mapPanel) {
+                mapPanel = new GeoExt.MapPanel(Ext.apply({
+                    map: createMap(),
+                    //tbar: createTools(),
+                    stateId: "map",
+                    prettyStateKeys: true
+                }, options));
+                
+                createTools();
+            }
+            return mapPanel;
+        },
+        
+        zoomTo: function(config) {
+            if (config.feature) {
+                map.zoomToExtent(config.feature.geometry.getBounds());
+            }
+        },
+        
+        unselectFeature: function(feature) {
+            sfControl.unselect(feature);
+        }
     
-    // call protocol.commit for the given feature
-    this.persist = function(feature) {
-        persist(feature);
     };
-
-    // create map
-    var map = new OpenLayers.Map({
-        projection: new OpenLayers.Projection("EPSG:900913"),
-        //restrictedExtent: new OpenLayers.Bounds(-556461,6143587,-446850,6191896),
-        maxExtent: new OpenLayers.Bounds(
-            -20037508.34, 
-            -20037508.34,
-            20037508.34, 
-            20037508.34
-        ),
-        units: "m",
-        theme: null,
-        controls: []
-    });
-    map.addLayers(getLayers());
-    map.addControls(getControls());
-    
-    sfControl.activate();
-    hfControl.activate();
-    
-    var tools = new App.Tools(map);
-    tools.events.on({
-        "tagchanged": function(tag) {
-            tiles.styleMap = getStyleMap(tag);
-            tiles.redraw();
-            raster_tiles.params['TAG'] = tag;
-            raster_tiles.redraw();
-        },
-        "refresh": function() {
-            refreshStrategy.refresh();
-            raster_tiles.redraw();
-        },
-        scope: this
-    });
-    
-    // create map panel
-    options = Ext.apply({
-        map: map,
-        tbar: tools.toolbar,
-        stateId: "map",
-        prettyStateKeys: true
-    }, options);
-    this.mapPanel = new GeoExt.MapPanel(options);
-    
-};
+})();

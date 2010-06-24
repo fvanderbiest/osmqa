@@ -19,7 +19,11 @@ V2 :
  - ajout de couches WMS à la volée (wms browser ?)
  - si inactivité depuis X minutes, popup alert, bloque les requetes AJAX.
  - controle de transparence geoext sur overlays
- 
+ - unreserve automatique de toutes les tuiles après 24h de réservation (cron job)
+ - maptypepanel pour les couches de base ?
+ - splitter en 2 l'arbre des couches : baselayers / overlays ?
+ - migration vers qsm = QualityStreetMap ?
+  
 V3 : 
  - les utilisateurs de l'appli peuvent ajouter des tags à la volée sur une carte ?
  - login utilisateurs via oauth ?
@@ -29,29 +33,31 @@ TODO avant V1 :
  + ajout des couches WMS (en dur) connues et libres d'accès dans le cadre de OSM (geolittoral, bmo, jura, sitn, sitg, lausanne ...)
  + WSGI à configurer en urgence !!! (car mapfile et autres en dépend)
  + loadingPanel
- - migration vers qsm = QualityStreetMap ?
  + mapfile
  + build JS
  + au survol des tiles vectoriels, affichage des attributs dans un Ext.grid.PropertyGrid docké, et liseré jaune sur le bord de la tuile vectorielle
- - i18n
- - nettoyer le print
- - passer en vrai "JS module pattern" 
+ + passer en vrai "JS module pattern" 
  + au clic sur la tuile, figer la selection à cette tuile, afficher dans le dock le lien vers edition JOSM
  + offrir la possibilité de (dé)réserver la tuile ? 
- - doc d'installation en anglais
- - sql sur toute la France
+ + "tool" unselect dans la displayZone
  + edition vectorielle
  + commutation entre modes de rendu quand on est en raster (petite échelle)
- - deploiement sur osm1.crans.org ou autre ?
  + ajout base layers : osmarender, cyclemap ...
- - splitter en 2 l'arbre des couches : baselayers / overlays
- + nettoyer la bare d'outils de ce qui ne sert pas.
+ + nettoyer la barre d'outils de ce qui ne sert pas.
  - retravailler la barre d'outils -> box
+ - sql sur toute la France
+ - documentation code nickel
+ - i18n
+ + nettoyer le print
+ - doc d'installation en anglais
+ - deploiement sur osm1.crans.org ou autre ?
  
  Bugs : 
- - permalien ne fonctionne pas
+ + permalien ne fonctionne pas
+ + strategy refresh => perte de la selection courante
+ - parfois, une tuile higlightée cohabite avec une tuile selectionnée... 
  + en mode buildé, la fleche de la popup n'apparait pas
-
+ - permalink cassé
  
  Pour les clés, s'inspirer de http://wiki.openstreetmap.org/wiki/Romans-sur-Isere qui contient une classification de complétude :
  Signification des symboles
