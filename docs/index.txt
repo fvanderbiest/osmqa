@@ -49,6 +49,7 @@ TODO avant V1 :
  - documentation code nickel
  - i18n
  + nettoyer le print
+ + tilecache config removal
  - doc d'installation en anglais
  - deploiement sur osm1.crans.org ou autre ?
  
