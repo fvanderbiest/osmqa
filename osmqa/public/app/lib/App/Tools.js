@@ -1,5 +1,4 @@
 /*
- * @include GeoExt/widgets/Action.js
  * @include App/Permalink.js
  * @include App/config.js
  */

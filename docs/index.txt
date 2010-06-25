@@ -57,11 +57,11 @@ TODO avant V1 :
  Bugs : 
  + permalien ne fonctionne pas
  + strategy refresh => perte de la selection courante
- - parfois, une tuile higlightée cohabite avec une tuile selectionnée... 
+ - parfois, une tuile highlightée cohabite avec une tuile selectionnée... 
  + en mode buildé, la fleche de la popup n'apparait pas
  - permalink cassé
  + selectionner une tuile, la deselectionner. cliquer sur refresh => la tuile est a nouveau selectionnée.
- - pb d'ascenseurs selon les navigateurs dans le displayzone
+ + pb d'ascenseurs selon les navigateurs dans le displayzone
  
  Pour les clés, s'inspirer de http://wiki.openstreetmap.org/wiki/Romans-sur-Isere qui contient une classification de complétude :
  Signification des symboles

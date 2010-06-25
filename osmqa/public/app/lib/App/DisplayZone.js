@@ -1,5 +1,4 @@
 /*
- * @include GeoExt/data/AttributeStore.js
  * @include OpenLayers/Projection.js
  * @include OpenLayers/Layer/SphericalMercator.js
  * @include OpenLayers/Util.js

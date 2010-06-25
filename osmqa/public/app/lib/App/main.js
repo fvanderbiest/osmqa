@@ -75,15 +75,12 @@ window.onload = function() {
                 split: true,
                 collapseMode: "mini",
                 border: false,
-                defaults: {
-                    autoScroll: true
-                },
                 items: [
                     App.LayerTree.getPanel(mapPanel.layers, {
-                        region: 'center'
+                        region: 'center',
+                        autoScroll: true
                     }), App.DisplayZone.getPanel({
-                        height: 250,
-                        split: true,
+                        height: 300,
                         region: 'south'
                     })
                 ]

@@ -13,7 +13,6 @@
  * @include OpenLayers/Control/ArgParser.js
  * @include OpenLayers/Control/Attribution.js
  * @include OpenLayers/Control/ScaleLine.js
- * @include OpenLayers/Control/OverviewMap.js
  * @include OpenLayers/Control/SelectFeature.js
  * @include GeoExt/widgets/MapPanel.js
  * @include App/Tools.js
@@ -251,21 +250,10 @@ App.Map = (function() {
         var transitionResolution = 156543.0339/(Math.pow(2, 12));
             
         tiles = new OpenLayers.Layer.Vector('Vector tiles', {
-            protocol: //new mapfish.Protocol.TriggerEventDecorator({ // FIXME: maybe not useful (because in DisplayZOne, we already keep a record of the selected feature !!!)
-                //protocol: 
-                new OpenLayers.Protocol.HTTP({
-                    url: 'tiles',
-                    format: new OpenLayers.Format.GeoJSON()
-                }),/*
-                eventListeners: {
-                    "crudtriggered": function() {
-                        selected = [];
-                        for (var i=0, l=tiles.selectedFeatures.length;i<l;i++) {
-                            selected.push(tiles.selectedFeatures[i]);
-                        }
-                    }
-                }*/
-            //}),
+            protocol: new OpenLayers.Protocol.HTTP({
+                url: 'tiles',
+                format: new OpenLayers.Format.GeoJSON()
+            }),
             strategies: [
                 new OpenLayers.Strategy.BBOX(),
                 refreshStrategy
