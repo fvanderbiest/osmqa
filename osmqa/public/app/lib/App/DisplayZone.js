@@ -265,10 +265,9 @@ App.DisplayZone = (function() {
                 "building": null,
                 "landuse": null
             };
-            //editedFeature = null;
             propGrid.setSource(newSource);
             propGrid.setTitle('Tile');
-            
+            editedFeature = null;
             panel.layout.setActiveItem('def');
         },
         

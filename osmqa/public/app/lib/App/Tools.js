@@ -71,8 +71,6 @@ App.Tools = (function() {
                 text: 'Choose the tag you want to map'
             },
             triggerAction: 'all',
-            //emptyText: 'contexte',
-            //lazyRender: false,
             width: 70,
             listeners: {
                 'select': function(v) {
