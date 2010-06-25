@@ -33,7 +33,6 @@ App.Permalink = (function() {
      */
     var permalinkWindow = null;
 
-
     /**
      * Method: showPermalink
      * Handler of the {Ext.Action}.

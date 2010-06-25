@@ -346,7 +346,7 @@ App.Map = (function() {
             scope: this
         });
         
-        return [mapnik, osmarender, cyclemap, ortho_bmo, ortho_littorale, raster_tiles, maplint, tiles];
+        return [mapnik, osmarender, cyclemap, ortho_bmo, ortho_littorale, maplint, raster_tiles, tiles];
     };
 
     

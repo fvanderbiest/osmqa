@@ -1,5 +1,6 @@
 /*
  * @include GeoExt/widgets/tree/LayerContainer.js
+ * @include App/Permalink.js
  */
 
 Ext.namespace('App');
@@ -20,7 +21,7 @@ App.LayerTree = (function() {
      * {Ext.tree.TreePanel} The layer tree panel.
      */
     var layerTreePanel = null;
-
+    
     /*
      * Public
      */
@@ -35,12 +36,22 @@ App.LayerTree = (function() {
          */
         getPanel: function(layerStore, options) {
             if (!layerTreePanel) {
+                App.Permalink.init();
+                var permalink = App.Permalink.getAction({
+                    text: "permalink"
+                });
                 layerTreePanel = new Ext.tree.TreePanel(Ext.apply({
                     root: new GeoExt.tree.LayerContainer({
                         layerStore: layerStore,
                         leaf: false,
                         expanded: true
                     }),
+                    buttons: [new Ext.Button(permalink),{
+                        text: 'Add WMS layers',
+                        handler: function() {
+                            alert('To do...');
+                        }
+                    }],
                     enableDD: true
                 }, options));
             }

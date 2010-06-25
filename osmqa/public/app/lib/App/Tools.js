@@ -1,5 +1,4 @@
 /*
- * @include App/Permalink.js
  * @include App/config.js
  */
 
@@ -31,8 +30,6 @@ App.Tools = (function() {
         "tagchanged"
     );
     
-    var permalink = null;
-    
     /**
      * Method: getItems
      * Return the toolbar items.
@@ -44,11 +41,6 @@ App.Tools = (function() {
      * {Array} An array of toolbar items.
      */
     var getItems = function(map) {
-
-
-        permalink = App.Permalink.getAction({
-            text: "permalink"
-        });
         
         var tagCombo = new Ext.form.ComboBox({
             name: 'tag',
@@ -102,7 +94,7 @@ App.Tools = (function() {
             cls: 'pad-left',
             width: 50,
             items: [refresh]
-        }];//, {xtype: 'button', action: permalink}];
+        }];
     };
 
     /*
@@ -115,9 +107,6 @@ App.Tools = (function() {
 
         getPanel: function(options) {
             if (!panel) {
-                
-                App.Permalink.init(); // FIXME: find a better place
-                
                 panel = new Ext.Container(Ext.apply({
                     renderTo: 'containerpanel',
                     width: 136,
