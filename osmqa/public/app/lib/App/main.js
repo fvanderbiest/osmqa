@@ -58,7 +58,8 @@ window.onload = function() {
     
     // get a reference to the GeoExt MapPanel
     var mapPanel = App.Map.getMapPanel({
-        region: "center"
+        region: "center",
+        id: "mappanel"
     });
     
     // the Ext viewport
@@ -89,6 +90,9 @@ window.onload = function() {
             }
         ]
     });
+    
+    var div = Ext.getCmp('mappanel').bwrap;
+    div.appendChild($('tools'));
     
     if (!(params.map_x && params.map_y && params.map_zoom)) {
         mapPanel.map.zoomToExtent(new OpenLayers.Bounds(-556461,6143587,-446850,6191896));

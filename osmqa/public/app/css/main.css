@@ -73,3 +73,28 @@ html, body {
 	-webkit-border-radius: 0 0 5px 5px;
 	padding: 0 .3em .1em .3em;	
 }
+
+
+#tools {
+    position: absolute;
+    top: 1em;
+    left: 1em;
+    z-index: 1000;
+	background-color:rgba(255, 255, 255, 0.6);
+	border:1px solid #BBBBBB;
+	padding:.5em;
+}
+#containerpanel {
+    float: left;
+}
+
+.pad-left {
+	padding-left: 5px;
+}
+.pad-bot {
+	padding-bottom: 5px;
+}
+
+#tools .x-border-layout-ct  {
+	background-color:rgba(0, 0, 0, 0);
+}

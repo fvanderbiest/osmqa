@@ -44,7 +44,7 @@ TODO avant V1 :
  + commutation entre modes de rendu quand on est en raster (petite échelle)
  + ajout base layers : osmarender, cyclemap ...
  + nettoyer la barre d'outils de ce qui ne sert pas.
- - retravailler la barre d'outils -> box
+ + retravailler la barre d'outils -> box
  - sql sur toute la France
  - documentation code nickel
  - i18n
@@ -60,6 +60,7 @@ TODO avant V1 :
  - parfois, une tuile higlightée cohabite avec une tuile selectionnée... 
  + en mode buildé, la fleche de la popup n'apparait pas
  - permalink cassé
+ - selectionner une tuile, la deselectionner. cliquer sur refresh => la tuile est a nouveau selectionnée.
  
  Pour les clés, s'inspirer de http://wiki.openstreetmap.org/wiki/Romans-sur-Isere qui contient une classification de complétude :
  Signification des symboles
