@@ -1,5 +1,6 @@
 /*
  * @include App/Map.js
+ * @include App/config.js
  * @include App/LayerTree.js
  * @include App/DisplayZone.js
  */
@@ -92,6 +93,17 @@ window.onload = function() {
     div.appendChild($('tools'));
     div.appendChild($('loading'));
     $('loading').innerHTML = OpenLayers.i18n('loading');
+    div.on('click', function() {
+        if (mapPanel.map.getZoom() < App.config.minZoomlevelForVectors) {
+            Ext.Msg.show({
+                title: OpenLayers.i18n("dialog.info.clic.title"),
+                msg: OpenLayers.i18n("dialog.info.clic.msg"),
+                width: 400,
+                buttons: Ext.Msg.OK,
+                icon: Ext.MessageBox.INFO
+            });
+        }
+    });
     
     if (!(params.map_x && params.map_y && params.map_zoom)) {
         mapPanel.map.zoomToExtent(new OpenLayers.Bounds(-556461,6143587,-446850,6191896));// TODO: config for startup extent
