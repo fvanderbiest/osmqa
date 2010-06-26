@@ -55,6 +55,8 @@ window.onload = function() {
         }
     });
     
+    Ext.get('loading').dom.innerHTML = OpenLayers.i18n('loading');
+    
     // get a reference to the GeoExt MapPanel
     var mapPanel = App.Map.getMapPanel({
         region: "center",

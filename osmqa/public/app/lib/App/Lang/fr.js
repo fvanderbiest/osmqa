@@ -24,6 +24,7 @@ OpenLayers.Util.extend(OpenLayers.Lang.fr, {
     'displayzone.bbar.allok': "Tout OK",
     
     "reserved": "réservée",
+    "loading": "chargement...",
     
     "dialog.error.save.title": "Oups, ça s'est pas bien passé ...",
     "dialog.error.save.msg": "On n'a pas pu sauvegarder la modification.",

@@ -24,6 +24,7 @@ OpenLayers.Util.extend(OpenLayers.Lang.en, {
     'displayzone.bbar.allok': "All OK",
     
     "reserved": "reserved",
+    "loading": "loading...",
     
     "dialog.error.save.title": "Oops, something went wrong ...",
     "dialog.error.save.msg": "We could not save the feature update.",
