@@ -2,6 +2,10 @@
  * @include OpenLayers/Projection.js
  * @include OpenLayers/Map.js
  * @include OpenLayers/Layer/Vector.js
+ * @include OpenLayers/Feature/Vector.js
+ * @include OpenLayers/Geometry/Polygon.js
+ * @include OpenLayers/Renderer/SVG.js
+ * @include OpenLayers/Renderer/VML.js
  * @include OpenLayers/Layer/WMS.js
  * @include OpenLayers/Protocol/HTTP.js
  * @include OpenLayers/Strategy/Refresh.js
@@ -215,8 +219,8 @@ App.Map = (function() {
                 } else {
                     // TODO: we have a pb ... restore previous feature value ...
                     Ext.Msg.show({
-                        title: "Error",
-                        msg: "Edit not saved !",
+                        title: OpenLayers.i18n("dialog.error.save.title"),
+                        msg: OpenLayers.i18n("dialog.error.save.msg"),
                         width: 400,
                         buttons: Ext.Msg.OK,
                         icon: Ext.MessageBox.ERROR
@@ -249,7 +253,7 @@ App.Map = (function() {
         // TODO: config for z=12 transition raster/vector
         var transitionResolution = 156543.0339/(Math.pow(2, 12));
             
-        tiles = new OpenLayers.Layer.Vector('Vector tiles', {
+        tiles = new OpenLayers.Layer.Vector(OpenLayers.i18n("layer.tiles.vector"), {
             protocol: new OpenLayers.Protocol.HTTP({
                 url: 'tiles',
                 format: new OpenLayers.Format.GeoJSON()
@@ -284,7 +288,7 @@ App.Map = (function() {
         
         refreshStrategy.activate();
         
-        raster_tiles = new OpenLayers.Layer.WMS("Raster tiles", '../mapserv/?', {
+        raster_tiles = new OpenLayers.Layer.WMS(OpenLayers.i18n("layer.tiles.raster"), '../mapserv/?', {
             layers: 'tiles',
             format: 'image/png',
             TAG: App.config.defaultTag
@@ -352,27 +356,17 @@ App.Map = (function() {
     
     var createMap = function() {
         // create map
+        var m = 20037508.34;
         map = new OpenLayers.Map({
             projection: new OpenLayers.Projection("EPSG:900913"),
-            //restrictedExtent: new OpenLayers.Bounds(-556461,6143587,-446850,6191896),
-            maxExtent: new OpenLayers.Bounds(
-                -20037508.34, 
-                -20037508.34,
-                20037508.34, 
-                20037508.34
-            ),
+            maxExtent: new OpenLayers.Bounds(-m, -m, m, m),
             units: "m",
             theme: null,
             controls: []
         });
         map.addLayers(getLayers());
-        
-        //map.zoomToExtent(new OpenLayers.Bounds(-556461,6143587,-446850,6191896));
-        
         map.addControls(getControls());
-        
-        
-        
+
         // FIXME:
         sfControl.activate();
         hfControl.activate();
@@ -392,7 +386,6 @@ App.Map = (function() {
             },
             "refresh": function() {
                 refreshStrategy.refresh();
-                //tiles.refresh();
                 raster_tiles.redraw();
             },
             scope: this

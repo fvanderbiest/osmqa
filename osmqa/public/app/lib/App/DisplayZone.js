@@ -143,8 +143,8 @@ App.DisplayZone = (function() {
      * {String} the required string
      */
     var getTitle = function(feature) {
-        var t = 'Tile #'+feature.fid;
-        t += (feature.attributes['reserved']) ? ' (reserved)' : '';
+        var t = OpenLayers.i18n('displayzone.title.prefix') + ' #' + feature.fid ;
+        t += (feature.attributes['reserved']) ? ' ('+OpenLayers.i18n('reserved')+')' : '';
         return t;
     };
     
@@ -246,7 +246,7 @@ App.DisplayZone = (function() {
                     items: [{
                         id: 'def',
                         bodyStyle: 'padding:.5em;',
-                        html: "<p>Tile information will be displayed<br />in here...</p>"
+                        html: "<p>"+OpenLayers.i18n('displayzone.defaulttext')+"</p>"
                     }]
                 }, options));
             }
@@ -265,7 +265,7 @@ App.DisplayZone = (function() {
                 "landuse": null
             };
             propGrid.setSource(newSource);
-            propGrid.setTitle('Tile');
+            propGrid.setTitle(OpenLayers.i18n('Tile'));
             editedFeature = null;
             panel.layout.setActiveItem('def');
         },
@@ -291,7 +291,7 @@ App.DisplayZone = (function() {
                         }
                     },
                     tools: [{ 
-                        qtip: 'Zoom to this tile',
+                        qtip: OpenLayers.i18n('displayzone.tool.zoom'),
                         id: 'plus',
                         handler: function() {
                             observable.fireEvent("zoomto", {
@@ -299,7 +299,7 @@ App.DisplayZone = (function() {
                             });
                         }
                     }, {
-                        qtip: 'Unselect this tile<br/>Hint: you can click again on the same tile',
+                        qtip: OpenLayers.i18n('displayzone.tool.unselect'),
                         id: 'close',
                         handler: function() {
                             observable.fireEvent("unselect", {
@@ -308,32 +308,32 @@ App.DisplayZone = (function() {
                         }
                     }],
                     tbar: [{
-                        text: "Reserve",
-                        tooltip: "Mark this area as reserved (yellow lining when unselected). Then, start editing with next buttons",
+                        text: OpenLayers.i18n('displayzone.tbar.reserve'),
+                        tooltip: OpenLayers.i18n('displayzone.tbar.reserve.tooltip'),
                         ref: '../reserveButton',
                         handler: function() {
                             updateCurrentFeature({
                                 reserved: true
                             });
-                            // FIXME: would be smarter with events:
+                            // TODO: would be smarter with events:
                             editGrid.unreserveButton.enable();
                             editGrid.reserveButton.disable();
                             editGrid.setTitle(getTitle(editedFeature));
                         },
                         scope: this
                     },{
-                        text: "JOSM",
-                        tooltip: "Load this data in JOSM, with the remotecontrol plugin",
+                        text: OpenLayers.i18n('displayzone.tbar.josm'),
+                        tooltip: OpenLayers.i18n('displayzone.tbar.josm.tooltip'),
                         ref: '../josmButton',
                         handler: JosmOpen
                     },{
-                        text: "Potlatch",
-                        tooltip: "Load this data in Potlatch (new window)",
+                        text: OpenLayers.i18n('displayzone.tbar.potlatch'),
+                        tooltip: OpenLayers.i18n('displayzone.tbar.potlatch.tooltip'),
                         ref: '../potlatchButton',
                         handler: potlatchOpen
                     },{
-                        text: "Unreserve",
-                        tooltip: "Mark this area as NOT reserved (when you're done with it)",
+                        text: OpenLayers.i18n('displayzone.tbar.unreserve'),
+                        tooltip: OpenLayers.i18n('displayzone.tbar.unreserve.tooltip'),
                         ref: '../unreserveButton',
                         handler: function() {
                             updateCurrentFeature({
@@ -346,9 +346,9 @@ App.DisplayZone = (function() {
                         scope: this
                     }],
                     bbar: [{
-                        text: "All NOK",
+                        text: OpenLayers.i18n('displayzone.bbar.allnok'),//"All NOK",
                         iconCls: 'allnok',
-                        tooltip: 'Mark all fields as NOT OK / false',
+                        tooltip: OpenLayers.i18n('displayzone.bbar.allnok.tooltip'),//'Mark all fields as NOT OK / false',
                         ref: '../allnokButton',
                         handler: function() {                        
                             var newSource = {
@@ -360,7 +360,7 @@ App.DisplayZone = (function() {
                             updateCurrentFeature(newSource);
                         }
                     },'->',{
-                        text: "All OK",
+                        text: OpenLayers.i18n('displayzone.bbar.allok'),//"All OK",
                         iconCls: 'allok',
                         // commented because tip displays in front of btn
                         //tooltip: 'Mark all fields as OK / true',
@@ -411,20 +411,20 @@ App.DisplayZone = (function() {
                 propGrid = panel.add(createGrid(feature, {
                     trackMouseOver: false,
                     tbar: [{
-                        text: "Reserve",
-                        tooltip: "Mark this area as reserved (yellow lining when unselected). Then, start editing with next buttons",
+                        text: OpenLayers.i18n('displayzone.tbar.reserve'),
+                        tooltip: OpenLayers.i18n('displayzone.tbar.reserve.tooltip'),
                         disabled: true
                     },{
-                        text: "JOSM",
-                        tooltip: "Load this data in JOSM, with the remotecontrol plugin",
+                        text: OpenLayers.i18n('displayzone.tbar.josm'),
+                        tooltip: OpenLayers.i18n('displayzone.tbar.josm.tooltip'),
                         disabled: true
                     },{
-                        text: "Potlatch",
-                        tooltip: "Load this data in Potlatch (new window)",
+                        text: OpenLayers.i18n('displayzone.tbar.potlatch'),
+                        tooltip: OpenLayers.i18n('displayzone.tbar.potlatch.tooltip'),
                         disabled: true
                     },{
-                        text: "Unreserve",
-                        tooltip: "Mark this area as NOT reserved (when you're done with it)",
+                        text: OpenLayers.i18n('displayzone.tbar.unreserve'),
+                        tooltip: OpenLayers.i18n('displayzone.tbar.unreserve.tooltip'),
                         disabled: true
                     }]
                 }));

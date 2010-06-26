@@ -1,7 +1,6 @@
 /*
  * @include App/Map.js
  * @include App/LayerTree.js
- * @include App/Print.js
  * @include App/DisplayZone.js
  */
 
@@ -18,7 +17,7 @@ window.onload = function() {
      */
     
     var params = OpenLayers.Util.getParameters();
-    OpenLayers.Lang.setCode(params.lang || "fr");
+    OpenLayers.Lang.setCode(params.lang || "en");
     OpenLayers.Number.thousandsSeparator = ' ';
     OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 
@@ -62,7 +61,7 @@ window.onload = function() {
         id: "mappanel"
     });
     
-    // the Ext viewport
+    // create the Ext viewport
     new Ext.Viewport({
         layout: "border",
         items: [

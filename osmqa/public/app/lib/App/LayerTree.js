@@ -38,7 +38,7 @@ App.LayerTree = (function() {
             if (!layerTreePanel) {
                 App.Permalink.init();
                 var permalink = App.Permalink.getAction({
-                    text: "permalink"
+                    text: OpenLayers.i18n('layertree.btn.permalink')
                 });
                 layerTreePanel = new Ext.tree.TreePanel(Ext.apply({
                     root: new GeoExt.tree.LayerContainer({
@@ -47,7 +47,7 @@ App.LayerTree = (function() {
                         expanded: true
                     }),
                     buttons: [new Ext.Button(permalink),{
-                        text: 'Add WMS layers',
+                        text: OpenLayers.i18n('layertree.btn.addlayers'),
                         handler: function() {
                             alert('To do...');
                         }

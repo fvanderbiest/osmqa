@@ -57,10 +57,6 @@ App.Tools = (function() {
             displayField:'text',
             editable: false,
             mode: 'local',
-            tooltip: {
-                title: 'Map selector',
-                text: 'Choose the tag you want to map'
-            },
             triggerAction: 'all',
             width: 70,
             listeners: {
@@ -72,9 +68,8 @@ App.Tools = (function() {
         });
         
         var refresh = new Ext.Button({
-            text: 'refresh',
-            tooltip: OpenLayers.i18n("Tools.refreshtooltip"), // FIXME
-            //iconCls: 'mapRefresh', // FIXME
+            text: OpenLayers.i18n("btn.refresh.text"),
+            tooltip: OpenLayers.i18n("btn.refresh.tooltip"),
             listeners: {
                 'click': function(v) {
                     observable.fireEvent("refresh");
@@ -92,7 +87,7 @@ App.Tools = (function() {
             layout: 'fit',
             xtype: 'container',
             cls: 'pad-left',
-            width: 50,
+            width: 62,
             items: [refresh]
         }];
     };
@@ -109,7 +104,7 @@ App.Tools = (function() {
             if (!panel) {
                 panel = new Ext.Container(Ext.apply({
                     renderTo: 'containerpanel',
-                    width: 136,
+                    width: 145,
                     height: 50,
                     layout: 'border',
                     defaults: {
@@ -119,7 +114,7 @@ App.Tools = (function() {
                         region: 'north',
                         xtype: 'container',
                         cls: 'pad-bot',
-                        html: '<span>Quality Grid</span>'
+                        html: '<span>'+OpenLayers.i18n("app.title")+'</span>'
                     },{
                         region: 'center',
                         xtype: 'container',

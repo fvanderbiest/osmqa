@@ -47,16 +47,16 @@ App.Permalink = (function() {
                 width: 400,
                 closeAction: 'hide',
                 plain: true,
-                title: OpenLayers.i18n('Permalink.title'),
+                title: OpenLayers.i18n('dialog.permalink.title'),
                 items: permalinkTextField,
                 buttons: [{
-                    text: OpenLayers.i18n('Permalink.openlink'),
+                    text: OpenLayers.i18n('dialog.permalink.btn.open'),
                     handler: function() {
                         window.open(permalinkTextField.getValue());
                         permalinkWindow.hide();
                     }
                 }, {
-                    text: OpenLayers.i18n('close'),
+                    text: OpenLayers.i18n('dialog.btn.close'),
                     handler: function() {
                         permalinkWindow.hide();
                     }
@@ -103,7 +103,6 @@ App.Permalink = (function() {
             if (!action) {
                 action = new Ext.Action(Ext.apply({
                     allowDepress: false,
-                    iconCls: 'permalink',
                     handler: showPermalink
                 }, options));
             }
