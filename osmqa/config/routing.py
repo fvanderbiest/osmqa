@@ -23,7 +23,6 @@ def make_map():
     map.resource("tile", "tiles")
 
     map.connect('/', controller='entry', action='index')
-    printer.addRoutes(map, '/print/', 'printer')
 
     # Uncomment this line if you need the OGC proxy in your application
     #map.connect('/ogcproxy', controller='ogcproxy', action='index')
