@@ -21,26 +21,23 @@ App.Permalink = (function() {
     var action = null;
     
     /**
-     * Property: permalinkTextField
-     * {Ext.form.TextField} The permalink text field.
-     */
-    var permalinkTextField = null;
-    
-    
-    /**
      * Property: permalinkWindow
      * {Ext.Window} The permalink window.
      */
     var permalinkWindow = null;
+    
+    /**
+     * Property: permalinkTextField
+     * {Ext.form.TextField} The permalink text field.
+     */
+    var permalinkTextField = null;
 
     /**
      * Method: showPermalink
      * Handler of the {Ext.Action}.
      */
     var showPermalink = function() {
-        
         if (!permalinkWindow) {
-
             permalinkWindow = new Ext.Window({
                 layout: 'fit',
                 renderTo: Ext.getBody(),
@@ -66,30 +63,35 @@ App.Permalink = (function() {
         permalinkWindow.show();
     };
 
-
     /*
      * Public
      */
     return {
-        
+    
+        /**
+         * APIMethod: init
+         * Inits the permalink
+         */
         init: function() {
-            permalinkTextField = new Ext.form.TextField({
-                hideLabel: true,
-                autoHeight: true,
-                listeners: {
-                    'focus': function() {
-                        this.selectText();
+            if (!permalinkTextField) {
+                permalinkTextField = new Ext.form.TextField({
+                    hideLabel: true,
+                    autoHeight: true,
+                    listeners: {
+                        'focus': function() {
+                            this.selectText();
+                        }
                     }
-                }
-            });
+                });
             
-            // Registers a statechange listener to update the value
-            // of the permalink text field.
-            Ext.state.Manager.getProvider().on({
-                statechange: function(provider) {
-                    permalinkTextField.setValue(provider.getLink());
-                }
-            });
+                // Registers a statechange listener to update the value
+                // of the permalink text field.
+                Ext.state.Manager.getProvider().on({
+                    statechange: function(provider) {
+                        permalinkTextField.setValue(provider.getLink());
+                    }
+                });
+            }
         },
         
         /**

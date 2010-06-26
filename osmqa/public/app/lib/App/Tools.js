@@ -15,9 +15,18 @@ App.Tools = (function() {
     /*
      * Private
      */
-    
+
+    /**
+     * Property: panel
+     * The {Ext.Container} instance. 
+     */
     var panel = null;
-    
+
+    /**
+     * Property: observable
+     * The {Ext.util.Observable} instance, which enables us to trigger events.
+     * (see events listing below)
+     */
     var observable = new Ext.util.Observable();
     observable.addEvents(
         /**
@@ -97,9 +106,21 @@ App.Tools = (function() {
      */
     return {
         
-        // our observable
+        /*
+         * Observable object
+         */
         events: observable,
-
+        
+        /**
+         * APIMethod: getPanel
+         * Returns the "tools" container
+         *
+         * Parameters:
+         * options - {Object} Extra options passed to the container
+         *
+         * Returns:
+         * {Ext.Container} the tools container
+         */
         getPanel: function(options) {
             if (!panel) {
                 panel = new Ext.Container(Ext.apply({

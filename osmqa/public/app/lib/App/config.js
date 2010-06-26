@@ -1,6 +1,7 @@
 Ext.namespace('App');
 
 App.config = {
-    defaultTag: 'highway'
+    defaultTag: 'highway',
+    minZoomlevelForVectors: 12
 };
     

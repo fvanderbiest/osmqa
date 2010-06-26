@@ -346,9 +346,9 @@ App.DisplayZone = (function() {
                         scope: this
                     }],
                     bbar: [{
-                        text: OpenLayers.i18n('displayzone.bbar.allnok'),//"All NOK",
+                        text: OpenLayers.i18n('displayzone.bbar.allnok'),
                         iconCls: 'allnok',
-                        tooltip: OpenLayers.i18n('displayzone.bbar.allnok.tooltip'),//'Mark all fields as NOT OK / false',
+                        tooltip: OpenLayers.i18n('displayzone.bbar.allnok.tooltip'),
                         ref: '../allnokButton',
                         handler: function() {                        
                             var newSource = {
@@ -360,7 +360,7 @@ App.DisplayZone = (function() {
                             updateCurrentFeature(newSource);
                         }
                     },'->',{
-                        text: OpenLayers.i18n('displayzone.bbar.allok'),//"All OK",
+                        text: OpenLayers.i18n('displayzone.bbar.allok'),
                         iconCls: 'allok',
                         // commented because tip displays in front of btn
                         //tooltip: 'Mark all fields as OK / true',

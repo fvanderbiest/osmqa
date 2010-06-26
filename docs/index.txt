@@ -27,6 +27,7 @@ V2 :
 V3 : 
  - les utilisateurs de l'appli peuvent ajouter des tags à la volée sur une carte ?
  - login utilisateurs via oauth ?
+ - possibilité de diviser une tuile en 4 à la demande de l'utilisateur, s'il la juge trop grande ...
 
 TODO avant V1 :
  + ajout bouton "refresh now"
@@ -46,13 +47,13 @@ TODO avant V1 :
  + nettoyer la barre d'outils de ce qui ne sert pas.
  + retravailler la barre d'outils -> box
  - sql sur toute la France
- - documentation code nickel
- - i18n
+ + documentation code nickel
+ + i18n
  + nettoyer le print
  + tilecache config removal
  - doc d'installation en anglais
  - deploiement sur osm1.crans.org ou autre ?
- - ecran d'accueil/aide
+ - ecran d'accueil/aide/wiki
  
  Bugs : 
  + permalien ne fonctionne pas
@@ -62,6 +63,8 @@ TODO avant V1 :
  + permalink cassé
  + selectionner une tuile, la deselectionner. cliquer sur refresh => la tuile est a nouveau selectionnée.
  + pb d'ascenseurs selon les navigateurs dans le displayzone
+ - [Sat Jun 26 13:11:50 2010] [error] [client 127.0.1.1] TimeoutError: QueuePool limit of size 5 overflow 10 reached, connection timed out, timeout 30, referer: http://osmqa.org/osmqa/?debug=true récurrent ...
+ 
  
  Pour les clés, s'inspirer de http://wiki.openstreetmap.org/wiki/Romans-sur-Isere qui contient une classification de complétude :
  Signification des symboles

@@ -36,7 +36,19 @@ App.Map = (function() {
      * Private
      */
     
+    /**
+     * APIProperty: mapPanel
+     * The {GeoExt.MapPanel} instance.
+     */
+    var mapPanel = null;
+    
+    /**
+     * Property: observable
+     * The {Ext.util.Observable} instance, which enables us to trigger events.
+     * (see events listing below)
+     */
     var observable = new Ext.util.Observable();
+    
     observable.addEvents(
         /**
          * Event: tiledisplay
@@ -56,12 +68,7 @@ App.Map = (function() {
          */
         "tileundisplay"
     );
-    
-    /**
-     * APIProperty: mapPanel
-     * The {GeoExt.MapPanel} instance.
-     */
-    var mapPanel = null;
+
     
     /**
      * Property: sfControl
@@ -92,9 +99,6 @@ App.Map = (function() {
      * {OpenLayers.Strategy.Refresh}
      */
     var refreshStrategy = null;
-    
-    
-    var selected = null;
     
     /**
      * Method: getStyleMap
@@ -209,7 +213,6 @@ App.Map = (function() {
      */
     var persist = function(feature) {
         feature.state = OpenLayers.State.UPDATE; 
-        // FIXME: might need to require some JS dependency ? (for build process)
         tiles.protocol.commit([feature], {
             callback: function(resp) { 
                 if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
@@ -250,8 +253,8 @@ App.Map = (function() {
             force: true
         });
         
-        // TODO: config for z=12 transition raster/vector
-        var transitionResolution = 156543.0339/(Math.pow(2, 12));
+        // transition resolution between raster/vectors
+        var transitionResolution = 156543.0339/(Math.pow(2, App.config.minZoomlevelForVectors));
             
         tiles = new OpenLayers.Layer.Vector(OpenLayers.i18n("layer.tiles.vector"), {
             protocol: new OpenLayers.Protocol.HTTP({
@@ -297,10 +300,7 @@ App.Map = (function() {
             singleTile: true,
             ratio: 1.2,
             visibility: true,
-            //displayInLayerSwitcher: true
             opacity: 0.3,
-            //alwaysInRange: false,
-            //minResolution: transitionResolution, 
             transitionEffect: 'resize'
         });
         
@@ -314,7 +314,7 @@ App.Map = (function() {
             visibility: false,
             opacity: 0.5,
             alwaysInRange: false,
-            maxResolution: 156543.0339/(Math.pow(2, 15)), // z=15
+            maxResolution: 156543.0339/(Math.pow(2, 15)),
             attribution: attrString,
             transitionEffect: 'resize'
         });
@@ -329,7 +329,7 @@ App.Map = (function() {
             visibility: false,
             opacity: 0.5,
             alwaysInRange: false,
-            maxResolution: 156543.0339/(Math.pow(2, 15)), // z=15
+            maxResolution: 156543.0339/(Math.pow(2, 15)),
             attribution: attrString,
             transitionEffect: 'resize'
         });
@@ -353,7 +353,12 @@ App.Map = (function() {
         return [mapnik, osmarender, cyclemap, ortho_bmo, ortho_littorale, maplint, raster_tiles, tiles];
     };
 
-    
+    /**
+     * Method: createMap
+     *
+     * Returns:
+     * {OpenLayers.Map} The map object with controls and layers added
+     */
     var createMap = function() {
         // create map
         var m = 20037508.34;
@@ -367,16 +372,19 @@ App.Map = (function() {
         map.addLayers(getLayers());
         map.addControls(getControls());
 
-        // FIXME:
+        // TODO: find a better place for this
         sfControl.activate();
         hfControl.activate();
         
         return map;
     };
-    
+
+    /**
+     * Method: createTools
+     * Creates the Tools container.
+     */
     var createTools = function() {
-        var win = App.Tools.getPanel();
-        
+        App.Tools.getPanel();
         App.Tools.events.on({
             "tagchanged": function(tag) {
                 tiles.styleMap = getStyleMap(tag);
@@ -390,8 +398,6 @@ App.Map = (function() {
             },
             scope: this
         });
-        
-        win.show();
     };
     
     /*
@@ -399,23 +405,36 @@ App.Map = (function() {
      */
     return {
         
-        // our observable
+        /*
+         * Observable object
+         */
         events: observable,
-
-        // call protocol.commit for the given feature
+        
+        /**
+         * APIMethod: persist
+         * Calls protocol.commit for the given feature
+         *
+         * Parameters:
+         * feature - {OpenLayers.Feature.Vector}
+         */
         persist: function(feature) {
             persist(feature);
         },
     
         /**
+         * APIMethod: getMapPanel
+         * Creates the map panel.
+         *
          * Parameters:
          * options - {Object} Options passed to the {GeoExt.MapPanel}.
+         *
+         * Returns:
+         * {GeoExt.MapPanel} the map panel
          */
         getMapPanel: function(options) {
             if (!mapPanel) {
                 mapPanel = new GeoExt.MapPanel(Ext.apply({
                     map: createMap(),
-                    //tbar: createTools(),
                     stateId: "map",
                     prettyStateKeys: true
                 }, options));
@@ -424,16 +443,29 @@ App.Map = (function() {
             }
             return mapPanel;
         },
-        
+    
+        /**
+         * APIMethod: zoomTo
+         * Zoom to a feature
+         *
+         * Parameters:
+         * config - {Object} hash with a 'feature' property 
+         */
         zoomTo: function(config) {
             if (config.feature) {
                 map.zoomToExtent(config.feature.geometry.getBounds());
             }
         },
-        
+    
+        /**
+         * APIMethod: unselectFeature
+         * unselects a feature
+         *
+         * Parameters:
+         * feature - {OpenLayers.Feature.Vector}
+         */
         unselectFeature: function(feature) {
             sfControl.unselect(feature);
         }
-    
     };
 })();
