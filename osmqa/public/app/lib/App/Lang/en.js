@@ -1,7 +1,6 @@
 /*
  * @requires OpenLayers/Lang/en.js
  */
-
 OpenLayers.Util.extend(OpenLayers.Lang.en, {
     "app.title": "Quality Grid",
     "btn.refresh.text": "refresh",
@@ -26,7 +25,7 @@ OpenLayers.Util.extend(OpenLayers.Lang.en, {
     "dialog.error.save.title": "Oops, something went wrong...",
     "dialog.error.save.msg": "We could not save the feature update.",
     "dialog.info.clic.title": "Not yet...",
-    "dialog.info.clic.msg": "You need to zoom to z=12 to be able to select tiles",
+    "dialog.info.clic.msg": "You need to zoom to z=12 to be able to select tiles !",
     "layer.tiles.vector": "Vector tiles (outline)",
     "layer.tiles.raster": "Raster tiles (fill)",
     'dialog.permalink.title': "Permalink",

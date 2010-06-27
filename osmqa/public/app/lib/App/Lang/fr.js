@@ -1,7 +1,6 @@
 /*
  * @requires OpenLayers/Lang/fr.js
  */
-
 OpenLayers.Util.extend(OpenLayers.Lang.fr, {
     "app.title": "Quality Grid",
     "btn.refresh.text": "recharger",
@@ -26,7 +25,7 @@ OpenLayers.Util.extend(OpenLayers.Lang.fr, {
     "dialog.error.save.title": "Oups, ça s'est pas bien passé...",
     "dialog.error.save.msg": "On n'a pas pu sauvegarder la modification.",
     "dialog.info.clic.title": "Pas encore...",
-    "dialog.info.clic.msg": "Il faut zoomer jusque z=12 pour pouvoir sélectionner une tuile.",
+    "dialog.info.clic.msg": "Il faut zoomer jusque z=12 pour pouvoir sélectionner une tuile !",
     "layer.tiles.vector": "Tuiles vectorielles (contours)",
     "layer.tiles.raster": "Tuiles raster (remplissage)",
     'dialog.permalink.title': "Permalien",

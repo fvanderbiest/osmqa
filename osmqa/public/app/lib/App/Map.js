@@ -298,7 +298,7 @@ App.Map = (function() {
         }, {
             isBaseLayer: false,
             singleTile: true,
-            ratio: 1.2,
+            ratio: 1.5,
             visibility: true,
             opacity: 0.3,
             transitionEffect: 'resize'

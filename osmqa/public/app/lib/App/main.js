@@ -106,6 +106,6 @@ window.onload = function() {
     });
     
     if (!(params.map_x && params.map_y && params.map_zoom)) {
-        mapPanel.map.zoomToExtent(new OpenLayers.Bounds(-556461,6143587,-446850,6191896));// TODO: config for startup extent
+        mapPanel.map.zoomToExtent(OpenLayers.Bounds.fromString(App.config.startupExtent));
     }
 };
