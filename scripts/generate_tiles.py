@@ -2,17 +2,16 @@
 #-*- coding: utf-8 -*-
 
 # This script creates a grid of geometries aligned with spherical mercator tiles, in a particular Earth region
-# An EPSG:900913 WKT string is used to define this Earth region 
 
-# Brest Region, as drawn from http://openlayers.org/dev/examples/vector-formats.html
-wkt = 'POLYGON((-513656.83000488 6177851.1455421, -491642.96586182 6187070.9615844, -483082.01869507 6162200.2990878, -502038.40170715 6151169.8923667, -520383.28849304 6158521.9140156, -513656.83000488 6177851.1455421))'
+# An EPSG:900913 WKT string is used to define this Earth region 
+# Here is the boundary for France metropole, drawn with http://openlayers.org/dev/examples/vector-formats.html
+wkt = 'POLYGON((-645740.01486328 6163580.1021162, -587036.37714844 6342072.1746128, -264166.3697168 6463205.3904489, 19567.879238281 6463205.3904489, 264166.3697168 6742414.7749688, 450061.22248047 6632702.662042, 792499.10915039 6417574.3447539, 1027313.6600098 6267242.5253677, 909906.38458008 5988743.6733774, 841418.80724609 5817359.2316711, 929474.26381836 5335486.9709201, 1066449.4184863 5402787.7924653, 1154504.8750586 5136435.2698408, 1115369.116582 5031951.2576526, 949042.14305664 4954321.4119625, 831634.86762695 5322085.0229513, 684875.77333984 5175912.1427473, 459845.16209961 5255361.5900812, 430493.34324219 5044950.0293073, 127191.21504883 4890096.6260625, -264166.3697168 4993059.0538548, -293518.18857422 5484200.8827072, -244598.49047852 5760965.05086, -420709.40362305 5874115.800417, -567468.49791016 6017638.0390564, -645740.01486328 6163580.1021162))'
 
 # Zoom level for which we want to generate tiles
 z = 15
 
 # Table name for storing the tiles
 tablename = 'tile_geometries'
-areaname = 'Brest'
 
 #####################################
 # DO NOT MODIFY THE FOLLOWING LINES #
@@ -56,8 +55,6 @@ def create_square(i,j):
 
 filed = open('../sql/tiles.sql', 'w') 
 
-filed.write("INSERT INTO maps (name) VALUES ('%s');"%(areaname))
-
 count = 1
 tot = (xminstep - xmaxstep) * (yminstep - ymaxstep)
 percent = 0
@@ -73,14 +70,3 @@ for i in range(xminstep,xmaxstep):
             print percent
             
 filed.close()
-
-#3857 vers 900913
-# ogr2ogr -s_srs "EPSG:3857" -t_srs "EPSG:900913" world_boundaries/world_bnd_m_900913.shp world_boundaries/world_bnd_m.shp
-# mieux: ogr2ogr -t_srs "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs" world_boundaries/world_bnd_m_900913.shp world_boundaries/world_bnd_m.shp
-
-# shp2pgsql -s 900913 -g geometry -I world_boundaries/world_bnd_m_900913.shp world_boundaries > world_boundaries.sql
-
-#bouba@oncidium:~/workspace/osmqa/trunk/sql/GSHHS_shp/h$ shp2pgsql -s 4326 -g geometry -I GSHHS_h_L1.shp world_boundaries_h > world_boundaries_h.sql
-#Shapefile type: Polygon
-#Postgis type: MULTIPOLYGON[2]
-#puis : retaillage sur polygon((-180 85, 180 85, 180 -85, -180 -85, -180 85))

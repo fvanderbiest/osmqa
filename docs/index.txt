@@ -46,7 +46,7 @@ TODO avant V1 :
  + ajout base layers : osmarender, cyclemap ...
  + nettoyer la barre d'outils de ce qui ne sert pas.
  + retravailler la barre d'outils -> box
- - sql sur toute la France
+ + sql sur toute la France
  + documentation code nickel
  + i18n
  + nettoyer le print
@@ -80,33 +80,22 @@ TODO avant V1 :
  - Toutes les attractions touristiques sont présentes - Clé : t
  - Toutes les ressources naturelles sont cartographiées (points d'eau, lacs, bois, forêts) - Clé : n
  - Tous les numéros de rues sont présents - Clé : h
- 
- Dépendances :
-sudo apt-get install libapache2-mod-fcgid libapache2-mod-python libapache2-mod-wsgi
 
+
+
+
+Requirements :
+sudo apt-get install libapache2-mod-fcgid libapache2-mod-python libapache2-mod-wsgi
 sudo a2enmod expires headers
 
 Installation :
 
-svn co
-python bootstrap.py --version 1.4.3 --distribute
-copier buildout_sample.cfg en buildout_myconfig.cfg
-buildout/bin/buildout -c buildout_myconfig.cfg
-source buildout/bin/activate
-paster serve --reload myproject_dev.ini ou config apache ...
+svn checkout http://osmqa.googlecode.com/svn/trunk/ osmqa
+cd osmqa
 
 SQL:
 
-télécharger les shapefiles depuis
-http://www.ngdc.noaa.gov/mgg/shorelines/gshhs.html
-
-unzip => dossier GSHHS_shp avec dossiers c = ? f = full h = high i = intermediate l = low
-
-On utilise GSHHS_f_L1.shp du dossier f
-
-shp2pgsql -s 4326 -g geometry -I GSHHS_f_L1.shp world_boundaries > world_boundaries.sql
-
-creation de la base :
+db creation:
 
 sudo su postgres
 createdb -E UTF-8 osmqa
@@ -115,16 +104,60 @@ createlang plpgsql osmqa
 psql -d osmqa -f /usr/share/postgresql-8.3-postgis/lwpostgis.sql
 psql -d osmqa -f /usr/share/postgresql-8.3-postgis/spatial_ref_sys.sql
 
-OR:
+or:
 
 psql -d osmqa -f /usr/share/postgresql/8.4/contrib/postgis-1.5/postgis.sql
 psql -d osmqa -f /usr/share/postgresql/8.4/contrib/postgis-1.5/spatial_ref_sys.sql
 
 
-import en base ...
-psql -d osmqa -f world_boundaries.sql
+go to http://openlayers.org/dev/examples/vector-formats.html
+select WKT format, input proj = epsg:4326, output proj = spherical mercator
+draw a polygon surrounding the area you want to survey, copy the WKT and paste it into generate_tiles.py
 
-filtrage sur polygon -85/85 deg :
-polygon((-180 85, 180 85, 180 -85, -180 -85, -180 85))
+cd scripts
+python generate_tiles.py
 
-conversion epsg:900913 en base
+This generates a sql/tiles.sql file
+
+
+Download GSHHS Shapefiles version 2.0 from http://www.ngdc.noaa.gov/mgg/shorelines/gshhs.html :
+
+wget http://www.ngdc.noaa.gov/mgg/shorelines/data/gshhs/version2.0/shapefiles/gshhs_shp_2.0.zip
+unzip gshhs_shp_2.0.zip
+
+we get a GSHHS_shp folder with c = ? f = full h = high i = intermediate l = low (resolution) subfolders.
+
+we convert the GSHHS_f_L1.shp shapefile into sql in order to import it into the db:
+shp2pgsql -s 4326 -g geometry -I GSHHS_shp/f/GSHHS_f_L1.shp world_boundaries > /tmp/world_boundaries.sql
+
+sudo su postgres; cat /tmp/world_boundaries.sql sql/osmqa.sql sql/tiles.sql | psql -d osmqa
+
+Paste the polygon WKT into boundaries.sql, then :
+psql -d osmqa -f sql/boundaries.sql
+(... then, have a coffee - and probably many more - this can be very long, depending on the area you chose)
+
+This file:
+- crops the world boundaries geometries to lat -85/85 deg so that they can be converted to epsg:900913
+- crops those world boundaries to the bounding polygon
+- computes which tiles intersect land in the selected area.
+
+
+Install App :
+
+python bootstrap.py --version 1.4.3 --distribute
+
+cp buildout_sample.cfg buildout_myconfig.cfg
+
+edit the [vars] section of buildout_myconfig.cfg to match your db setup
+
+buildout/bin/buildout -c buildout_myconfig.cfg
+source buildout/bin/activate
+
+Quick test to see if everything's fine :
+paster serve --reload myproject_dev.ini -> http://localhost:5000/?debug=true
+
+
+Apache configuration
+
+TO DO
+
