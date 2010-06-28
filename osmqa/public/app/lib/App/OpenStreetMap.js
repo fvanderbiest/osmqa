@@ -12,6 +12,17 @@
  * Namespace: Util.OSM
  */
 OpenLayers.Util.OSM = {};
+    
+OpenLayers.Layer.MyOSM = OpenLayers.Class(OpenLayers.Layer.OSM, {
+    initialize: function(name, url, options) {
+        options = OpenLayers.Util.extend({
+            attribution: OpenLayers.i18n("layer.osm.attribution"),
+            buffer: 1
+        }, options);
+        OpenLayers.Layer.OSM.prototype.initialize.apply(this, [name, url, options]);
+    },
+    CLASS_NAME: "OpenLayers.Layer.MyOSM"
+});
 
 /**
  * Constant: MISSING_TILE_URL
@@ -44,7 +55,7 @@ OpenLayers.Util.onImageLoadError = function() {
  * Inherits from:
  *  - <OpenLayers.Layer.OSM>
  */
-OpenLayers.Layer.OSM.Mapnik = OpenLayers.Class(OpenLayers.Layer.OSM, {
+OpenLayers.Layer.OSM.Mapnik = OpenLayers.Class(OpenLayers.Layer.MyOSM, {
     /**
      * Constructor: OpenLayers.Layer.OSM.Mapnik
      *
@@ -59,11 +70,10 @@ OpenLayers.Layer.OSM.Mapnik = OpenLayers.Class(OpenLayers.Layer.OSM, {
             "http://c.tile.openstreetmap.org/${z}/${x}/${y}.png"
         ];
         options = OpenLayers.Util.extend({
-            numZoomLevels: 19,
-            buffer: 1
+            numZoomLevels: 19
         }, options);
         var newArguments = [name, url, options];
-        OpenLayers.Layer.OSM.prototype.initialize.apply(this, newArguments);
+        OpenLayers.Layer.MyOSM.prototype.initialize.apply(this, newArguments);
     },
 
     CLASS_NAME: "OpenLayers.Layer.OSM.Mapnik"
@@ -75,7 +85,7 @@ OpenLayers.Layer.OSM.Mapnik = OpenLayers.Class(OpenLayers.Layer.OSM, {
  * Inherits from:
  *  - <OpenLayers.Layer.OSM>
  */
-OpenLayers.Layer.OSM.Osmarender = OpenLayers.Class(OpenLayers.Layer.OSM, {
+OpenLayers.Layer.OSM.Osmarender = OpenLayers.Class(OpenLayers.Layer.MyOSM, {
     /**
      * Constructor: OpenLayers.Layer.OSM.Osmarender
      *
@@ -90,11 +100,10 @@ OpenLayers.Layer.OSM.Osmarender = OpenLayers.Class(OpenLayers.Layer.OSM, {
             "http://c.tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png"
         ];
         options = OpenLayers.Util.extend({
-            numZoomLevels: 18,
-            buffer: 1
+            numZoomLevels: 18
         }, options);
         var newArguments = [name, url, options];
-        OpenLayers.Layer.OSM.prototype.initialize.apply(this, newArguments);
+        OpenLayers.Layer.MyOSM.prototype.initialize.apply(this, newArguments);
     },
 
     CLASS_NAME: "OpenLayers.Layer.OSM.Osmarender"
@@ -106,7 +115,7 @@ OpenLayers.Layer.OSM.Osmarender = OpenLayers.Class(OpenLayers.Layer.OSM, {
  * Inherits from:
  *  - <OpenLayers.Layer.OSM>
  */
-OpenLayers.Layer.OSM.CycleMap = OpenLayers.Class(OpenLayers.Layer.OSM, {
+OpenLayers.Layer.OSM.CycleMap = OpenLayers.Class(OpenLayers.Layer.MyOSM, {
     /**
      * Constructor: OpenLayers.Layer.OSM.CycleMap
      *
@@ -121,11 +130,10 @@ OpenLayers.Layer.OSM.CycleMap = OpenLayers.Class(OpenLayers.Layer.OSM, {
             "http://c.andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png"
         ];
         options = OpenLayers.Util.extend({
-            numZoomLevels: 19,
-            buffer: 1
+            numZoomLevels: 19
         }, options);
         var newArguments = [name, url, options];
-        OpenLayers.Layer.OSM.prototype.initialize.apply(this, newArguments);
+        OpenLayers.Layer.MyOSM.prototype.initialize.apply(this, newArguments);
     },
 
     CLASS_NAME: "OpenLayers.Layer.OSM.CycleMap"
@@ -137,7 +145,7 @@ OpenLayers.Layer.OSM.CycleMap = OpenLayers.Class(OpenLayers.Layer.OSM, {
  * Inherits from:
  *  - <OpenLayers.Layer.OSM>
  */
-OpenLayers.Layer.OSM.Maplint = OpenLayers.Class(OpenLayers.Layer.OSM, {
+OpenLayers.Layer.OSM.Maplint = OpenLayers.Class(OpenLayers.Layer.MyOSM, {
     /**
      * Constructor: OpenLayers.Layer.OSM.Maplint
      *
@@ -153,12 +161,11 @@ OpenLayers.Layer.OSM.Maplint = OpenLayers.Class(OpenLayers.Layer.OSM, {
         ];
         options = OpenLayers.Util.extend({
             numZoomLevels: 18,
-            buffer: 1,
             isBaseLayer: false, 
             visibility: false
         }, options);
         var newArguments = [name, url, options];
-        OpenLayers.Layer.OSM.prototype.initialize.apply(this, newArguments);
+        OpenLayers.Layer.MyOSM.prototype.initialize.apply(this, newArguments);
     },
 
     CLASS_NAME: "OpenLayers.Layer.OSM.Maplint"

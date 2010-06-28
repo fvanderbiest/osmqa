@@ -47,6 +47,13 @@ window.onload = function() {
      * Setting of Ext global vars.
      */
     Ext.QuickTips.init();
+    // we want to keep tag values in english whatever the chosen language
+    if(Ext.grid.PropertyColumnModel){
+        Ext.apply(Ext.grid.PropertyColumnModel.prototype, {
+            trueText   : "true",
+            falseText  : "false"
+        });
+    }
 
     /*
      * Initialize the application.
@@ -114,17 +121,6 @@ window.onload = function() {
     div.appendChild($('tools'));
     div.appendChild($('loading'));
     $('loading').innerHTML = OpenLayers.i18n('loading');
-    div.first().on('click', function() {
-        if (mapPanel.map.getZoom() < App.config.minZoomlevelForVectors) {
-            Ext.Msg.show({
-                title: OpenLayers.i18n("dialog.info.clic.title"),
-                msg: OpenLayers.i18n("dialog.info.clic.msg"),
-                width: 400,
-                buttons: Ext.Msg.OK,
-                icon: Ext.MessageBox.INFO
-            });
-        }
-    });
     
     if (!(params.map_x && params.map_y && params.map_zoom)) {
         mapPanel.map.zoomToExtent(OpenLayers.Bounds.fromString(App.config.startupExtent));

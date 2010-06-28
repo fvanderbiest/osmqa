@@ -40,6 +40,7 @@
  * @include OpenLayers/Control/ScaleLine.js
  * @include OpenLayers/Control/SelectFeature.js
  * @include GeoExt/widgets/MapPanel.js
+ * @include App/Control.Click.js
  * @include App/Tools.js
  * @include App/config.js
  * @include App/OpenStreetMap.js
@@ -191,13 +192,15 @@ App.Map = (function() {
     var getControls = function() {
         // select feature control
         sfControl = new OpenLayers.Control.SelectFeature(tiles, {
-            toggle: true
+            toggle: true,
+            autoActivate: true
         });
         sfControl.handlers.feature.stopDown = false;
         
         // highlight feature control
         hfControl = new OpenLayers.Control.SelectFeature(tiles, {
             hover: true,
+            autoActivate: true,
             highlightOnly: true,
             eventListeners: {
                 "featurehighlighted": function(config) {
@@ -221,6 +224,20 @@ App.Map = (function() {
             new OpenLayers.Control.Attribution(),
             new OpenLayers.Control.LoadingPanel({div: $('loading')}),
             new OpenLayers.Control.ScaleLine(), 
+            new App.Control.Click({
+                onClick: function(e) {
+                    if (e.object.CLASS_NAME == "OpenLayers.Map" &&
+                        e.object.getZoom() < App.config.minZoomlevelForVectors) {
+                        Ext.Msg.show({
+                            title: OpenLayers.i18n("dialog.info.clic.title"),
+                            msg: OpenLayers.i18n("dialog.info.clic.msg"),
+                            width: 400,
+                            buttons: Ext.Msg.OK,
+                            icon: Ext.MessageBox.INFO
+                        });
+                    }
+                }
+            }),
             sfControl, hfControl
         ];
     };
@@ -341,7 +358,7 @@ App.Map = (function() {
         });
         
         attrString = '<a href="http://www.geolittoral.equipement.gouv.fr/">GeoLittoral</a>';
-        var ortho_littorale = new OpenLayers.Layer.WMS("Ortho Littorale 2004 @50cm", 'http://bmo.openstreetmap.fr/wms', {
+        var ortho_littorale = new OpenLayers.Layer.WMS("Ortho Littorale 2000 @50cm", 'http://bmo.openstreetmap.fr/wms', {
             layers: 'ortholittorale',
             format: 'image/jpeg'
         }, {
@@ -381,22 +398,17 @@ App.Map = (function() {
      * {OpenLayers.Map} The map object with controls and layers added
      */
     var createMap = function() {
-        // create map
         var m = 20037508.34;
         map = new OpenLayers.Map({
             projection: new OpenLayers.Projection("EPSG:900913"),
             maxExtent: new OpenLayers.Bounds(-m, -m, m, m),
             units: "m",
             theme: null,
-            controls: []
+            layers: getLayers(),
+            controls: getControls()
         });
-        map.addLayers(getLayers());
-        map.addControls(getControls());
-
-        // TODO: find a better place for this
-        sfControl.activate();
-        hfControl.activate();
-        
+        //sfControl.activate();
+        //hfControl.activate();
         return map;
     };
 

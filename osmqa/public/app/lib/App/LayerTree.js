@@ -63,6 +63,7 @@ App.LayerTree = (function() {
                 });
                 layerTreePanel = new Ext.tree.TreePanel(Ext.apply({
                     root: new GeoExt.tree.LayerContainer({
+                        text: OpenLayers.i18n('layertree.rootnode.text'),
                         layerStore: layerStore,
                         leaf: false,
                         expanded: true

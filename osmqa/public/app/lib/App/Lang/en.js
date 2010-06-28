@@ -21,6 +21,7 @@
 
 /*
  * @requires OpenLayers/Lang/en.js
+ * @requires App/config.js
  */
 OpenLayers.Util.extend(OpenLayers.Lang.en, {
     "app.title": "Quality Grid",
@@ -46,12 +47,14 @@ OpenLayers.Util.extend(OpenLayers.Lang.en, {
     "dialog.error.save.title": "Oops, something went wrong...",
     "dialog.error.save.msg": "We could not save the feature update.",
     "dialog.info.clic.title": "Not yet...",
-    "dialog.info.clic.msg": "You need to zoom to z=12 to be able to select tiles !",
+    "dialog.info.clic.msg": "You need to zoom beyond z="+(App.config.minZoomlevelForVectors-1)+" in order to select tiles !",
     "layer.tiles.vector": "Vector tiles (outline)",
     "layer.tiles.raster": "Raster tiles (fill)",
+    "layer.osm.attribution": "Data CC-By-SA by <a href='http://openstreetmap.org/'>OpenStreetMap</a>",
     'dialog.permalink.title': "Permalink",
     'dialog.permalink.btn.open': "Open link",
     'dialog.btn.close': "Close",
     'layertree.btn.addlayers': "Add WMS layers",
-    'layertree.btn.permalink': "Permalink"
+    'layertree.btn.permalink': "Permalink",
+    'layertree.rootnode.text': "Layers"
 });
