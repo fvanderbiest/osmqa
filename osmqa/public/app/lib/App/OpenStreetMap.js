@@ -1,5 +1,6 @@
 /*
  * Downloaded from http://www.openstreetmap.org/openlayers/OpenStreetMap.js?1271689861
+ * ... and lightly modified to add buffer = 1
  */
 
 /*

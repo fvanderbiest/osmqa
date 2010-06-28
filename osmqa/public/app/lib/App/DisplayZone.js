@@ -1,4 +1,25 @@
 /*
+ *
+ * This file is part of osmqa
+ *
+ * osmqa is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * osmqa is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with osmqa.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author François Van Der Biest francois.vanderbiest@camptocamp.com
+ *
+ */
+
+/*
  * @include OpenLayers/Projection.js
  * @include OpenLayers/Layer/SphericalMercator.js
  * @include OpenLayers/Util.js
@@ -179,7 +200,7 @@ App.DisplayZone = (function() {
      * Opens potlatch on the current tile area
      */
     var potlatchOpen = function() {
-        var base = 'http://www.openstreetmap.org/edit?'; // TODO: config
+        var base = 'http://www.openstreetmap.org/edit?'; // TODO: config ?
         var geom = editedFeature.geometry.clone();
         geom = geom.getBounds().getCenterLonLat();
         geom.transform(
@@ -198,7 +219,7 @@ App.DisplayZone = (function() {
      * Opens JOSM on the current tile area
      */
     var JosmOpen = function() {
-        var base = 'http://127.0.0.1:8111/load_and_zoom?'; // TODO: config
+        var base = 'http://127.0.0.1:8111/load_and_zoom?'; // TODO: config ?
         var geom = editedFeature.geometry.clone();
         geom.transform(
             new OpenLayers.Projection("EPSG:900913"), 

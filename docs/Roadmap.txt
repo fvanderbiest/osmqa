@@ -1,0 +1,45 @@
+TODO before V1 is released :
+ - deploy on osm1.crans.org
+ - welcome screen/help/wiki ?
+
+V1 (where we are now):
+ - vector tiles are created once and for all in a chosen area. extent = France
+
+V2 : 
+ - users may ask for a specific area surveying, hence creating their own grid referenced by this application with a unique id.
+ - users may add wms layers
+ - if inactivity detected, app triggers an alert, which freezes ajax requests
+ - transparency control on overlay layers
+ - cron job to unreserve tiles 24 hours after they've been reserved
+ - maptypepanel (openlayers addin candidate) for base layers
+ - better layer tree (subfolders)
+ - migration from osmqa to qsm (QualityStreetMap) ?
+  
+V3 : 
+ - users may add survey keys at run time ?
+ - users may login with their osm credentials, using oauth ?
+ - users may choose to divide a tile into 4 if they think it's too large (eg: big cities surveyal)
+
+
+Bugs : 
+ - [Sat Jun 26 13:11:50 2010] [error] [client 127.0.1.1] TimeoutError: QueuePool limit of size 5 overflow 10 reached, connection timed out, timeout 30, referer: http://osmqa.org/osmqa/?debug=true ... and no data served
+ 
+ 
+ 
+Open discussion: should we use the survey keys as defined on http://wiki.openstreetmap.org/wiki/Romans-sur-Isere ?
+
+ - Les noms de rues sont indiqués. Cela signifie que la carte peut être utilisée pour trouver une adresse - Clé : l
+ - Les routes pour le trafic automobile sont présentes. Les rues à sens unique et les rues piétonnes sont présentes. Cela signifie que la carte peut être utilisée pour une navigation en voiture - Clé : c
+ - Toutes les pistes cyclables, les routes empruntables par des vélos en forêt ou à travers champs sont présentes - Clé : b
+ - Tous les chemins pour piétons sont présents - Clé : fo
+ - Wege für Rollstuhl. - Schlüssel: d
+ - Tous les transports publics sont présents (cela inclue le nom des arrêts de bus et des gares) - Clé : tr
+ - Toutes les institutions publiques sont présentes (églises, installations sportives, écoles, hôpitaux, mairies...) - Clé: p
+ - Toutes les stations services sont présentes - Clé: fu
+ - Tous les restaurants et hôtels sont présents - Clé : r
+ - Toutes les attractions touristiques sont présentes - Clé : t
+ - Toutes les ressources naturelles sont cartographiées (points d'eau, lacs, bois, forêts) - Clé : n
+ - Tous les numéros de rues sont présents - Clé : h
+
+
+

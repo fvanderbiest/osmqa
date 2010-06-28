@@ -1,0 +1,10 @@
+<VirtualHost *:80>
+  ServerName ${vars:servername}
+
+  LogLevel warn
+  ErrorLog ${buildout:directory}/logs/error.log
+  CustomLog ${buildout:directory}/logs/access.log combined
+
+  Include ${buildout:directory}/apache/*.conf
+</VirtualHost>
+

@@ -1,13 +1,3 @@
-Idée de base :
-- données vectorielles chargées avec strategie BBOX à grande échelle (cliquables et éditables). (données vect transparentes au dessus de rendu mapserver ou non?)
-- données raster mapserver à petite échelle (juste visualisables, pas éditables)
-- données vectorielles rechargées toutes les 5 minutes (permet le travail collaboratif)
-
--> dans les deux modes, le selecteur de carte (tag à visualiser) est actif
- 
-Au clic sur un polygone vecteur, popup geoext avec contenu : tableau présentant attributs en mode R/W et lien de chargement dans JOSM utilisant RemoteControl. Pas de bouton pour sauvegarder : sauvegarde auto / mentionnée par indicateur AJAX.
-
-
 Différentes versions de l'application :
 
 V1 :
@@ -30,43 +20,15 @@ V3 :
  - possibilité de diviser une tuile en 4 à la demande de l'utilisateur, s'il la juge trop grande ...
 
 TODO avant V1 :
- + ajout bouton "refresh now"
- + ajout des couches WMS (en dur) connues et libres d'accès dans le cadre de OSM (geolittoral, bmo, jura, sitn, sitg, lausanne ...)
- + WSGI à configurer en urgence !!! (car mapfile et autres en dépend)
- + loadingPanel
- + mapfile
- + build JS
- + au survol des tiles vectoriels, affichage des attributs dans un Ext.grid.PropertyGrid docké, et liseré jaune sur le bord de la tuile vectorielle
- + passer en vrai "JS module pattern" 
- + au clic sur la tuile, figer la selection à cette tuile, afficher dans le dock le lien vers edition JOSM
- + offrir la possibilité de (dé)réserver la tuile ? 
- + "tool" unselect dans la displayZone
- + edition vectorielle
- + commutation entre modes de rendu quand on est en raster (petite échelle)
- + ajout base layers : osmarender, cyclemap ...
- + nettoyer la barre d'outils de ce qui ne sert pas.
- + retravailler la barre d'outils -> box
- + sql sur toute la France
- + documentation code nickel
- + i18n
- + nettoyer le print
- + tilecache config removal
  - doc d'installation en anglais
- - deploiement sur osm1.crans.org ou autre ?
- - ecran d'accueil/aide/wiki
+ - deploiement sur osm1.crans.org
+ - ecran d'accueil/aide/wiki ?
  
  Bugs : 
- + permalien ne fonctionne pas
- + strategy refresh => perte de la selection courante
- + parfois, une tuile highlightée cohabite avec une tuile selectionnée... 
- + en mode buildé, la fleche de la popup n'apparait pas
- + permalink cassé
- + selectionner une tuile, la deselectionner. cliquer sur refresh => la tuile est a nouveau selectionnée.
- + pb d'ascenseurs selon les navigateurs dans le displayzone
  - [Sat Jun 26 13:11:50 2010] [error] [client 127.0.1.1] TimeoutError: QueuePool limit of size 5 overflow 10 reached, connection timed out, timeout 30, referer: http://osmqa.org/osmqa/?debug=true récurrent ...
  
  
- Pour les clés, s'inspirer de http://wiki.openstreetmap.org/wiki/Romans-sur-Isere qui contient une classification de complétude :
+ Pour les clés, s'inspirer (ou pas ?) de http://wiki.openstreetmap.org/wiki/Romans-sur-Isere qui contient une classification de complétude :
  Signification des symboles
  - Les noms de rues sont indiqués. Cela signifie que la carte peut être utilisée pour trouver une adresse - Clé : l
  - Les routes pour le trafic automobile sont présentes. Les rues à sens unique et les rues piétonnes sont présentes. Cela signifie que la carte peut être utilisée pour une navigation en voiture - Clé : c
@@ -82,82 +44,4 @@ TODO avant V1 :
  - Tous les numéros de rues sont présents - Clé : h
 
 
-
-
-Requirements :
-sudo apt-get install libapache2-mod-fcgid libapache2-mod-python libapache2-mod-wsgi
-sudo a2enmod expires headers
-
-Installation :
-
-svn checkout http://osmqa.googlecode.com/svn/trunk/ osmqa
-cd osmqa
-
-SQL:
-
-db creation:
-
-sudo su postgres
-createdb -E UTF-8 osmqa
-createlang plpgsql osmqa
-
-psql -d osmqa -f /usr/share/postgresql-8.3-postgis/lwpostgis.sql
-psql -d osmqa -f /usr/share/postgresql-8.3-postgis/spatial_ref_sys.sql
-
-or:
-
-psql -d osmqa -f /usr/share/postgresql/8.4/contrib/postgis-1.5/postgis.sql
-psql -d osmqa -f /usr/share/postgresql/8.4/contrib/postgis-1.5/spatial_ref_sys.sql
-
-
-go to http://openlayers.org/dev/examples/vector-formats.html
-select WKT format, input proj = epsg:4326, output proj = spherical mercator
-draw a polygon surrounding the area you want to survey, copy the WKT and paste it into generate_tiles.py
-
-cd scripts
-python generate_tiles.py
-
-This generates a sql/tiles.sql file
-
-
-Download GSHHS Shapefiles version 2.0 from http://www.ngdc.noaa.gov/mgg/shorelines/gshhs.html :
-
-wget http://www.ngdc.noaa.gov/mgg/shorelines/data/gshhs/version2.0/shapefiles/gshhs_shp_2.0.zip
-unzip gshhs_shp_2.0.zip
-
-we get a GSHHS_shp folder with c = ? f = full h = high i = intermediate l = low (resolution) subfolders.
-
-we convert the GSHHS_f_L1.shp shapefile into sql in order to import it into the db:
-shp2pgsql -s 4326 -g geometry -I GSHHS_shp/f/GSHHS_f_L1.shp world_boundaries > /tmp/world_boundaries.sql
-
-sudo su postgres; cat /tmp/world_boundaries.sql sql/osmqa.sql sql/tiles.sql | psql -d osmqa
-
-Paste the polygon WKT into boundaries.sql, then :
-psql -d osmqa -f sql/boundaries.sql
-(... then, have a coffee - and probably many more - this can be very long, depending on the area you chose)
-
-This file:
-- crops the world boundaries geometries to lat -85/85 deg so that they can be converted to epsg:900913
-- crops those world boundaries to the bounding polygon
-- computes which tiles intersect land in the selected area.
-
-
-Install App :
-
-python bootstrap.py --version 1.4.3 --distribute
-
-cp buildout_sample.cfg buildout_myconfig.cfg
-
-edit the [vars] section of buildout_myconfig.cfg to match your db setup
-
-buildout/bin/buildout -c buildout_myconfig.cfg
-source buildout/bin/activate
-
-Quick test to see if everything's fine :
-paster serve --reload myproject_dev.ini -> http://localhost:5000/?debug=true
-
-
-Apache configuration
-
-TO DO
 

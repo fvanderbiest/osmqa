@@ -1,0 +1,99 @@
+============
+REQUIREMENTS
+============
+
+On a debian-based system:
+
+ sudo apt-get install postgresql-8.4-postgis libapache2-mod-fcgid libapache2-mod-python libapache2-mod-wsgi cgi-mapserver    mapserver-bin
+ sudo a2enmod expires headers
+
+============
+INSTALLATION
+============
+
+svn checkout http://osmqa.googlecode.com/svn/trunk/ osmqa
+cd osmqa
+
+SQL
+===
+
+We first create the database and spatially enable it:
+
+ sudo su postgres
+ createdb -E UTF-8 osmqa
+ createlang plpgsql osmqa
+
+Depending on your postgresql version, you should either :
+
+ psql -d osmqa -f /usr/share/postgresql-8.3-postgis/lwpostgis.sql
+ psql -d osmqa -f /usr/share/postgresql-8.3-postgis/spatial_ref_sys.sql
+
+or:
+
+ psql -d osmqa -f /usr/share/postgresql/8.4/contrib/postgis-1.5/postgis.sql
+ psql -d osmqa -f /usr/share/postgresql/8.4/contrib/postgis-1.5/spatial_ref_sys.sql
+
+
+Then, go to http://openlayers.org/dev/examples/vector-formats.html, select WKT format, input proj = epsg:4326, output proj = spherical mercator, and draw a polygon surrounding the area you want to survey, copy the WKT and paste it into scripts/generate_tiles.py
+
+ cd scripts
+ python generate_tiles.py
+
+This generates a (big) sql/tiles.sql file
+
+Next, we want to use shorelines to filter out vector tiles which do not intersect lands.
+
+ wget http://www.ngdc.noaa.gov/mgg/shorelines/data/gshhs/version2.0/shapefiles/gshhs_shp_2.0.zip
+ unzip gshhs_shp_2.0.zip
+
+We then convert the GSHHS_f_L1.shp shapefile into SQL:
+ shp2pgsql -s 4326 -g geometry -I GSHHS_shp/f/GSHHS_f_L1.shp world_boundaries > /tmp/world_boundaries.sql
+
+Finally, SQL files are inserted:
+ sudo su postgres; cat /tmp/world_boundaries.sql sql/osmqa.sql sql/tiles.sql | psql -d osmqa
+
+To finish with it, paste the polygon WKT into sql/boundaries.sql, and:
+ psql -d osmqa -f sql/boundaries.sql
+
+At this point, I suggest you have a coffee (and probably many more) since this can be very long, depending on the area you chose.
+
+For the record, this last file:
+- crops world boundaries geometries to lat -85/85 deg so that they can be converted to EPSG:900913
+- crops the resulting boundaries to the survey area, as defined by the bounding polygon wkt string
+- computes which tiles intersect land in the survey area.
+
+
+App install
+===========
+
+Install project dependencies:
+ python bootstrap.py --version 1.4.3 --distribute
+
+Create your config file:
+ cp buildout_sample.cfg buildout_myconfig.cfg
+
+Edit the [vars] section of buildout_myconfig.cfg to match your setup (database, servername ...)
+
+Configure your project:
+ buildout/bin/buildout -c buildout_myconfig.cfg
+
+Quick test to see if everything's fine :
+ source buildout/bin/activate
+ paster serve --reload myproject_dev.ini
+ 
+Open http://localhost:5000/tiles?limit=1
+You should see a nice GeoJSON string !
+
+
+Apache configuration
+====================
+
+A very simple apache virtual host config file has been created during project setup (apache/osmqa.conf.vhost).
+You can choose to use it (or not):
+
+ cd /etc/apache2/sites-available/
+ sudo ln -s $yourdir/apache/osmqa.conf.vhost osmqa (where $yourdir is the place you have installed the project)
+ sudo a2ensite osmqa
+ sudo /etc/init.d/apache2 restart
+
+... and you're done with it !
