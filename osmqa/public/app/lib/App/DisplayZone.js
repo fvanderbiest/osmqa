@@ -375,7 +375,7 @@ App.DisplayZone = (function() {
                             var newSource = {
                                 "highway": false,
                                 "building": false,
-                                "landuse": false,
+                                "landuse": false
                             };
                             editGrid.setSource(newSource);
                             updateCurrentFeature(newSource);
@@ -390,7 +390,7 @@ App.DisplayZone = (function() {
                             var newSource = {
                                 "highway": true,
                                 "building": true,
-                                "landuse": true,
+                                "landuse": true
                             };
                             editGrid.setSource(newSource);
                             updateCurrentFeature(newSource);

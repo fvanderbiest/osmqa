@@ -92,7 +92,7 @@ window.onload = function() {
     });
     
     // create the Ext viewport
-    new Ext.Viewport({
+    var vp = new Ext.Viewport({
         layout: "border",
         items: [
             mapPanel, { 
