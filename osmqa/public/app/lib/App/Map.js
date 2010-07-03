@@ -336,7 +336,8 @@ App.Map = (function() {
         }, {
             isBaseLayer: false,
             singleTile: true,
-            ratio: 1.5,
+            maxResolution: 156543.0339/(Math.pow(2, 9)), // we need to setup tilecache for lower zoom levels
+            ratio: 1.2,
             visibility: true,
             opacity: 0.3,
             transitionEffect: 'resize'

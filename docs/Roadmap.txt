@@ -14,6 +14,7 @@ V2 :
  - maptypepanel (openlayers addin candidate) for base layers
  - better layer tree (subfolders)
  - migration from osmqa to qsm (QualityStreetMap) ?
+ - tilecache for z < 10 with cache purge every day
   
 V3 : 
  - users may add survey keys at run time ?

@@ -11,7 +11,7 @@ MAP
     WEB
         METADATA
             "wms_title"     "WMS server for OSMQA"
-            "wms_onlineresource" "http://osmqa.org/osmqa/mapserv/?" # FIXME
+            "wms_onlineresource" "http://${vars:servername}/mapserv/?"
             "wms_srs"       "EPSG:4326 EPSG:900913 EPSG:3948 EPSG:3857 EPSG:3758 EPSG:2154" 
             "wms_encoding"  "UTF-8"
         END
@@ -23,9 +23,9 @@ MAP
 
     OUTPUTFORMAT
         NAME "png"
-        DRIVER "AGG/PNG" # FIXME: GD/PNG ?
+        DRIVER "GD/PNG"
         MIMETYPE "image/png"
-        IMAGEMODE RGBA
+        IMAGEMODE PC256
         TRANSPARENT ON
         EXTENSION "png"
         FORMATOPTION "INTERLACE=OFF"

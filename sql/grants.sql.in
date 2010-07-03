@@ -1,0 +1,4 @@
+GRANT select, insert, update, delete ON maps to "${vars:dbuser}";
+GRANT select ON tile_geometries TO "${vars:dbuser}";
+GRANT select, update ON tags TO "${vars:dbuser}";
+GRANT select, update, delete, insert ON tiles TO "${vars:dbuser}";
