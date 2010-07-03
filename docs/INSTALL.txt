@@ -53,7 +53,7 @@ We then convert the GSHHS_f_L1.shp shapefile into SQL:
  shp2pgsql -s 4326 -g geometry -I GSHHS_shp/f/GSHHS_f_L1.shp world_boundaries > /tmp/world_boundaries.sql
 
 Finally, SQL files are inserted:
- sudo su postgres; cat /tmp/world_boundaries.sql sql/osmqa.sql sql/slicendice_tiles.sql sql/tiles.sql | psql -d osmqa
+ sudo su postgres; cat /tmp/world_boundaries.sql sql/osmqa.sql sql/generated/slicendice_tiles.sql sql/generated/tiles.sql | psql -d osmqa
 
 To finish with it, paste the polygon WKT into sql/boundaries.sql (L11), and:
  psql -d osmqa -f sql/boundaries.sql

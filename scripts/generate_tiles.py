@@ -29,7 +29,7 @@ from math import floor, ceil
 # - tiles.sql for the survey tiles
 # - slicendice_tiles.sql for the tiles which will slice and dice the world boundaries polygons
 tablenames = [tablename, 'throwaway_grid']
-filenames = ['../sql/tiles.sql', '../sql/slicendice_tiles.sql']
+filenames = ['../sql/generated/tiles.sql', '../sql/generated/slicendice_tiles.sql']
 zs = [z, z-3]
 
 # Maximum resolution
