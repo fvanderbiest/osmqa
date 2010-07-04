@@ -106,11 +106,11 @@ window.onload = function() {
                 border: false,
                 items: [
                     App.LayerTree.getPanel(mapPanel.layers, {
-                        region: 'center',
+                        region: 'north',
+                        height: 230,
                         autoScroll: true
                     }), App.DisplayZone.getPanel({
-                        height: 300,
-                        region: 'south'
+                        region: 'center'
                     })
                 ]
             }
