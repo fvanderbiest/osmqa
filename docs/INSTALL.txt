@@ -4,8 +4,9 @@ REQUIREMENTS
 
 On a debian-based system:
 
- sudo apt-get install postgresql-8.4-postgis libapache2-mod-fcgid libapache2-mod-python libapache2-mod-wsgi cgi-mapserver    mapserver-bin python2.6 python2.6-dev libgeos
+ sudo apt-get install postgis postgresql-8.4-postgis libapache2-mod-fcgid libapache2-mod-python libapache2-mod-wsgi cgi-mapserver mapserver-bin python2.6 python2.6-dev libgeos-3.1.0 python-setuptools gcc-4.3
  sudo a2enmod expires headers fcgid python
+ sudo easy_install Shapely
 
 Before creating the database, I suggest you have a look at the OPTIMIZATIONS.txt file. 
 This should help save a lot of your precious time.
@@ -33,9 +34,11 @@ Depending on your postgresql version, you should either :
 
 or:
 
- psql -d osmqa -f /usr/share/postgresql/8.4/contrib/postgis-1.5/postgis.sql
- psql -d osmqa -f /usr/share/postgresql/8.4/contrib/postgis-1.5/spatial_ref_sys.sql
-
+ psql -d osmqa -f /usr/share/postgresql/8.4/contrib/postgis.sql
+ psql -d osmqa -f /usr/share/postgresql/8.4/contrib/spatial_ref_sys.sql
+ 
+Then,
+ exit
 
 Then, go to http://openlayers.org/dev/examples/vector-formats.html, select WKT format, input proj = epsg:4326, output proj = spherical mercator, and draw a polygon surrounding the area you want to survey, copy the WKT and paste it into scripts/generate_tiles.py
 
@@ -53,7 +56,8 @@ We then convert the GSHHS_f_L1.shp shapefile into SQL:
  shp2pgsql -s 4326 -g geometry -I GSHHS_shp/f/GSHHS_f_L1.shp world_boundaries > /tmp/world_boundaries.sql
 
 Finally, SQL files are inserted:
- sudo su postgres; cat /tmp/world_boundaries.sql sql/osmqa.sql sql/generated/slicendice_tiles.sql sql/generated/tiles.sql | psql -d osmqa
+ sudo su postgres
+ cat /tmp/world_boundaries.sql sql/osmqa.sql sql/generated/slicendice_tiles.sql sql/generated/tiles.sql | psql -d osmqa
 
 To finish with it, paste the polygon WKT into sql/boundaries.sql (L11), and:
  psql -d osmqa -f sql/boundaries.sql
@@ -69,7 +73,7 @@ For the record, this last file:
 App install
 ===========
 
-Install project dependencies:
+Bootstrap your project:
  python bootstrap.py --version 1.4.3 --distribute
 
 Create your config file:
@@ -77,11 +81,16 @@ Create your config file:
 
 Edit the [vars] section of buildout_myconfig.cfg to match your setup (database, servername ...)
 
-Configure your project:
+Install your project and its dependencies:
  buildout/bin/buildout -c buildout_myconfig.cfg
 
+If necessary, create your db user (we assume "www-data" here):
+ sudo su postgres
+ createuser -p 5432 -S -D -R -I -P "www-data"
+
 Grant rights to your db user:
- sudo su postgres; psql -d osmqa -f sql/grants.sql; exit
+ psql -d osmqa -f sql/grants.sql
+ exit
 
 Quick test to check everything's ok :
  source buildout/bin/activate
