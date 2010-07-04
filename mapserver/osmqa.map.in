@@ -31,6 +31,11 @@ MAP
         FORMATOPTION "INTERLACE=OFF"
     END
     
+    SYMBOL
+        NAME reserved
+        TYPE hatch
+    END
+    
     LAYER
         NAME tiles
         DUMP TRUE
@@ -41,22 +46,66 @@ MAP
         CONNECTION "user=${vars:dbuser} password=${vars:dbpassword} dbname=${vars:db} host=${vars:dbhost} port=${vars:dbport}"
         CONNECTIONTYPE postgis
         PROCESSING "CLOSE_CONNECTION=DEFER"
-        DATA "geometry FROM (SELECT id, geometry, %TAG%::integer AS tag FROM tiles) as foo using unique id using srid=900913"
+        DATA "geometry FROM (SELECT id, geometry, %TAG%::integer||'_'||reserved::integer AS tag FROM tiles) as foo using unique id using srid=900913"
         CLASSITEM "tag"
         CLASS
-            NAME "true"
-            EXPRESSION "1"
+            NAME "true_unreserved"
+            EXPRESSION "1_0"
             STYLE
                 OUTLINECOLOR 255 255 255
                 COLOR 0 255 0
             END
         END
         CLASS
-            NAME "false"
-            EXPRESSION "0"
+            NAME "false_unreserved"
+            EXPRESSION "0_0"
             STYLE
                 OUTLINECOLOR 255 0 0
                 COLOR 255 0 0
+            END
+        END
+                CLASS
+            NAME "true_reserved"
+            EXPRESSION "1_1"
+            STYLE
+                OUTLINECOLOR 255 255 255
+                COLOR 0 255 0
+            END
+            STYLE
+                SYMBOL 'reserved'
+                COLOR 0 0 0
+                ANGLE 45
+                SIZE 10
+                WIDTH 2
+            END
+            STYLE
+                SYMBOL 'reserved'
+                COLOR 0 0 0
+                ANGLE 135
+                SIZE 10
+                WIDTH 2
+            END
+        END
+        CLASS
+            NAME "false_reserved"
+            EXPRESSION "0_1"
+            STYLE
+                OUTLINECOLOR 255 0 0
+                COLOR 255 0 0
+            END
+            STYLE
+                SYMBOL 'reserved'
+                COLOR 0 0 0
+                ANGLE 45
+                SIZE 10
+                WIDTH 2
+            END
+            STYLE
+                SYMBOL 'reserved'
+                COLOR 0 0 0
+                ANGLE 135
+                SIZE 10
+                WIDTH 2
             END
         END
         METADATA
