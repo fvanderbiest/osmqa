@@ -64,7 +64,7 @@ MAP
                 COLOR 255 0 0
             END
         END
-                CLASS
+        CLASS
             NAME "true_reserved"
             EXPRESSION "1_1"
             STYLE
