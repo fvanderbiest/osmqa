@@ -42,7 +42,7 @@ Then, go to http://openlayers.org/dev/examples/vector-formats.html, select WKT f
  cd scripts
  python generate_tiles.py
 
-This generates a (big) sql/tiles.sql file and another one: sql/slicendice.sql
+This generates a (big) sql/generated/tiles.sql file and another one: sql/generated/slicendice.sql
 
 Next, we want to use shorelines to filter out vector tiles which do not intersect lands.
 
