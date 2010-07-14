@@ -24,7 +24,10 @@ V3 :
 
 Bugs : 
  - [Sat Jun 26 13:11:50 2010] [error] [client 127.0.1.1] TimeoutError: QueuePool limit of size 5 overflow 10 reached, connection timed out, timeout 30, referer: http://osmqa.org/osmqa/?debug=true ... and no data served
- 
+ [Sun Jul 04 22:21:54 2010] [error] [client 82.239.29.43] Error - <class 'sqlalchemy.exc.TimeoutError'>: QueuePool limit of size 5 overflow 10 reached, connection timed out, timeout 30, referer: http://sd-21654.dedibox.fr/osmqa/
+[Sun Jul 04 22:21:54 2010] [error] [client 82.239.29.43] URL: http://sd-21654.dedibox.fr/osmqa/tiles?bbox=-543590.28685292,6166059.2207873,-516187.6122176,6190098.6661785, referer: http://sd-21654.dedibox.fr/osmqa/
+[Sun Jul 04 22:21:54 2010] [error] [client 82.239.29.43] File '/var/www/domains/www.qualitystreetmap.org/private/osmqa/buildout/eggs/WebError-0.10.2-py2.6.egg/weberror/errormiddleware.py', line 162 in __call__, referer: http://sd-21654.dedibox.fr/osmqa/
+
  
  
 Open discussion: should we use the survey keys as defined on http://wiki.openstreetmap.org/wiki/Romans-sur-Isere ?

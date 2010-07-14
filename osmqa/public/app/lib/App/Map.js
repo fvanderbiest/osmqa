@@ -33,6 +33,7 @@
  * @include OpenLayers/Strategy/BBOX.js
  * @include OpenLayers/Format/GeoJSON.js
  * @include OpenLayers/Control/Navigation.js
+ * @include OpenLayers/Control/ZoomPanel.js
  * @include OpenLayers/Control/LoadingPanel.js
  * @include OpenLayers/Control/PanZoom.js
  * @include OpenLayers/Control/ArgParser.js
@@ -220,6 +221,7 @@ App.Map = (function() {
         
         return [
             new OpenLayers.Control.Navigation(),
+            new OpenLayers.Control.ZoomPanel(),
             new OpenLayers.Control.ArgParser(),
             new OpenLayers.Control.Attribution(),
             new OpenLayers.Control.LoadingPanel({div: $('loading')}),
