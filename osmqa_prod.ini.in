@@ -27,7 +27,7 @@ beaker.session.secret = somesecret
 
 # SQLAlchemy database URL
 #sqlalchemy.url = postgres://${dbuser}:${dbpassword}@${dbhost}:${dbport}/${db}
-sqlalchemy.url = postgres://${dbuser}:${dbpassword}@/${db}?host={dbhost}
+sqlalchemy.url = postgres://${dbuser}:${dbpassword}@/${db}?host=${dbhost}
 
 # WARNING: *THE LINE BELOW MUST BE UNCOMMENTED ON A PRODUCTION ENVIRONMENT*
 # Debug mode will enable the interactive debugging tool, allowing ANYONE to
