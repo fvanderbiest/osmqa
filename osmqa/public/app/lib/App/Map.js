@@ -337,9 +337,10 @@ App.Map = (function() {
             TAG: App.config.defaultTag
         }, {
             isBaseLayer: false,
-            singleTile: true,
+            singleTile: false,
             maxResolution: 156543.0339/(Math.pow(2, 9)), // we need to setup tilecache for lower zoom levels
-            ratio: 1.2,
+            buffer: 0,
+            tileSize: new OpenLayers.Size(512, 512),
             visibility: true,
             opacity: 0.3,
             transitionEffect: 'resize'
