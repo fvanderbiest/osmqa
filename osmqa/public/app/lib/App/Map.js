@@ -302,7 +302,9 @@ App.Map = (function() {
                 format: new OpenLayers.Format.GeoJSON()
             }),
             strategies: [
-                new OpenLayers.Strategy.BBOX(),
+                new OpenLayers.Strategy.BBOX({
+                    ratio: 1.2
+                }),
                 refreshStrategy
             ],
             eventListeners: {
