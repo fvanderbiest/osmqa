@@ -124,6 +124,8 @@ window.onload = function() {
     $('loading').innerHTML = OpenLayers.i18n('loading');
     
     if (!(params.map_x && params.map_y && params.map_zoom)) {
-        mapPanel.map.zoomToExtent(OpenLayers.Bounds.fromString(App.config.startupExtent[lang]));
+        var boundsStr = (App.config.startupExtent.hasOwnProperty(lang)) ? 
+            App.config.startupExtent[lang] : "-1369751,3948310,5537709,12307443";
+        mapPanel.map.zoomToExtent(OpenLayers.Bounds.fromString(boundsStr));
     }
 };
