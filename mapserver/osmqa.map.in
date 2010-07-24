@@ -37,7 +37,8 @@ MAP
     END
     
     LAYER
-        NAME tiles
+        NAME tiles_fill
+        GROUP tiles
         DUMP TRUE
         TEMPLATE tpl.txt
         TRANSPARENCY 50
@@ -111,6 +112,24 @@ MAP
         METADATA
             "wms_title" "osmqa tiles"
             "gml_include_items" "all"
+        END
+    END
+
+    LAYER
+        NAME tiles_stroke
+        GROUP tiles
+        DUMP TRUE
+        TEMPLATE tpl.txt
+        STATUS ON
+        TYPE POLYGON
+        CONNECTION "user=${vars:dbuser} password=${vars:dbpassword} dbname=${vars:db} host=${vars:dbhost} port=${vars:dbport}"
+        CONNECTIONTYPE postgis
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "geometry FROM tiles"
+        CLASS
+            STYLE
+                OUTLINECOLOR 120 120 120
+            END
         END
     END
 END
