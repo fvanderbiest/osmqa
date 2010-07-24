@@ -125,7 +125,7 @@ MAP
         CONNECTION "user=${vars:dbuser} password=${vars:dbpassword} dbname=${vars:db} host=${vars:dbhost} port=${vars:dbport}"
         CONNECTIONTYPE postgis
         PROCESSING "CLOSE_CONNECTION=DEFER"
-        DATA "geometry FROM tiles"
+        DATA "geometry FROM (SELECT id, geometry FROM tiles) as foo using unique id using srid=900913"
         CLASS
             STYLE
                 OUTLINECOLOR 120 120 120
