@@ -263,7 +263,7 @@ App.Map = (function() {
                     // TODO: we have a pb ... restore previous feature value ...
                     Ext.Msg.show({
                         title: OpenLayers.i18n("dialog.error.save.title"),
-                        msg: OpenLayers.i18n("dialog.error.save.msg"),
+                        msg: OpenLayers.i18n("dialog.error.save.msg"), // TODO: add feature id in msg
                         width: 400,
                         buttons: Ext.Msg.OK,
                         icon: Ext.MessageBox.ERROR
@@ -299,6 +299,10 @@ App.Map = (function() {
         tiles = new OpenLayers.Layer.Vector(OpenLayers.i18n("layer.tiles.vector"), {
             protocol: new OpenLayers.Protocol.HTTP({
                 url: 'tiles',
+                params: {
+                    // for a lighter, quicker response
+                    'no_geom': true
+                },
                 format: new OpenLayers.Format.GeoJSON()
             }),
             strategies: [
@@ -308,6 +312,13 @@ App.Map = (function() {
                 refreshStrategy
             ],
             eventListeners: {
+                // to speed up api read calls, no_geom has been added.
+                "beforefeaturesadded": function(cfg) {
+                    // we need to build geometry from bbox
+                    Ext.each(cfg.features, function(f) {
+                        f.geometry = f.bounds.toGeometry();
+                    });
+                },
                 "featuresadded": function() {
                     // FIXME with events ... this breaks our rule of maximum independance between modules
                     var feature, featureId = App.DisplayZone.getSelectedId(); 
