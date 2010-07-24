@@ -344,8 +344,7 @@ App.Map = (function() {
             buffer: 0,
             tileSize: new OpenLayers.Size(512, 512),
             visibility: true,
-            opacity: 0.3,
-            transitionEffect: 'resize'
+            opacity: 0.3
         });
         
         var attrString = '<a href="http://www.brest.fr">Brest Métropole Océane</a>';
