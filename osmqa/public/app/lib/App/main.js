@@ -39,7 +39,8 @@ window.onload = function() {
      */
     
     var params = OpenLayers.Util.getParameters();
-    OpenLayers.Lang.setCode(params.lang || "en");
+    var lang = params.lang || "en";
+    OpenLayers.Lang.setCode(lang);
     OpenLayers.Number.thousandsSeparator = ' ';
     OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 
@@ -123,6 +124,6 @@ window.onload = function() {
     $('loading').innerHTML = OpenLayers.i18n('loading');
     
     if (!(params.map_x && params.map_y && params.map_zoom)) {
-        mapPanel.map.zoomToExtent(OpenLayers.Bounds.fromString(App.config.startupExtent));
+        mapPanel.map.zoomToExtent(OpenLayers.Bounds.fromString(App.config.startupExtent[lang]));
     }
 };

@@ -1,5 +1,4 @@
 TODO before V1 is released :
- - deploy on osm1.crans.org
  - welcome screen/help/wiki ?
 
 V1 (where we are now):

@@ -27,6 +27,10 @@ App.config = {
     // zoom level at which vector tiles appear:
     minZoomlevelForVectors: 12,
     // left bottom right top in spherical mercator (EPSG:900913):
-    startupExtent: "-556461,6143587,-446850,6191896" 
+    startupExtent: {
+        "fr": "-621280,5162735,939258,6710917",
+        "en": "-1188748,6379738,234814,8299323",
+        "it": "738687,4372210,2079087,6024876"
+    }
 };
     
