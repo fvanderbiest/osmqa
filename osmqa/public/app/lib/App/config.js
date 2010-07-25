@@ -25,7 +25,7 @@ App.config = {
     // default tag to display in combobox
     defaultTag: 'highway',
     // zoom level at which vector tiles appear:
-    minZoomlevelForVectors: 12,
+    minZoomlevelForVectors: 13,
     // left bottom right top in spherical mercator (EPSG:900913):
     startupExtent: {
         "fr": "-621280,5162735,939258,6710917",
