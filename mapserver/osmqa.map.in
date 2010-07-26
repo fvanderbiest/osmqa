@@ -37,8 +37,7 @@ MAP
     END
     
     LAYER
-        NAME tiles_fill
-        GROUP tiles
+        NAME tiles
         DUMP TRUE
         TEMPLATE tpl.txt
         TRANSPARENCY 50
@@ -53,7 +52,7 @@ MAP
             NAME "true_unreserved"
             EXPRESSION "1_0"
             STYLE
-                OUTLINECOLOR 255 255 255
+                OUTLINECOLOR 198 120 120
                 COLOR 0 255 0
             END
         END
@@ -61,7 +60,7 @@ MAP
             NAME "false_unreserved"
             EXPRESSION "0_0"
             STYLE
-                OUTLINECOLOR 255 0 0
+                OUTLINECOLOR 198 120 120
                 COLOR 255 0 0
             END
         END
@@ -69,7 +68,7 @@ MAP
             NAME "true_reserved"
             EXPRESSION "1_1"
             STYLE
-                OUTLINECOLOR 255 255 255
+                OUTLINECOLOR 198 120 120
                 COLOR 0 255 0
             END
             STYLE
@@ -91,7 +90,7 @@ MAP
             NAME "false_reserved"
             EXPRESSION "0_1"
             STYLE
-                OUTLINECOLOR 255 0 0
+                OUTLINECOLOR 198 120 120
                 COLOR 255 0 0
             END
             STYLE
@@ -112,24 +111,6 @@ MAP
         METADATA
             "wms_title" "osmqa tiles"
             "gml_include_items" "all"
-        END
-    END
-
-    LAYER
-        NAME tiles_stroke
-        GROUP tiles
-        DUMP TRUE
-        TEMPLATE tpl.txt
-        STATUS ON
-        TYPE POLYGON
-        CONNECTION "user=${vars:dbuser} password=${vars:dbpassword} dbname=${vars:db} host=${vars:dbhost} port=${vars:dbport}"
-        CONNECTIONTYPE postgis
-        PROCESSING "CLOSE_CONNECTION=DEFER"
-        DATA "geometry FROM (SELECT id, geometry FROM tiles) as foo using unique id using srid=900913"
-        CLASS
-            STYLE
-                OUTLINECOLOR 120 120 120
-            END
         END
     END
 END
