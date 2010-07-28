@@ -388,6 +388,21 @@ App.Map = (function() {
             transitionEffect: 'resize'
         });
         
+        attrString = '<a href="http://carto.craig.fr">CRAIG/TopoGEODIS</a>';
+        var ortho_craig = new OpenLayers.Layer.WMS("Ortho CRAIG 2009 @30cm", 'http://wms.craig.fr/osm', {
+            layers: 'departements',
+            format: 'image/jpeg'
+        }, {
+            isBaseLayer: false,
+            buffer: 0,
+            visibility: false,
+            opacity: 0.5,
+            alwaysInRange: false,
+            maxResolution: 156543.0339/(Math.pow(2, 15)),
+            attribution: attrString,
+            transitionEffect: 'resize'
+        });
+        
         tiles.events.on({
             "featureselected": function(e) {
                 observable.fireEvent("tileedit", {
@@ -404,7 +419,7 @@ App.Map = (function() {
             scope: this
         });
         
-        return [mapnik, osmarender, cyclemap, ortho_bmo, ortho_littorale, maplint, raster_tiles, tiles];
+        return [mapnik, osmarender, cyclemap, ortho_bmo, ortho_littorale, ortho_craig, maplint, raster_tiles, tiles];
     };
 
     /**
