@@ -51,9 +51,3 @@ CREATE OR REPLACE RULE update_tiles AS ON UPDATE TO tiles DO INSTEAD (
 );
 CREATE OR REPLACE RULE delete_tiles AS ON DELETE TO tiles DO INSTEAD ();
 CREATE OR REPLACE RULE insert_tiles AS ON INSERT TO tiles DO INSTEAD ();
-
-CREATE TABLE throwaway_grid ( 
-    id serial primary key
-);
-SELECT addGeometryColumn('public', 'throwaway_grid', 'geometry', 900913, 'POLYGON', 2);
-CREATE INDEX throwaway_grid_geometry_idx on throwaway_grid using GIST (geometry GIST_GEOMETRY_OPS); 

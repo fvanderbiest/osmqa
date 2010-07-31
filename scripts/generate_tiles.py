@@ -2,21 +2,10 @@
 #-*- coding: utf-8 -*-
 
 # This script creates a grid of geometries aligned with spherical mercator tiles, in a particular Earth region
-
-# A WKT string is used to define this Earth region (EPSG:900913)
-# Draw with http://openlayers.org/dev/examples/vector-formats.html
-# Brest Region
-#wkt = 'POLYGON((-538728.17527893 6213402.3442011, -538116.67905273 6128693.5677395, -458010.67342102 6124113.8047434, -456787.68096863 6213402.3442011, -538728.17527893 6213402.3442011))' 
-# France and surroundings:
-#wkt = 'POLYGON((-645740.01486328 6163580.1021162, -587036.37714844 6342072.1746128, -264166.3697168 6463205.3904489, 19567.879238281 6463205.3904489, 264166.3697168 6742414.7749688, 450061.22248047 6632702.662042, 792499.10915039 6417574.3447539, 1027313.6600098 6267242.5253677, 909906.38458008 5988743.6733774, 841418.80724609 5817359.2316711, 929474.26381836 5335486.9709201, 1066449.4184863 5402787.7924653, 1154504.8750586 5136435.2698408, 1115369.116582 5031951.2576526, 949042.14305664 4954321.4119625, 831634.86762695 5322085.0229513, 684875.77333984 5175912.1427473, 459845.16209961 5255361.5900812, 430493.34324219 5044950.0293073, 127191.21504883 4890096.6260625, -264166.3697168 4993059.0538548, -293518.18857422 5484200.8827072, -244598.49047852 5760965.05086, -420709.40362305 5874115.800417, -567468.49791016 6017638.0390564, -645740.01486328 6163580.1021162))'
-#europe:
-wkt = 'POLYGON((-724011.53181641 9368139.0005369, -1017529.7203906 8934092.7067132, -1232776.3920117 7146887.0435663, -1174072.7542969 6032121.4534188, -1095801.2373437 4245132.4017651, -547900.61867187 4077950.1484276, 117407.27542969 4439379.0305666, 645740.01486328 4712443.4153707, 900122.44496094 4537846.6097432, 1213208.5127734 4612311.4582612, 1565430.3390625 4125461.2611345, 2152466.7162109 4149292.5050679, 2915614.0065039 4030637.9721219, 3404810.9874609 4030637.9721219, 3874440.0891797 4030637.9721219, 5146352.239668 4293367.6267717, 5752956.4960547 4612311.4582612, 5596413.4621484 5228804.2342048, 5439870.4282422 5525179.9088872, 5870363.7714844 5775029.990958, 5831228.0130078 7047929.8415136, 5205055.8773828 11437759.813374, 2661231.5764063 11874591.296792, 1330615.7882031 11084626.697524, 997961.84115234 10123305.901433, 410925.46400391 9368139.0005369, -117407.27542969 9191342.778025, -724011.53181641 9368139.0005369))'
+# This region is defined in area.py by its WKT string
 
 # Zoom level for which we want to generate tiles (it is recommended to keep z=15)
 z = 15
-
-# Table name for storing the tiles (do not modify unless you know what you're doing)
-tablename = 'tile_geometries'
 
 #####################################
 # DO NOT MODIFY THE FOLLOWING LINES #
@@ -26,13 +15,7 @@ import sys, os
 from shapely.geometry import Polygon
 from shapely.wkt import loads
 from math import floor, ceil
-
-# we need to generate two grids : 
-# - tiles.sql for the survey tiles
-# - slicendice_tiles.sql for the tiles which will slice and dice the world boundaries polygons
-tablenames = [tablename, 'throwaway_grid']
-filenames = ['../sql/generated/tiles.sql', '../sql/generated/slicendice_tiles.sql']
-zs = [z, z-3]
+from area import wkt
 
 # Maximum resolution
 MAXRESOLUTION = 156543.0339;
@@ -59,32 +42,31 @@ def create_square(i, j, a):
     return Polygon([(xmin, ymin),(xmax, ymin),(xmax, ymax),(xmin, ymax)])
 
 
+# tile size (in meters) at the required zoom level
+step = max/(2**(z-1))
 
-for k in range(2):
-    # tile size (in meters) at the required zoom level
-    step = max/(2**(zs[k]-1))
+xminstep = int(floor((xmin+max)/step))
+xmaxstep = int(ceil((xmax+max)/step))
+yminstep = int(floor((ymin+max)/step))
+ymaxstep = int(ceil((ymax+max)/step))
 
-    xminstep = int(floor((xmin+max)/step))
-    xmaxstep = int(ceil((xmax+max)/step))
-    yminstep = int(floor((ymin+max)/step))
-    ymaxstep = int(ceil((ymax+max)/step))
+tot = (xminstep - xmaxstep - 1) * (yminstep - ymaxstep - 1)
 
-    tot = (xminstep - xmaxstep - 1) * (yminstep - ymaxstep - 1)
+percent = 0
+count = 1
 
-    percent = 0
-    count = 1
+filed = open('../sql/generated/tiles.sql', 'w')
 
-    filed = open(filenames[k], 'w')
-
-    for i in range(xminstep,xmaxstep+1):
-        for j in range(yminstep,ymaxstep+1):
-            filed.write("INSERT INTO %s (geometry) SELECT GeometryFromText('%s',900913);\r\n"%(tablenames[k],create_square(i,j,step).wkt))
-            if k == 0:
-                filed.write("INSERT INTO tags (map_id, tile_geometry_id) VALUES (1, %s);\r\n"%(count));
-            count = count+1
-            p = int(round(1000 * count / tot))
-            if p > percent:
-                percent = p
-                print percent
-                
-    filed.close()
+for i in range(xminstep,xmaxstep+1):
+    for j in range(yminstep,ymaxstep+1):
+        # TO DO: generate WKB
+        # TO DO: use COPY instead of INSERT
+        filed.write("INSERT INTO tile_geometries (geometry) SELECT GeometryFromText('%s',900913);\r\n"%(create_square(i,j,step).wkt))
+        filed.write("INSERT INTO tags (map_id, tile_geometry_id) VALUES (1, %s);\r\n"%(count));
+        count = count+1
+        p = int(round(100 * count / tot))
+        if p > percent:
+            percent = p
+            print percent
+            
+filed.close()

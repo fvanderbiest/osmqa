@@ -1,0 +1,85 @@
+#! /usr/bin/env python
+#-*- coding: utf-8 -*-
+
+
+#####################################
+# DO NOT MODIFY THE FOLLOWING LINES #
+#####################################
+
+import sys, os
+import psycopg2
+from area import wkt
+
+# test connection
+try:
+    conn = psycopg2.connect("user='${vars:dbuser}' password='${vars:dbpassword}' dbname='${vars:db}' host='${vars:dbhost}' port='${vars:dbport}'")
+except:
+    sys.exit("I am unable to connect to the database")
+    
+
+print "Database connection OK"
+
+# add a geometry field to processed_p table
+try:
+    cur = conn.cursor()
+    cur.execute("SELECT addGeometryColumn('public', 'processed_p', 'geometry_cropped', 900913, 'GEOMETRY', 2)")
+    cur.execute("CREATE INDEX processed_p_geometry_cropped_idx on processed_p using GIST (geometry_cropped GIST_GEOMETRY_OPS)") 
+    # TODO: check this works !
+    cur.close()
+except:
+    sys.exit("Could not add a geom field to processed_p table. Did you import processed_p.shp ?")
+
+print "Created index on processed_p"
+
+# Cropp the geometries to those lying inside our region of interest
+cur = conn.cursor()
+cur.execute("UPDATE processed_p SET geometry_cropped = st_intersection(geometry, geomfromtext('%s', 900913))" % (wkt))
+cur.close()
+
+print "processed_p geometries cropped to wkt extent"
+
+# Get number of polygons
+cur = conn.cursor()
+cur.execute("SELECT max(gid) from processed_p")
+rows = cur.fetchall()
+maxgid = rows[0][0]
+cur.close()
+
+print "intersection computation starts"
+
+percent = 0
+for i in range(0, maxgid):
+    cur = conn.cursor()
+    conn.set_isolation_level(0)
+    cur.execute("UPDATE tile_geometries SET intersectsland = true WHERE tile_geometries.geometry && (SELECT geometry_cropped FROM processed_p WHERE gid=%s AND ST_IsValid(geometry_cropped)) AND ST_intersects(tile_geometries.geometry, (SELECT geometry_cropped FROM processed_p WHERE gid=%s AND ST_IsValid(geometry_cropped)));" % (i, i))
+    cur.close()
+    
+    p = int(round(100 * i / maxgid))
+    if p > percent:
+        percent = p
+        print percent
+
+print "intersection computation is over"
+
+# delete tiles over water
+cur = conn.cursor()
+cur.execute("DELETE FROM tile_geometries WHERE intersectsland = false;")
+cur.close()
+
+print "deleted useless tiles"
+
+cur = conn.cursor()
+cur.execute("DROP TABLE processed_p;")
+cur.close()
+
+print "we're now cleaning the database ... please wait"
+
+cur = conn.cursor()
+cur.execute("VACUUM ANALYZE;")
+cur.close()
+
+cur = conn.cursor()
+cur.execute("CLUSTER tile_geometries_geometry_idx ON tile_geometries;")
+cur.close()
+    
+print "all done !"

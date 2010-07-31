@@ -2,16 +2,19 @@ To speed up rendering, you might want to try these tips.
 
 POSTGRESQL
 ==========
-In postgresql.conf:
+In /etc/postgresql/X.Y/main/postgresql.conf:
+
 * shared_buffers: 75% of the available RAM => rather 500MB than 32MB
 * work_mem: 16MB rather than 1MB
 * wal_buffers: 1MB rather than 64kb
 * chekpoint_segments: 6 rather than 3
 * random_page_cost: 2 rather than 4
 
+For osmqa, we also recommend:
+* autovacuum = off
+
 Remember to restart Postgresql after each configuration change.
 And, of course, it's better to measure rendering time each time a parameter has been modified.
-
 
 After setting shared_buffers to a higher value, postgresql will probably complain and refuse to restart.
 In that case, add this line to /etc/sysctl.conf (here for 512MB) :
