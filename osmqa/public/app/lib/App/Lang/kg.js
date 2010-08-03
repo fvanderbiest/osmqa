@@ -20,10 +20,10 @@
  */
 
 /*
- * @requires OpenLayers/Lang/en.js
+ * @requires OpenLayers/Lang/ru.js
  * @requires App/config.js
  */
-OpenLayers.Util.extend(OpenLayers.Lang.en, {
+OpenLayers.Util.extend(OpenLayers.Lang.ru, {
     "app.title": "Quality Grid",
     "btn.refresh.text": "refresh",
     "btn.refresh.tooltip": "Force tiles reloading (this happens every 5 minutes)",
