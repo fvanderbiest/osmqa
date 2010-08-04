@@ -48,13 +48,15 @@ OpenLayers.Util.extend(OpenLayers.Lang.fr, {
     "dialog.error.save.msg": "On n'a pas pu sauvegarder la modification.",
     "dialog.info.clic.title": "Pas encore...",
     "dialog.info.clic.msg": "Il faut zoomer au dela de z="+(App.config.minZoomlevelForVectors-1)+" pour pouvoir sélectionner une tuile !",
-    "layer.tiles.vector": "Tuiles vectorielles (contours)",
-    "layer.tiles.raster": "Tuiles raster (remplissage)",
+    "layer.tiles.vector": "Contours",
+    "layer.tiles.raster": "Remplissage",
     "layer.osm.attribution": "Données CC-By-SA par <a href='http://openstreetmap.org/'>OpenStreetMap</a>",
+    "layer.menu.lint": "Maplint",
+    "layer.menu.tiles": "Tuiles",
     'dialog.permalink.title': "Permalien",
     'dialog.permalink.btn.open': "Ouvrir le lien",
     'dialog.btn.close': "Fermer",
     'layertree.btn.addlayers': "Ajouter des couches",
     'layertree.btn.permalink': "Permalien",
-    'layertree.rootnode.text': "Couches"
+    'layertree.rootnode.text': "Couches de base"
 });

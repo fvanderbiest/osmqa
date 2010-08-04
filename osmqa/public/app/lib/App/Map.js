@@ -40,6 +40,9 @@
  * @include OpenLayers/Control/Attribution.js
  * @include OpenLayers/Control/ScaleLine.js
  * @include OpenLayers/Control/SelectFeature.js
+ * @include OpenLayers/Control/Panel.js
+ * @include OpenLayers/Control/MenuButton.js
+ * @include OpenLayers/Control/LayerSelector.js
  * @include GeoExt/widgets/MapPanel.js
  * @include App/Control.Click.js
  * @include App/Tools.js
@@ -275,18 +278,17 @@ App.Map = (function() {
     };
     
     /**
-     * Method: getLayers
-     * Returns the list of layers.
+     * Method: createOverlayLayers
+     * creates all overlay layers, adds them to the map
      *
-     * Returns:
-     * {Array({OpenLayers.Layer})} An array of OpenLayers.Layer objects.
+     * Parameters:
+     * map - {OpenLayers.Map}
      */
-    var getLayers = function() {
+    var createOverlayLayers = function(map) {
         
-        var mapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
-        var osmarender = new OpenLayers.Layer.OSM.Osmarender("Osmarender");
-        var cyclemap = new OpenLayers.Layer.OSM.CycleMap("Cycle Map");
-        var maplint = new OpenLayers.Layer.OSM.Maplint("Maplint");
+        var maplint = new OpenLayers.Layer.OSM.Maplint("Maplint", {
+            displayInLayerSwitcher: false
+        });
         
         refreshStrategy = new OpenLayers.Strategy.Refresh({
             interval: 5*60*1000, // 5 minutes
@@ -295,8 +297,9 @@ App.Map = (function() {
         
         // transition resolution between raster/vectors
         var transitionResolution = 156543.0339/(Math.pow(2, App.config.minZoomlevelForVectors));
-            
+
         tiles = new OpenLayers.Layer.Vector(OpenLayers.i18n("layer.tiles.vector"), {
+            displayInLayerSwitcher: false,
             protocol: new OpenLayers.Protocol.HTTP({
                 url: 'tiles',
                 params: {
@@ -355,11 +358,12 @@ App.Map = (function() {
             buffer: 0,
             tileSize: new OpenLayers.Size(512, 512),
             visibility: true,
+            displayInLayerSwitcher: false,
             opacity: 0.3
         });
         
         var attrString = '<a href="http://www.brest.fr">Brest Métropole Océane</a>';
-        var ortho_bmo = new OpenLayers.Layer.WMS("Ortho BMO 2004 @20cm", 'http://bmo.openstreetmap.fr/wms', {
+        var ortho_bmo = new OpenLayers.Layer.WMS("BMO 2004", 'http://bmo.openstreetmap.fr/wms', {
             layers: 'ortho',
             format: 'image/jpeg'
         }, {
@@ -370,11 +374,12 @@ App.Map = (function() {
             alwaysInRange: false,
             maxResolution: 156543.0339/(Math.pow(2, 15)),
             attribution: attrString,
+            displayInLayerSwitcher: false,
             transitionEffect: 'resize'
         });
         
         attrString = '<a href="http://www.geolittoral.equipement.gouv.fr/">GeoLittoral</a>';
-        var ortho_littorale = new OpenLayers.Layer.WMS("Ortho Littorale 2000 @50cm", 'http://bmo.openstreetmap.fr/wms', {
+        var ortho_littorale = new OpenLayers.Layer.WMS("GeoLittoral 2000", 'http://bmo.openstreetmap.fr/wms', {
             layers: 'ortholittorale',
             format: 'image/jpeg'
         }, {
@@ -385,11 +390,12 @@ App.Map = (function() {
             alwaysInRange: false,
             maxResolution: 156543.0339/(Math.pow(2, 15)),
             attribution: attrString,
+            displayInLayerSwitcher: false,
             transitionEffect: 'resize'
         });
         
         attrString = '<a href="http://carto.craig.fr">CRAIG/TopoGEODIS</a>';
-        var ortho_craig = new OpenLayers.Layer.WMS("Ortho CRAIG 2009 @30cm", 'http://wms.craig.fr/osm', {
+        var ortho_craig = new OpenLayers.Layer.WMS("CRAIG 2009", 'http://wms.craig.fr/osm', {
             layers: 'departements',
             format: 'image/jpeg'
         }, {
@@ -400,6 +406,7 @@ App.Map = (function() {
             alwaysInRange: false,
             maxResolution: 156543.0339/(Math.pow(2, 15)),
             attribution: attrString,
+            displayInLayerSwitcher: false,
             transitionEffect: 'resize'
         });
         
@@ -419,7 +426,45 @@ App.Map = (function() {
             scope: this
         });
         
-        return [mapnik, osmarender, cyclemap, ortho_bmo, ortho_littorale, ortho_craig, maplint, raster_tiles, tiles];
+        map.addLayers([ortho_bmo, ortho_littorale, ortho_craig, maplint, raster_tiles, tiles]);
+        
+        var p = new OpenLayers.Control.Panel();
+        p.addControls([
+            new OpenLayers.Control.MenuButton(
+                OpenLayers.i18n("layer.menu.lint"), // 'Lint',
+                new OpenLayers.Control.OverlayLayerSelector({
+                    layers: [maplint]
+                })
+            ),
+            new OpenLayers.Control.MenuButton(
+                'WMS',
+                new OpenLayers.Control.OverlayLayerSelector({
+                    layers: [ortho_bmo, ortho_littorale, ortho_craig]
+                })
+            ),
+            new OpenLayers.Control.MenuButton(
+                OpenLayers.i18n("layer.menu.tiles"), // 'Tiles'
+                new OpenLayers.Control.OverlayLayerSelector({
+                    layers: [tiles, raster_tiles]
+                })
+            )
+        ]);
+        map.addControl(p);
+    };
+    
+    /**
+     * Method: getBaseLayers
+     * Returns the list of base layers.
+     *
+     * Returns:
+     * {Array({OpenLayers.Layer})} An array of OpenLayers.Layer objects.
+     */
+    var getBaseLayers = function() {
+        return [
+            new OpenLayers.Layer.OSM.Mapnik("Mapnik"), 
+            new OpenLayers.Layer.OSM.Osmarender("Osmarender"), 
+            new OpenLayers.Layer.OSM.CycleMap("Cycle Map")
+        ];
     };
 
     /**
@@ -435,11 +480,11 @@ App.Map = (function() {
             maxExtent: new OpenLayers.Bounds(-m, -m, m, m),
             units: "m",
             theme: null,
-            layers: getLayers(),
-            controls: getControls()
+            layers: getBaseLayers(),
+            controls: []
         });
-        //sfControl.activate();
-        //hfControl.activate();
+        createOverlayLayers(map);
+        map.addControls(getControls());
         return map;
     };
 

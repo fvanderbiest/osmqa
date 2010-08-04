@@ -104,3 +104,46 @@ html, body {
     left:15px;
     top:90px;
 }
+
+
+.olControlPanel {
+  right: 10px;
+  top: 10px;
+}
+.olControlPanel div { 
+  display:block;
+  float: right;
+  margin: 5px;
+}
+.olControlMenuButton {
+	position: relative;
+	width: auto;
+	padding: 2px 8px;
+	background: #fff;
+	border: 1px solid #aaa;
+	font-size: 12px;
+	line-height: 12px;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+.olUnfolded {
+	border-bottom: 1px solid #fff;
+	-moz-border-radius: 3px 3px 0 0;
+}
+.olMenuContainer {
+	border: 1px solid #aaa;
+	background: #fff;
+	padding: 2px;
+	width: 120px;
+	font-size: 12px;
+	border-radius: 3px 0 3px 3px;
+	-moz-border-radius: 3px 0 3px 3px;
+	-webkit-border-radius: 3px 0 3px 3px;
+}
+.olMenuContainer label, .olMenuContainer input {
+	vertical-align: middle;
+}
+.olMenuContainer input {
+	vertical-align: middle;
+}
