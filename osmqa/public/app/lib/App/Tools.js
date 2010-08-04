@@ -117,7 +117,7 @@ App.Tools = (function() {
             layout: 'fit',
             xtype: 'container',
             cls: 'pad-left',
-            width: 62,
+            width: 75,
             items: [refresh]
         }];
     };
@@ -146,7 +146,7 @@ App.Tools = (function() {
             if (!panel) {
                 panel = new Ext.Container(Ext.apply({
                     renderTo: 'containerpanel',
-                    width: 145,
+                    width: 155,
                     height: 50,
                     layout: 'border',
                     defaults: {
