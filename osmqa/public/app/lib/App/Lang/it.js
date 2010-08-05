@@ -58,5 +58,5 @@ OpenLayers.Util.extend(OpenLayers.Lang.en, {
     'dialog.btn.close': "Chiudi",
     'layertree.btn.addlayers': "Aggiungi layers WMS",
     'layertree.btn.permalink': "Permalink",
-    'layertree.rootnode.text': "Layers"
+    'layer.menu.baselayers': "Base layer"
 });

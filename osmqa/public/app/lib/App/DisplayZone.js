@@ -24,6 +24,7 @@
  * @include OpenLayers/Layer/SphericalMercator.js
  * @include OpenLayers/Util.js
  * @include App/Util.js
+ * @include App/Permalink.js
  */
 
 Ext.namespace('App');
@@ -257,19 +258,31 @@ App.DisplayZone = (function() {
          */
         getPanel: function(options) {
             if (!panel) {
-                panel = new Ext.Panel(Ext.apply({
-                    id: 'displayZone',
-                    layout: 'card',
-                    activeItem: 'def',
-                    defaults: {
-                        border:false
-                    },
-                    items: [{
-                        id: 'def',
-                        bodyStyle: 'padding:.5em;',
-                        html: "<p>"+OpenLayers.i18n('displayzone.defaulttext')+"</p>"
-                    }]
-                }, options));
+                App.Permalink.init();
+                var permalink = App.Permalink.getAction({
+                    text: OpenLayers.i18n('layertree.btn.permalink')
+                });
+                panel = new Ext.Panel(
+                    Ext.apply({
+                        id: 'displayZone',
+                        layout: 'card',
+                        activeItem: 'def',
+                        defaults: {
+                            border:false
+                        },
+                        items: [{
+                            id: 'def',
+                            bodyStyle: 'padding:.5em;',
+                            html: "<p>"+OpenLayers.i18n('displayzone.defaulttext')+"</p>"
+                        }], 
+                        buttons: [ new Ext.Button(permalink), {
+                            text: OpenLayers.i18n('layertree.btn.addlayers'),
+                            handler: function() {
+                                alert('To do...');
+                            }
+                        }]
+                    }, options)
+                );
             }
             return panel;
         },

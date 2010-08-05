@@ -58,5 +58,5 @@ OpenLayers.Util.extend(OpenLayers.Lang.de, {
     'dialog.btn.close': "Schliessen",
     'layertree.btn.addlayers': "WMS-Ebenen hinzufügen",
     'layertree.btn.permalink': "Permalink",
-    'layertree.rootnode.text': "Ebenen"
+    'layer.menu.baselayers': "Ebenen"
 });

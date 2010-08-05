@@ -22,7 +22,6 @@
 /*
  * @include App/Map.js
  * @include App/config.js
- * @include App/LayerTree.js
  * @include App/DisplayZone.js
  */
 
@@ -106,11 +105,7 @@ window.onload = function() {
                 collapseMode: "mini",
                 border: false,
                 items: [
-                    App.LayerTree.getPanel(mapPanel.layers, {
-                        region: 'north',
-                        height: 150,
-                        autoScroll: true
-                    }), App.DisplayZone.getPanel({
+                    App.DisplayZone.getPanel({
                         region: 'center'
                     })
                 ]

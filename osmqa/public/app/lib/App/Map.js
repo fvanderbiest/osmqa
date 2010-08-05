@@ -43,6 +43,7 @@
  * @include OpenLayers/Control/Panel.js
  * @include OpenLayers/Control/MenuButton.js
  * @include OpenLayers/Control/LayerSelector.js
+ * @include App/Control.BaseLayerSelector.js
  * @include GeoExt/widgets/MapPanel.js
  * @include App/Control.Click.js
  * @include App/Tools.js
@@ -431,11 +432,17 @@ App.Map = (function() {
         var p = new OpenLayers.Control.Panel();
         p.addControls([
             new OpenLayers.Control.MenuButton(
+                OpenLayers.i18n("layer.menu.baselayers"), 
+                new OpenLayers.Control.BaseLayerSelector({
+                    layers: map.getLayersBy('isBaseLayer', true)
+                })
+            ),/*
+            new OpenLayers.Control.MenuButton(
                 OpenLayers.i18n("layer.menu.lint"), // 'Lint',
                 new OpenLayers.Control.OverlayLayerSelector({
                     layers: [maplint]
                 })
-            ),
+            ),*/
             new OpenLayers.Control.MenuButton(
                 'WMS',
                 new OpenLayers.Control.OverlayLayerSelector({

@@ -58,5 +58,5 @@ OpenLayers.Util.extend(OpenLayers.Lang.fr, {
     'dialog.btn.close': "Fermer",
     'layertree.btn.addlayers': "Ajouter des couches",
     'layertree.btn.permalink': "Permalien",
-    'layertree.rootnode.text': "Couches de base"
+    'layer.menu.baselayers': "Couche de base"
 });
