@@ -187,6 +187,7 @@ App.DisplayZone = (function() {
             xtype: 'propertygrid',
             title: getTitle(feature),
             trackMouseOver: true,
+            clicksToEdit: 'auto',
             customRenderers: {
                 "highway": gridRenderer,
                 "building": gridRenderer,
