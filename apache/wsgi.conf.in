@@ -10,3 +10,9 @@
 #WSGIPassAuthorization On
 
 WSGIScriptAlias /${vars:instanceid} ${buildout:directory}/buildout/parts/modwsgi/wsgi
+
+<IfModule mod_deflate.c>
+  <Location /${vars:instanceid}>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/x-javascript application/javascript application/json
+  </Location>
+</IfModule>

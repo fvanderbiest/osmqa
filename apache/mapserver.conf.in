@@ -8,3 +8,9 @@ ScriptAlias /mapserv /usr/lib/cgi-bin/mapserv
    SetEnv MS_MAPFILE_PATTERN "^${buildout:directory}/mapserver/${vars:package}.map$"
 </Location>
 
+<IfModule mod_expires.c>
+  <Location /mapserv>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 day"
+  </Location>
+</IfModule>
