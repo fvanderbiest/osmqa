@@ -145,7 +145,6 @@ App.DisplayZone = (function() {
      *
      * Parameters:
      * attrs - {Object} attributes hash
-     *
      */
     var updateCurrentFeature = function(attrs) {
         Ext.apply(editedFeature.attributes, attrs);
@@ -171,6 +170,25 @@ App.DisplayZone = (function() {
     };
     
     /**
+     * Method: createTagHash
+     * Utility method to create a hash with all available tags as keys
+     * and input object as value
+     *
+     * Parameters:
+     * value - {whatever} 
+     *
+     * Returns:
+     * {Object} An object with all available OSM tag keys as keys
+     */
+    var createTagHash = function(value) {
+        var tags = App.config.tags, out = {};
+        for (var i=0, l=tags.length;i<l;i++) {
+            out[tags[i]] = value;
+        }
+        return out;
+    };
+    
+    /**
      * Method: createGrid
      * Creates a basic xtyped hash for property grid
      *
@@ -182,17 +200,15 @@ App.DisplayZone = (function() {
      * {Object} xtyped property grid object
      */
     var createGrid = function(feature, options) {
+        
         return Ext.apply({
             id: 'propGrid',
             xtype: 'propertygrid',
             title: getTitle(feature),
             trackMouseOver: true,
+            stripeRows: true,
+            customRenderers: createTagHash(gridRenderer),
             clicksToEdit: 'auto',
-            customRenderers: {
-                "highway": gridRenderer,
-                "building": gridRenderer,
-                "landuse": gridRenderer
-            },
             source: removeReservedTags(feature.attributes)
         }, options);
     };
@@ -276,12 +292,12 @@ App.DisplayZone = (function() {
                             bodyStyle: 'padding:.5em;',
                             html: "<p>"+OpenLayers.i18n('displayzone.defaulttext')+"</p>"
                         }], 
-                        buttons: [ new Ext.Button(permalink), {
+                        buttons: [ new Ext.Button(permalink)/*, {
                             text: OpenLayers.i18n('layertree.btn.addlayers'),
                             handler: function() {
                                 alert('To do...');
                             }
-                        }]
+                        }*/]
                     }, options)
                 );
             }
@@ -294,11 +310,7 @@ App.DisplayZone = (function() {
          */
         clear: function() {
             highlightedFeature = null;
-            var newSource = {
-                "highway": null,
-                "building": null,
-                "landuse": null
-            };
+            var newSource = createTagHash(null);
             propGrid.setSource(newSource);
             propGrid.setTitle(OpenLayers.i18n('Tile'));
             editedFeature = null;
@@ -386,11 +398,7 @@ App.DisplayZone = (function() {
                         tooltip: OpenLayers.i18n('displayzone.bbar.allnok.tooltip'),
                         ref: '../allnokButton',
                         handler: function() {                        
-                            var newSource = {
-                                "highway": false,
-                                "building": false,
-                                "landuse": false
-                            };
+                            var newSource = createTagHash(false); 
                             editGrid.setSource(newSource);
                             updateCurrentFeature(newSource);
                         }
@@ -401,11 +409,7 @@ App.DisplayZone = (function() {
                         //tooltip: 'Mark all fields as OK / true',
                         ref: '../allokButton',
                         handler: function() {
-                            var newSource = {
-                                "highway": true,
-                                "building": true,
-                                "landuse": true
-                            };
+                            var newSource = createTagHash(true); 
                             editGrid.setSource(newSource);
                             updateCurrentFeature(newSource);
                         }

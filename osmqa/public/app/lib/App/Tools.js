@@ -72,15 +72,16 @@ App.Tools = (function() {
      */
     var getItems = function(map) {
         
+        var tags = App.config.tags.sort(), l = tags.length, data = new Array(l);
+        for (var i=0;i<l;i++) {
+            data[i] = [tags[i], tags[i]];
+        }
+        
         var tagCombo = new Ext.form.ComboBox({
             name: 'tag',
             store: new Ext.data.SimpleStore({
                 fields: ['value', 'text'],
-                data : [
-                    ['highway', 'highway'],
-                    ['building', 'building'],
-                    ['landuse', 'landuse']
-                ]
+                data: data
             }),
             value: App.config.defaultTag,
             valueField: 'value',

@@ -24,6 +24,8 @@ Ext.namespace('App');
 App.config = {
     // default tag to display in combobox
     defaultTag: 'highway',
+    // all tags which can be surveyed
+    tags: ['highway', 'building', 'landuse', 'barrier', 'cycleway', 'tracktype', 'waterway', 'railway', 'aeroway', 'aerialway', 'power', 'man_made', 'leisure', 'amenity', 'office', 'shop', 'tourism', 'historic', 'military', 'natural', 'sport', 'abutters', 'name', 'ref', 'place', 'addr'],
     // zoom level at which vector tiles appear:
     minZoomlevelForVectors: 13,
     // left bottom right top in spherical mercator (EPSG:900913):
