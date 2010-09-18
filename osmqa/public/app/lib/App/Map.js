@@ -411,6 +411,22 @@ App.Map = (function() {
             transitionEffect: 'resize'
         });
         
+        attrString = '<a href="http://www.ville-grasse.fr/">Ville de Grasse</a>';
+        var ortho_grasse = new OpenLayers.Layer.WMS("Grasse", 'http://maps.qualitystreetmap.org/grasse?', {
+            layers: 'ortho',
+            format: 'image/jpeg'
+        }, {
+            isBaseLayer: false,
+            buffer: 0,
+            visibility: false,
+            opacity: 0.5,
+            alwaysInRange: false,
+            maxResolution: 156543.0339/(Math.pow(2, 15)),
+            attribution: attrString,
+            displayInLayerSwitcher: false,
+            transitionEffect: 'resize'
+        });
+        
         tiles.events.on({
             "featureselected": function(e) {
                 observable.fireEvent("tileedit", {
@@ -427,7 +443,7 @@ App.Map = (function() {
             scope: this
         });
         
-        map.addLayers([ortho_bmo, ortho_littorale, ortho_craig, maplint, raster_tiles, tiles]);
+        map.addLayers([ortho_bmo, ortho_littorale, ortho_craig, ortho_grasse, maplint, raster_tiles, tiles]);
         
         var p = new OpenLayers.Control.Panel();
         p.addControls([
@@ -446,7 +462,7 @@ App.Map = (function() {
             new OpenLayers.Control.MenuButton(
                 'WMS',
                 new OpenLayers.Control.OverlayLayerSelector({
-                    layers: [ortho_bmo, ortho_littorale, ortho_craig]
+                    layers: [ortho_bmo, ortho_littorale, ortho_craig, ortho_grasse]
                 })
             ),
             new OpenLayers.Control.MenuButton(
