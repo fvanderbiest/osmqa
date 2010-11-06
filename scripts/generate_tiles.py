@@ -7,6 +7,9 @@
 # Zoom level for which we want to generate tiles (it is recommended to keep z=15)
 z = 15
 
+# fast mode (set this to 0 in order to deactivate) : needs RAM !
+fast_mode = 1
+
 #####################################
 # DO NOT MODIFY THE FOLLOWING LINES #
 #####################################
@@ -54,19 +57,47 @@ tot = (xminstep - xmaxstep - 1) * (yminstep - ymaxstep - 1)
 
 percent = 0
 count = 1
+c = 1
+str = ''
 
-filed = open('../sql/generated/tiles.sql', 'w')
+if not fast_mode:
+    filed = open('../sql/generated/tiles.sql', 'w')
 
 for i in range(xminstep,xmaxstep+1):
     for j in range(yminstep,ymaxstep+1):
         # TO DO: generate WKB
         # TO DO: use COPY instead of INSERT
-        filed.write("INSERT INTO tile_geometries (geometry) SELECT GeometryFromText('%s',900913);\r\n"%(create_square(i,j,step).wkt))
-        filed.write("INSERT INTO tags (map_id, tile_geometry_id) VALUES (1, %s);\r\n"%(count));
+        s = "INSERT INTO tile_geometries (geometry) SELECT GeometryFromText('%s',900913);\r\n"%(create_square(i,j,step).wkt)
+        if fast_mode:
+            str += s
+        else:
+            filed.write(s)
         count = count+1
-        p = int(round(100 * count / tot))
+        p = int(round(50 * count / tot))
         if p > percent:
             percent = p
             print percent
-            
+
+for i in range(xminstep,xmaxstep+1):
+    for j in range(yminstep,ymaxstep+1):
+        # TO DO: generate WKB
+        # TO DO: use COPY instead of INSERT
+        s = "INSERT INTO tags (map_id, tile_geometry_id) VALUES (1, %s);\r\n"%(c)
+        if fast_mode:
+            str += s
+        else:
+            filed.write(s)
+        count = count+1
+        c = c+1
+        p = int(round(50 * count / tot))
+        if p > percent:
+            percent = p
+            print percent
+
+if fast_mode:
+    print "Saving file, please wait..."
+    filed = open('../sql/generated/tiles.sql', 'w')
+    filed.write(str)
+
 filed.close()
+print "All done"

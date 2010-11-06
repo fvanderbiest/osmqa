@@ -31,7 +31,7 @@ except:
 
 print "Created index on processed_p"
 
-# Cropp the geometries to those lying inside our region of interest
+# Crop the geometries to those lying inside our region of interest
 cur = conn.cursor()
 cur.execute("UPDATE processed_p SET geometry_cropped = st_intersection(geometry, geomfromtext('%s', 900913))" % (wkt))
 cur.close()
