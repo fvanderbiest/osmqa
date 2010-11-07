@@ -227,7 +227,7 @@ App.DisplayZone = (function() {
         var link = base + OpenLayers.Util.getParameterString({
             lon: App.Util.round(geom.lon,5),
             lat: App.Util.round(geom.lat,5),
-            zoom: 16
+            zoom: 15
         });
         window.open(link+'#make');                        
     };
