@@ -214,6 +214,25 @@ App.DisplayZone = (function() {
     };
     
     /**
+     * Method: WalkingPapersOpen
+     * Opens WalkingPapers on the current tile area
+     */
+    var WalkingPapersOpen = function() {
+        var base = 'http://walking-papers.org/?'; // TODO: config ?
+        var geom = editedFeature.geometry.clone();
+        geom = geom.getBounds().getCenterLonLat();
+        geom.transform(
+            new OpenLayers.Projection("EPSG:900913"), 
+            new OpenLayers.Projection("EPSG:4326"));
+        var link = base + OpenLayers.Util.getParameterString({
+            lon: App.Util.round(geom.lon,5),
+            lat: App.Util.round(geom.lat,5),
+            zoom: 16
+        });
+        window.open(link+'#make');                        
+    };
+    
+    /**
      * Method: potlatchOpen
      * Opens potlatch on the current tile area
      */
@@ -378,6 +397,11 @@ App.DisplayZone = (function() {
                         tooltip: OpenLayers.i18n('displayzone.tbar.potlatch.tooltip'),
                         ref: '../potlatchButton',
                         handler: potlatchOpen
+                    },{
+                        text: OpenLayers.i18n('displayzone.tbar.walkingpapers'),
+                        tooltip: OpenLayers.i18n('displayzone.tbar.walkingpapers.tooltip'),
+                        ref: '../walkingpapersButton',
+                        handler: WalkingPapersOpen
                     },{
                         text: OpenLayers.i18n('displayzone.tbar.unreserve'),
                         tooltip: OpenLayers.i18n('displayzone.tbar.unreserve.tooltip'),

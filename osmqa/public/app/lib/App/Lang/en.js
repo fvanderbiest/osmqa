@@ -37,6 +37,8 @@ OpenLayers.Util.extend(OpenLayers.Lang.en, {
     'displayzone.tbar.josm.tooltip': "Load this data in JOSM, with the remotecontrol plugin",
     'displayzone.tbar.potlatch': "Potlatch",
     'displayzone.tbar.potlatch.tooltip': "Load this data in Potlatch (new window)",
+    'displayzone.tbar.walkingpapers.tooltip': "Load this area in Walking Papers (new window)",
+    'displayzone.tbar.walkingpapers': "WP",
     'displayzone.tbar.unreserve': "Unreserve",
     'displayzone.tbar.unreserve.tooltip': "Mark this area as NOT reserved (when you're done with it)",
     'displayzone.bbar.allnok': "All NOK",

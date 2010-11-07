@@ -37,6 +37,8 @@ OpenLayers.Util.extend(OpenLayers.Lang.de, {
     'displayzone.tbar.josm.tooltip': "Diese Daten in JOSM mit dem Remotecontrol-Plugin laden",
     'displayzone.tbar.potlatch': "Potlatch",
     'displayzone.tbar.potlatch.tooltip': "Diese Daten in Potlatch laden (öffnet neues Fenster)",
+    'displayzone.tbar.walkingpapers.tooltip': "Diese Gebiet in Walking Papers laden (öffnet neues Fenster)",
+    'displayzone.tbar.walkingpapers': "WP",
     'displayzone.tbar.unreserve': "Freigeben",
     'displayzone.tbar.unreserve.tooltip': "Dieses Gebiet als NICHT reserviert markieren (wenn fertig bearbeitet)",
     'displayzone.bbar.allnok': "Alle NOK",

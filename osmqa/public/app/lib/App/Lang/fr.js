@@ -37,6 +37,8 @@ OpenLayers.Util.extend(OpenLayers.Lang.fr, {
     'displayzone.tbar.josm.tooltip': "Charger cette zone dans JOSM, avec le plugin remotecontrol",
     'displayzone.tbar.potlatch': "Potlatch",
     'displayzone.tbar.potlatch.tooltip': "Charger cette zone dans Potlatch (nouvelle fenêtre)",
+    'displayzone.tbar.walkingpapers.tooltip': "Ouvrir cette zone dans Walking Papers (nouvelle fenêtre)",
+    'displayzone.tbar.walkingpapers': "WP",
     'displayzone.tbar.unreserve': "Dé-réserver",
     'displayzone.tbar.unreserve.tooltip': "Marquer cette tuile comme non réservée (quand vous avez fini de travailler dessus)",
     'displayzone.bbar.allnok': "Tout NOK",

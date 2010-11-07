@@ -37,6 +37,8 @@ OpenLayers.Util.extend(OpenLayers.Lang.en, {
     'displayzone.tbar.josm.tooltip': "Carica questi dati in JOSM, con il remotecontrol plugin",
     'displayzone.tbar.potlatch': "Potlatch",
     'displayzone.tbar.potlatch.tooltip': "Carica questi dati in Potlatch (nuova finestra)",
+    'displayzone.tbar.walkingpapers.tooltip': "Carica quest'area in Walking Papers (nuova finestra)",
+    'displayzone.tbar.walkingpapers': "WP",
     'displayzone.tbar.unreserve': "Togli riserva",
     'displayzone.tbar.unreserve.tooltip': "Marca quest'area come non riservata (quando ha finito con questa tile)",
     'displayzone.bbar.allnok': "Tutto NOK",
